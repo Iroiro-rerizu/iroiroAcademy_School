@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>環境操作アドベンチャー - ハイブリッド操作版</title>
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; touch-action: none; }
+        canvas { display: block; background: #5c94fc; }
+        
+        #ui { position: absolute; top: 15px; left: 15px; color: white; font-family: sans-serif; pointer-events: none; z-index: 100; text-shadow: 2px 2px #000; }
+        .lvl { font-size: 24px; font-weight: bold; color: #ffeb3b; }
+        #timeBarContainer { width: 150px; height: 10px; background: #222; border: 1px solid #e0aaff; margin-top: 5px; }
+        #timeBar { width: 0%; height: 100%; background: #e0aaff; }
+        
+        /* スマホ用コントローラー（初期は表示） */
+        #controller { 
+            position: absolute; bottom: 25px; width: 100%; 
+            display: flex; justify-content: space-between; padding: 0 20px; 
+            box-sizing: border-box; z-index: 200; pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .move-btns { display: flex; gap: 10px; pointer-events: auto; }
+        .mbtn { width: 65px; height: 65px; background: rgba(255,255,255,0.2); border: 2px solid white; border-radius: 15px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: bold; -webkit-tap-highlight-color: transparent; }
+        .actions { display: flex; gap: 15px; align-items: flex-end; pointer-events: auto; }
+        .abtn { width: 60px; height: 60px; background: rgba(0,0,0,0.4); border: 2px solid white; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; -webkit-tap-highlight-color: transparent; }
+        .jump-btn { width: 90px; height: 90px; background: rgba(255,100,100,0.4); font-size: 16px; -webkit-tap-highlight-color: transparent; }
+    </style>
+</head>
+<body>
+    <div id="ui">
+        <div class="lvl">STAGE <span id="lvlNum">1</span></div>
+        <div id="timeBarContainer"><div id="timeBar"></div></div>
+        <div id="status" style="color:#00ff00; font-size:12px; margin-top:5px;">● KEYBOARD DETECTED: AUTO-HIDE UI</div>
+    </div>
+
+    <!-- スマホ用コントローラー -->
+    <div id="controller">
+        <div class="move-btns">
+            <div class="mbtn" id="ctrlLeft">←</div>
+            <div class="mbtn" id="ctrlRight">→</div>
+        </div>
+        <div class="actions">
+            <div class="abtn" id="ctrlD" style="border-color: #e0aaff;">D</div>
+            <div class="abtn" id="ctrlA" style="border-color: #ffeb3b;">A</div>
+            <div class="abtn jump-btn" id="ctrlJump">JUMP</div>
+        </div>
+    </div>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        const MAX_HISTORY = 60 * 60; 
+        const GRAVITY = 0.6;
+        const JUMP_POWER = -16;
+        const MOVE_SPEED = 5.5;
+        const SWIM_SPEED = -8.5;
+
+        let currentLevel = 1;
+        let gameActive = false;
+        let cameraX = 0, cameraY = 0;
+        let inputX = 0, inputY = 0;
+        let baseGroundY = 0;
+
+        const keys = {};
+        let player, platforms, clouds, trees, goal;
+        let worldHistory = []; 
+        let isRewindLatched = false;
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            baseGroundY = canvas.height - 150;
+            if (!gameActive) {
+                generateLevel(currentLevel);
+                cameraX = player.x - canvas.width / 4;
+                cameraY = player.y - canvas.height / 2;
+            }
+        }
+
+        function generateLevel(level) {
+            document.getElementById("lvlNum").innerText = level;
+            player = { x: 100, y: baseGroundY - 60, width: 40, height: 40, vx: 0, vy: 0, onGround: false, inWater: false, isRewinding: false };
+            worldHistory = []; isRewindLatched = false;
+            platforms = [{ x: 0, y: baseGroundY, w: 800, h: 1000 }];
+            clouds = []; trees = [];
+            
+            let lastX = 800, lastY = baseGroundY;
+            let seed = level * 123.456;
+            function rnd() { seed = Math.sin(seed) * 10000; return seed - Math.floor(seed); }
+
+            for (let i = 0; i < 10 + level; i++) {
+                let dx = 220 + rnd() * 250;
+                let dy = (rnd() - 0.5) * 450;
+                let pw = 300 + rnd() * 200;
+                let tx = lastX + dx, ty = lastY + dy;
+                if (ty > baseGroundY + 500) ty = baseGroundY + 500;
+                if (ty < -5000) ty = -5000;
+
+                platforms.push({ x: tx, y: ty, w: pw, h: 1200 });
+                trees.push({ x: tx + 50, y: ty, state: 0, currentH: 10, targetH: 10 });
+                if (dx > 300) clouds.push({ x: lastX + dx/2 - 50, y: Math.min(lastY, ty) - 150, w: 100, state: 0, currentH: 0, maxH: 1200 });
+
+                lastX = tx + pw; lastY = ty;
+            }
+            goal = { x: lastX - 150, y: lastY - 150, type: Math.floor(rnd()*4) };
+            platforms.push({ x: goal.x - 100, y: goal.y + 150, w: 400, h: 800 });
+            gameActive = true;
+        }
+
+        // --- 操作とUI非表示ロジック ---
+        function setupControls() {
+            const controllerEl = document.getElementById("controller");
+
+            // キーボード操作でボタンを消す
+            window.addEventListener("keydown", e => { 
+                keys[e.code] = true; 
+                controllerEl.style.display = "none"; // 非表示
+                if(e.code==="KeyA") handleAction(1); 
+                if(e.code==="KeyD" && !isInputOnPlayer()) handleAction(-1); 
+            });
+            window.addEventListener("keyup", e => { keys[e.code] = false; if(e.code==="KeyD") isRewindLatched = false; });
+
+            // タッチ操作でボタンを出す
+            window.addEventListener("touchstart", (e) => {
+                controllerEl.style.display = "flex"; // 再表示
+                if(e.touches.length > 0){ inputX = e.touches[0].clientX; inputY = e.touches[0].clientY; }
+            }, {passive: false});
+
+            const bind = (id, key) => {
+                const el = document.getElementById(id);
+                el.addEventListener("touchstart", (e) => { 
+                    e.preventDefault(); keys[key] = true; 
+                    if(key==="KeyA") handleAction(1); 
+                    if(key==="KeyD" && !isInputOnPlayer()) handleAction(-1); 
+                });
+                el.addEventListener("touchend", (e) => { e.preventDefault(); keys[key] = false; if(key==="KeyD") isRewindLatched = false; });
+            };
+            bind("ctrlLeft", "ArrowLeft"); bind("ctrlRight", "ArrowRight"); bind("ctrlJump", "Space"); bind("ctrlA", "KeyA"); bind("ctrlD", "KeyD");
+
+            canvas.addEventListener("touchmove", e => { if(e.touches.length > 0){ inputX = e.touches[0].clientX; inputY = e.touches[0].clientY; } });
+            window.addEventListener("mousemove", e => { inputX = e.clientX; inputY = e.clientY; });
+        }
+
+        function isInputOnPlayer() {
+            const sX = player.x - cameraX, sY = player.y - cameraY;
+            return (inputX > sX - 40 && inputX < sX + player.width + 40 && inputY > sY - 40 && inputY < sY + player.height + 40);
+        }
+
+        function handleAction(dir) {
+            const wX = inputX + cameraX, wY = inputY + cameraY;
+            clouds.forEach(c => { if (wX > c.x && wX < c.x + c.w && wY > c.y - 150 && wY < c.y + 150) c.state = Math.max(0, Math.min(2, c.state + dir)); });
+            trees.forEach(t => { 
+                if (wX > t.x - 100 && wX < t.x + 140 && wY > t.y - t.currentH - 100 && wY < t.y + 100) { 
+                    t.state = Math.max(0, Math.min(2, t.state + dir)); 
+                    t.targetH = [10, 150, 450][t.state]; 
+                } 
+            });
+        }
+
+        function update() {
+            if (!gameActive) return;
+            if (keys["KeyD"] && !isRewindLatched && isInputOnPlayer()) isRewindLatched = true;
+            if (isRewindLatched && keys["KeyD"] && worldHistory.length > 0) {
+                player.isRewinding = true;
+                for(let i=0; i<2; i++){
+                    if(worldHistory.length > 0) {
+                        const snap = worldHistory.pop();
+                        player.x = snap.x; player.y = snap.y; player.vx = snap.vx; player.vy = snap.vy;
+                        snap.cl.forEach((s, idx) => { if(clouds[idx]) { clouds[idx].state = s.st; clouds[idx].currentH = s.ch; } });
+                        snap.tr.forEach((s, idx) => { if(trees[idx]) { trees[idx].state = s.st; trees[idx].currentH = s.ch; trees[idx].th = s.th; } });
+                    }
+                }
+            } else {
+                player.isRewinding = false;
+                if (keys["ArrowLeft"]) player.vx = -MOVE_SPEED; else if (keys["ArrowRight"]) player.vx = MOVE_SPEED; else player.vx *= 0.8;
+                player.inWater = false;
+                clouds.forEach(c => {
+                    if (c.state === 1) {
+                        if (player.x + player.width > c.x && player.x < c.x + c.w && player.y + player.height > c.y && player.y < c.y + c.currentH) player.inWater = true;
+                        if (c.currentH < c.maxH) c.currentH += 15;
+                    } else if (c.state === 0) c.currentH = 0;
+                });
+                let jK = keys["Space"] || keys["ArrowUp"] || keys["KeyZ"];
+                if (player.inWater) { if (jK) player.vy = SWIM_SPEED; else player.vy = 2; }
+                else { if (jK && player.onGround) { player.vy = JUMP_POWER; player.onGround = false; } player.vy += GRAVITY; }
+                player.x += player.vx; player.y += player.vy;
+
+                trees.forEach(t => {
+                    let prevH = t.currentH;
+                    if (Math.abs(t.targetH - t.currentH) > 0.5) t.currentH += (t.targetH - t.currentH) * 0.1;
+                    const cw = t.state === 2 ? 140 : 80;
+                    if (player.x + player.width > t.x - cw/2 + 20 && player.x < t.x + cw/2 + 20) {
+                        if (player.y + player.height <= t.y - prevH + 15 && player.y + player.height >= t.y - t.currentH - 30) {
+                            player.y = t.y - t.currentH - player.height; player.vy = 0; player.onGround = true;
+                        }
+                    }
+                });
+
+                player.onGround = false;
+                platforms.forEach(p => {
+                    if (player.x + player.width > p.x && player.x < p.x + p.w && player.y + player.height > p.y && player.y < p.y + p.h) {
+                        if (player.vy >= 0 && player.y + player.height - player.vy <= p.y + 35) { player.vy = 0; player.y = p.y - player.height; player.onGround = true; }
+                        else if (!player.inWater && !player.isRewinding) { if (player.vx > 0 && player.x < p.x) player.x = p.x - player.width; else if (player.vx < 0 && player.x + player.width > p.x + p.w) player.x = p.x + p.w; }
+                    }
+                });
+                clouds.forEach(c => { if (c.state === 2) collideObj({ x: c.x, y: c.y, w: c.w, h: 30 }); });
+                trees.forEach(t => { const cw = t.state === 2 ? 140 : 80; collideObj({ x: t.x - cw/2 + 20, y: t.y - t.currentH, w: cw, h: 30 }); });
+
+                worldHistory.push({ x: player.x, y: player.y, vx: player.vx, vy: player.vy, cl: clouds.map(c => ({ st: c.state, ch: c.currentH })), tr: trees.map(t => ({ st: t.state, ch: t.currentH, th: t.targetH })) });
+                if (worldHistory.length > MAX_HISTORY) worldHistory.shift();
+            }
+
+            function collideObj(p) {
+                if (player.x + player.width > p.x && player.x < p.x + p.w && player.y + player.height > p.y && player.y < p.y + p.h) {
+                    if (player.vy >= 0 && player.y + player.height - player.vy <= p.y + 30) { player.vy = 0; player.y = p.y - player.height; player.onGround = true; }
+                }
+            }
+
+            cameraX += (player.x - canvas.width / 4 - cameraX) * 0.1;
+            cameraY += (player.y - canvas.height / 2 - cameraY) * 0.1;
+            if (Math.abs(player.x - (goal.x + 20)) < 60 && Math.abs(player.y - (goal.y + 20)) < 100) { currentLevel++; generateLevel(currentLevel); }
+            if (player.y > baseGroundY + 1500) generateLevel(currentLevel);
+            document.getElementById("timeBar").style.width = (worldHistory.length / MAX_HISTORY * 100) + "%";
+        }
+
+        function draw() {
+            let hF = Math.max(0, Math.min(1, -player.y / 5000));
+            ctx.fillStyle = `rgb(${92*(1-hF)},${148*(1-hF)},${252*(1-hF)+50*hF})`;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.save(); ctx.translate(-cameraX, -cameraY);
+
+            platforms.forEach(p => { ctx.fillStyle = "#8b4513"; ctx.fillRect(p.x, p.y, p.w, p.h); ctx.fillStyle = "#228b22"; ctx.fillRect(p.x, p.y, p.w, 15); });
+            trees.forEach(t => { 
+                ctx.fillStyle = "#654321"; ctx.fillRect(t.x + 10, t.y - t.currentH, 20, t.currentH); 
+                ctx.fillStyle = t.state === 2 ? "#2e7d32" : "#7ed321";
+                const r = t.state === 2 ? 70 : (t.state === 1 ? 40 : 15);
+                ctx.beginPath(); ctx.arc(t.x + 20, t.y - t.currentH, r, 0, Math.PI * 2); ctx.fill(); 
+            });
+            clouds.forEach(c => { if (c.state === 0) { ctx.fillStyle = "rgba(255,255,255,0.8)"; drawCloudShape(c.x, c.y, c.w); } else if (c.state === 1) { ctx.fillStyle = "#a2d2ff"; drawCloudShape(c.x, c.y, c.w); ctx.fillStyle = "rgba(74, 144, 226, 0.6)"; ctx.fillRect(c.x, c.y, c.w, c.currentH); } else { ctx.fillStyle = "#a5f2f3"; ctx.fillRect(c.x, c.y, c.w, 30); ctx.strokeStyle = "white"; ctx.lineWidth = 3; ctx.strokeRect(c.x, c.y, c.w, 30); } });
+            
+            ctx.fillStyle = ["#ff4d4d", "#00ffff", "#cccccc", "#ffff00"][goal.type];
+            ctx.fillRect(goal.x, goal.y, 40, 40);
+
+            if (player.isRewinding) { ctx.strokeStyle = "#e0aaff"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(player.x + 20, player.y + 20, 60, 0, Math.PI*2); ctx.stroke(); }
+            ctx.fillStyle = player.isRewinding ? "#ff00ff" : (player.inWater ? "#00ffff" : "red");
+            ctx.fillRect(player.x, player.y, player.width, player.height);
+            ctx.restore();
+        }
+
+        function drawCloudShape(x, y, w) { const s = w / 100; ctx.beginPath(); ctx.arc(x + 20*s, y, 25*s, 0, Math.PI*2); ctx.arc(x + 50*s, y - 10*s, 30*s, 0, Math.PI*2); ctx.arc(x + 80*s, y, 25*s, 0, Math.PI*2); ctx.fill(); }
+
+        function loop() { update(); draw(); requestAnimationFrame(loop); }
+        window.addEventListener('resize', resize); resize(); setupControls(); loop();
+    </script>
+</body>
+</html>
