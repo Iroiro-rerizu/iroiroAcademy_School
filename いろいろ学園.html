@@ -3,28 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>環境操作アドベンチャー - スマホ完全復旧版</title>
+    <title>環境操作アドベンチャー - 最適スケール版</title>
     <style>
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; touch-action: none; }
         canvas { display: block; background: #5c94fc; }
         #ui { position: absolute; top: 15px; left: 15px; color: white; font-family: sans-serif; pointer-events: none; z-index: 100; text-shadow: 2px 2px #000; }
-        .lvl { font-size: 24px; font-weight: bold; color: #ffeb3b; }
-        #timeBarContainer { width: 150px; height: 10px; background: #222; border: 1px solid #e0aaff; margin-top: 5px; }
+        .lvl { font-size: 20px; font-weight: bold; color: #ffeb3b; }
+        #timeBarContainer { width: 120px; height: 8px; background: #222; border: 1px solid #e0aaff; margin-top: 5px; }
         #timeBar { width: 0%; height: 100%; background: #e0aaff; }
         
-        #controller { position: absolute; bottom: 25px; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; box-sizing: border-box; z-index: 200; pointer-events: none; }
-        .move-btns { display: flex; gap: 10px; pointer-events: auto; }
-        .mbtn { width: 65px; height: 65px; background: rgba(255,255,255,0.2); border: 2px solid white; border-radius: 15px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: bold; -webkit-tap-highlight-color: transparent; }
-        .actions { display: flex; gap: 15px; align-items: flex-end; pointer-events: auto; }
-        .abtn { width: 60px; height: 60px; background: rgba(0,0,0,0.4); border: 2px solid white; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; -webkit-tap-highlight-color: transparent; }
-        .jump-btn { width: 90px; height: 90px; background: rgba(255,100,100,0.4); font-size: 16px; }
+        #controller { position: absolute; bottom: 20px; width: 100%; display: flex; justify-content: space-between; padding: 0 15px; box-sizing: border-box; z-index: 200; pointer-events: none; }
+        .move-btns { display: flex; gap: 8px; pointer-events: auto; }
+        .mbtn { width: 55px; height: 55px; background: rgba(255,255,255,0.2); border: 2px solid white; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; font-weight: bold; -webkit-tap-highlight-color: transparent; }
+        .actions { display: flex; gap: 10px; align-items: flex-end; pointer-events: auto; }
+        .abtn { width: 55px; height: 55px; background: rgba(0,0,0,0.4); border: 2px solid white; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; -webkit-tap-highlight-color: transparent; }
+        .jump-btn { width: 75px; height: 75px; background: rgba(255,100,100,0.4); font-size: 14px; }
     </style>
 </head>
 <body>
     <div id="ui">
         <div class="lvl">STAGE <span id="lvlNum">1</span></div>
         <div id="timeBarContainer"><div id="timeBar"></div></div>
-        <div id="status" style="color:#00ff00; font-size:12px; margin-top:5px;">● TAP OBJECT THEN PRESS A/D</div>
     </div>
 
     <div id="controller">
@@ -54,8 +53,9 @@
         let currentLevel = 1;
         let gameActive = false;
         let cameraX = 0, cameraY = 0;
-        let inputX = 0, inputY = 0; // 最後にタップ/クリックした位置
+        let inputX = 0, inputY = 0; // 論理座標（スケール補正後）
         let baseGroundY = 0;
+        let gameScale = 1; // 画面サイズに合わせた倍率
 
         const keys = {};
         let player, platforms, clouds, trees, goal;
@@ -65,7 +65,13 @@
         function resize() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            baseGroundY = canvas.height - 150;
+            
+            // スケール計算: 基準の高さ(600px)に対して今の画面がどれくらいか
+            // スマホなら大体 0.5〜0.7 くらいになります
+            gameScale = Math.min(canvas.width / 800, canvas.height / 500);
+            if (gameScale > 1.2) gameScale = 1.2; // PCでもデカくなりすぎないように
+
+            baseGroundY = (canvas.height / gameScale) - 100;
             if (!gameActive) { generateLevel(currentLevel); }
         }
 
@@ -94,8 +100,6 @@
 
         function setupControls() {
             const ctrl = document.getElementById("controller");
-            
-            // キーボード操作でUIを消す
             window.addEventListener("keydown", e => { 
                 keys[e.code] = true; 
                 ctrl.style.opacity = "0"; 
@@ -104,12 +108,12 @@
             });
             window.addEventListener("keyup", e => { keys[e.code] = false; if(e.code==="KeyD") isRewindLatched = false; });
 
-            // タッチ操作でUIを出す + タップ位置の記録
             const updateInputPos = (e) => {
                 const t = e.touches ? e.touches[0] : e;
                 const rect = canvas.getBoundingClientRect();
-                inputX = t.clientX - rect.left;
-                inputY = t.clientY - rect.top;
+                // スケールを考慮して論理座標に変換
+                inputX = (t.clientX - rect.left) / gameScale;
+                inputY = (t.clientY - rect.top) / gameScale;
             };
 
             canvas.addEventListener("touchstart", (e) => {
@@ -117,7 +121,6 @@
                 updateInputPos(e);
             }, {passive: false});
 
-            // ボタンごとの個別処理
             const bind = (id, key, actionDir) => {
                 const el = document.getElementById(id);
                 el.addEventListener("touchstart", (e) => {
@@ -140,11 +143,12 @@
             bind("btnD", "KeyD", -1);
 
             window.addEventListener("mousemove", updateInputPos);
+            canvas.addEventListener("touchmove", updateInputPos);
         }
 
         function isInputOnPlayer() {
             const sX = player.x - cameraX, sY = player.y - cameraY;
-            return (inputX > sX - 40 && inputX < sX + player.width + 40 && inputY > sY - 40 && inputY < sY + player.height + 40);
+            return (inputX > sX - 50 && inputX < sX + player.width + 50 && inputY > sY - 50 && inputY < sY + player.height + 50);
         }
 
         function handleAction(dir) {
@@ -213,18 +217,29 @@
                 }
             }
 
-            cameraX += (player.x - canvas.width / 4 - cameraX) * 0.1;
-            cameraY += (player.y - canvas.height / 2 - cameraY) * 0.1;
+            // カメラ追従
+            let targetCX = player.x - (canvas.width / gameScale) / 4;
+            let targetCY = player.y - (canvas.height / gameScale) / 2;
+            cameraX += (targetCX - cameraX) * 0.1;
+            cameraY += (targetCY - cameraY) * 0.1;
+
             if (Math.abs(player.x - (goal.x + 20)) < 60 && Math.abs(player.y - (goal.y + 20)) < 100) { currentLevel++; generateLevel(currentLevel); }
             if (player.y > baseGroundY + 1500) generateLevel(currentLevel);
             document.getElementById("timeBar").style.width = (worldHistory.length / MAX_HISTORY * 100) + "%";
         }
 
         function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.save();
+            ctx.scale(gameScale, gameScale); // 全体をスケーリング
+            
             let hF = Math.max(0, Math.min(1, -player.y / 5000));
             ctx.fillStyle = `rgb(${92*(1-hF)},${148*(1-hF)},${252*(1-hF)+50*hF})`;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.save(); ctx.translate(-cameraX, -cameraY);
+            // 背景は画面全体を覆うように（論理座標で）
+            ctx.fillRect(cameraX - 100, cameraY - 100, (canvas.width/gameScale)+200, (canvas.height/gameScale)+200);
+
+            ctx.translate(-cameraX, -cameraY);
 
             platforms.forEach(p => { ctx.fillStyle = "#8b4513"; ctx.fillRect(p.x, p.y, p.w, p.h); ctx.fillStyle = "#228b22"; ctx.fillRect(p.x, p.y, p.w, 15); });
             trees.forEach(t => { 
@@ -236,10 +251,6 @@
             clouds.forEach(c => { if (c.state === 0) { ctx.fillStyle = "rgba(255,255,255,0.8)"; drawCloudShape(c.x, c.y, c.w); } else if (c.state === 1) { ctx.fillStyle = "#a2d2ff"; drawCloudShape(c.x, c.y, c.w); ctx.fillStyle = "rgba(74, 144, 226, 0.6)"; ctx.fillRect(c.x, c.y, c.w, c.currentH); } else { ctx.fillStyle = "#a5f2f3"; ctx.fillRect(c.x, c.y, c.w, 30); ctx.strokeStyle = "white"; ctx.lineWidth = 3; ctx.strokeRect(c.x, c.y, c.w, 30); } });
             ctx.fillStyle = ["#ff4d4d", "#00ffff", "#cccccc", "#ffff00"][goal.type];
             ctx.fillRect(goal.x, goal.y, 40, 40);
-
-            // 現在のターゲット位置を表示（デバッグ兼ガイド）
-            ctx.strokeStyle = "rgba(255,255,255,0.3)"; ctx.lineWidth = 1;
-            ctx.beginPath(); ctx.arc(inputX + cameraX, inputY + cameraY, 15, 0, Math.PI*2); ctx.stroke();
 
             if (player.isRewinding) { ctx.strokeStyle = "#e0aaff"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(player.x + 20, player.y + 20, 60, 0, Math.PI*2); ctx.stroke(); }
             ctx.fillStyle = player.isRewinding ? "#ff00ff" : (player.inWater ? "#00ffff" : "red");
