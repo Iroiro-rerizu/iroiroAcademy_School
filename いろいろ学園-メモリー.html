@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>幻想クロニクル - THE FINAL VERSION</title>
+    <!-- フォント -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pro-teal: #33ffcc; --pro-pink: #ff3399; --pro-blue: #00ccff;
+            --glass: rgba(0, 0, 0, 0.7); --border: rgba(255, 255, 255, 0.3);
+            --online: #00ff88; --offline: #888;
+        }
+        body, html { margin: 0; padding: 0; overflow: hidden; background: #000; font-family: 'Noto Sans JP', sans-serif; color: #fff; height: 100vh; width: 100vw; }
+        
+        /* 背景 */
+        .bg-sekai { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=2000') no-repeat center center/cover; z-index: -1; filter: brightness(0.6); }
+        .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.5) 100%); z-index: -1; }
+
+        /* スクリーン管理 */
+        .screen { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1); z-index: 100; pointer-events: auto; }
+        .hidden { display: none !important; opacity: 0; pointer-events: none !important; }
+
+        /* キャラ座標 (50, 200, 350) */
+        .char-original { position: absolute; width: 80px; height: 80px; border-radius: 20px; border: 2.5px solid #fff; background: var(--glass); backdrop-filter: blur(10px); animation: float 3s infinite ease-in-out; pointer-events: none; z-index: 1; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+
+        /* プロセカ風ボタン */
+        .btn-pro { background: #fff; color: #333; border: none; padding: 15px 50px; border-radius: 5px; font-weight: 900; cursor: pointer; transition: 0.3s; transform: skewX(-10deg); box-shadow: 4px 4px 0 var(--pro-teal); z-index: 500; font-family: inherit; }
+        .btn-pro:hover { transform: skewX(-10deg) translate(2px, 2px); box-shadow: 0 0 0 var(--pro-teal); background: var(--pro-teal); color: #fff; }
+        .btn-pro.pink { box-shadow: 4px 4px 0 var(--pro-pink); }
+        .btn-pro.pink:hover { background: var(--pro-pink); box-shadow: none; }
+
+        /* ヘッダーUI */
+        .header-minimal { position: absolute; top: 15px; left: 15px; display: flex; align-items: center; gap: 10px; padding: 5px 12px; background: rgba(0,0,0,0.6); border-left: 4px solid var(--pro-teal); backdrop-filter: blur(10px); z-index: 200; }
+        .av-mini { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid #fff; overflow: hidden; background: #222; }
+        .sync-badge { position: absolute; top: 15px; right: 15px; font-size: 0.6rem; display: flex; align-items: center; gap: 5px; background: rgba(0,0,0,0.6); padding: 5px 12px; border-radius: 30px; border: 1px solid var(--border); }
+        .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--offline); transition: 0.3s; }
+        .dot.on { background: var(--online); box-shadow: 0 0 8px var(--online); }
+
+        /* ナビゲーション */
+        .nav-container { position: absolute; bottom: 30px; display: flex; gap: 10px; width: 95%; max-width: 900px; z-index: 200; }
+        .nav-card { flex: 1; background: var(--glass); border: 1px solid var(--border); padding: 15px 5px; border-radius: 10px; cursor: pointer; transition: 0.3s; text-align: center; backdrop-filter: blur(15px); font-weight: bold; font-size: 0.75rem; }
+        .nav-card:hover { background: var(--pro-teal); color: #000; transform: translateY(-10px); }
+        .nav-card.main { background: var(--pro-pink); border: none; font-size: 1.1rem; flex: 1.5; color: #fff; }
+
+        /* カウントダウン */
+        #countOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; justify-content: center; align-items: center; z-index: 20000; background: rgba(0,0,0,0.3); pointer-events: none; }
+        .count-text { font-family: Montserrat; font-size: 15rem; font-weight: 900; color: #fff; text-shadow: 0 0 50px var(--pro-teal); }
+
+        /* --- 3Dゲーム NEON MAZE レイヤー --- */
+        #maze-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; z-index: 10000; background: #000; }
+        .ui-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; justify-content: center; align-items: center; color: white; font-family: 'Montserrat', sans-serif; z-index: 10001; background: rgba(0, 0, 0, 0.9); }
+        #maze-hud { position: absolute; top: 20px; right: 20px; text-align: right; color: white; z-index: 10002; pointer-events: none; }
+        #maze-minimap { position: absolute; top: 20px; left: 20px; border: 2px solid white; background: rgba(0,0,0,0.5); z-index: 10002; border-radius: 10px; }
+
+        /* ダイアログ */
+        dialog { background: #fff; color: #333; border: none; padding: 30px; border-radius: 20px; width: 380px; z-index: 50000; }
+        .list-box { background: #f5f5f5; border-radius: 15px; height: 140px; overflow-y: auto; padding: 10px; margin-bottom: 10px; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+
+    <div class="bg-sekai"></div>
+    <div class="bg-overlay"></div>
+
+    <!-- カウントダウン演出 -->
+    <div id="countOverlay"><div id="countNum" class="count-text">3</div></div>
+
+    <!-- 1. タイトル -->
+    <div id="titleScreen" class="screen">
+        <div class="char-original" style="left: 50px; top: 300px;"><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=A" style="width:100%"></div>
+        <div class="char-original" style="left: 200px; top: 300px; animation-delay: 0.2s;"><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=B" style="width:100%"></div>
+        <div class="char-original" style="left: 350px; top: 300px; animation-delay: 0.4s;"><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=C" style="width:100%"></div>
+
+        <h1 style="font-family: Montserrat; font-size: 6rem; margin: 0; letter-spacing: -3px; text-shadow: 0 0 20px var(--pro-teal);">GENSOU</h1>
+        <p style="letter-spacing: 12px; font-weight: bold; color: var(--pro-pink); margin-bottom: 50px;">COLORFUL STAGE</p>
+        <button id="loginBtn" class="btn-pro" onclick="transition('titleScreen', 'loadingScreen')">システムログイン</button>
+    </div>
+
+    <!-- 2. ロード -->
+    <div id="loadingScreen" class="screen hidden">
+        <p style="color: var(--pro-teal); font-weight: bold; letter-spacing: 3px; animation: pulse 1.5s infinite alternate;">データを同期中...</p>
+    </div>
+
+    <!-- 3. ホーム -->
+    <div id="gameScreen" class="screen hidden">
+        <div class="header-minimal">
+            <div class="av-mini"><img id="hAv" src="" style="width:100%; height:100%; object-fit:cover;"></div>
+            <div style="font-size: 0.8rem; font-weight: bold;"><span id="hName">---</span> <span id="hID" style="opacity:0.5; font-family:monospace; margin-left:5px;">---</span></div>
+        </div>
+        <div class="sync-badge"><div id="syncDot" class="dot"></div><span id="syncText">OFFLINE</span></div>
+        <h2 style="font-size: 2.5rem; font-weight: 300; letter-spacing: 5px;">MAIN CONSOLE</h2>
+        <nav class="nav-container">
+            <div class="nav-card" onclick="openBox('modalGacha')">ガチャ</div>
+            <div class="nav-card" onclick="openBox('modalFriend')">フレンド</div>
+            <div class="nav-card main" onclick="transition('gameScreen', 'questScreen')">クエスト開始</div>
+            <div class="nav-card" onclick="openBox('modalConfig')">設定</div>
+        </nav>
+    </div>
+
+    <!-- 4. ルーム選択 -->
+    <div id="questScreen" class="screen hidden">
+        <h2 style="font-family: Montserrat; font-size: 3rem;">ROOM SELECT</h2>
+        <div style="display: flex; gap: 30px; margin-top: 30px;">
+            <div class="nav-card" style="width:200px; height:auto; padding:30px;" onclick="createRoom()"><h3>部屋を作る</h3></div>
+            <div class="nav-card" style="width:200px; height:auto; padding:30px;">
+                <h3>番号で参加</h3>
+                <input type="text" id="roomJoinIn" placeholder="4桁番号" style="width:80%; text-align:center;">
+                <button class="btn-pro pink" style="width:100%; padding:10px; margin-top:10px; font-size:0.8rem;" onclick="joinRoom()">JOIN</button>
+            </div>
+        </div>
+        <button class="btn-pro" style="margin-top:50px; background:#555; color:#fff; box-shadow:none;" onclick="closeQuest()">戻る</button>
+    </div>
+
+    <!-- 5. 待機ロビー -->
+    <div id="lobbyScreen" class="screen hidden">
+        <h2 style="font-family: Montserrat; font-size: 2.5rem;">ROOM ID: <span id="lobbyRoomId" style="color:var(--pro-teal);">----</span></h2>
+        <div style="display:flex; gap:15px; margin-top:30px;" id="lobbyMembers">
+            <div class="nav-card" id="slot0" style="width:120px; height:150px;">待機中</div><div class="nav-card" id="slot1" style="width:120px; height:150px;">待機中</div>
+            <div class="nav-card" id="slot2" style="width:120px; height:150px;">待機中</div><div class="nav-card" id="slot3" style="width:120px; height:150px;">待機中</div>
+        </div>
+        <div style="margin-top:50px; display:flex; gap:20px;">
+            <button id="startBtn" class="btn-pro" style="display:none; background: var(--pro-teal);" onclick="hostSignalStart()">ダイブ開始！</button>
+            <button class="btn-pro" style="background:#555; color:#fff;" onclick="leaveRoom()">退室</button>
+        </div>
+    </div>
+
+    <!-- 6. 3Dゲームレイヤー（ご提示いただいたプログラムのUI構造に統合） -->
+    <div id="maze-layer">
+        <div id="maze-title" class="ui-screen" style="display: flex;">
+            <h1 style="color:#00f2ff; font-size: 60px;">NEON MAZE</h1>
+            <button class="btn-pro" onclick="startMazeActual()">START MISSION</button>
+            <button class="btn-pro" style="margin-top:15px; background:#555; color:#fff;" onclick="location.reload()">QUIT</button>
+        </div>
+
+        <div id="instructions" class="ui-screen" onclick="lockMazeControls()">
+            <h2>MISSION</h2>
+            <p>赤い敵を避け、コインを全て集めろ</p>
+            <p style="color: #00f2ff;">[ クリックして再開 ]</p>
+        </div>
+
+        <div id="game-over" class="ui-screen">
+            <h1 style="color:#ff0000;">GAME OVER</h1>
+            <button class="btn-pro" onclick="location.reload()">RETRY</button>
+        </div>
+
+        <div id="game-clear" class="ui-screen">
+            <h1 style="color:#00ff88;">MISSION COMPLETE</h1>
+            <button class="btn-pro" onclick="location.reload()">PLAY AGAIN</button>
+        </div>
+
+        <div id="maze-hud">
+            <div id="score" style="font-size: 24px; color: yellow;">Score: 0</div>
+            <div id="coin-count" style="font-size: 20px; color: #00ff88;">Coins Left: 0</div>
+        </div>
+        <canvas id="maze-minimap" width="150" height="150"></canvas>
+    </div>
+
+    <!-- ダイアログ -->
+    <dialog id="modalConfig"><h2>設定</h2>名前:<input type="text" id="nIn"> 合言葉:<input type="password" id="pIn"><button class="btn-pro" style="width:100%;" onclick="saveSettings()">保存</button></dialog>
+    <dialog id="modalFriend"><h2>フレンド</h2><div id="reqList" style="background:#eee; padding:10px; border-radius:10px; margin-bottom:10px; font-size:0.7rem; color:#333;"></div><div id="fList" class="list-box" style="color:#333;"></div><input type="text" id="fIdIn" placeholder="10桁ID"><button class="btn-pro" onclick="sendReq()">申請</button><button class="btn-pro" style="background:#555; color:#fff; margin-top:5px;" onclick="this.closest('dialog').close()">とじる</button></dialog>
+
+    <!-- JS Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.110/examples/js/controls/PointerLockControls.js"></script>
+
+    <script>
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbzqf-0-3_TTfscW_CPdPpgXatcMIhAcYvbcYIa7-995I2IDGVqq0wJbPqLDSnxriWA/exec';
+        let roomId = "", isHost = false, myId = "", isSyncing = false, isDataLoaded = false;
+        let mScene, mCamera, mRenderer, mControls, mActive = false, mGameOver = false, mScore = 0;
+        let otherPlayers = {}, playerFriends = [], playerPending = [], currentLocation = "ホーム";
+
+        function transition(h, s) {
+            const cur = document.getElementById(h); const nxt = document.getElementById(s);
+            if(cur) { cur.classList.add('hidden'); setTimeout(() => { cur.style.display = 'none'; }, 600); }
+            if(nxt) { nxt.style.display = 'flex'; setTimeout(() => { nxt.classList.remove('hidden'); }, 50); }
+            if(s === 'loadingScreen') setTimeout(() => { transition('loadingScreen', 'gameScreen'); initPortal(); }, 1500);
+        }
+        function openBox(id) { document.getElementById(id).showModal(); }
+        function closeQuest() { transition('questScreen', 'gameScreen'); }
+
+        function initPortal() {
+            if(!localStorage.getItem('gID')) localStorage.setItem('gID', Math.random().toString(36).substring(2, 12).toUpperCase());
+            myId = localStorage.getItem('gID');
+            document.getElementById('hID').innerText = myId;
+            document.getElementById('hName').innerText = localStorage.getItem('gName') || "USER";
+            const av = "https://api.dicebear.com/7.x/avataaars/svg?seed=" + myId;
+            document.getElementById('hAv').src = av;
+            document.getElementById('nIn').value = localStorage.getItem('gName') || "";
+            document.getElementById('pIn').value = localStorage.getItem('gPass') || "";
+            startAutoSync();
+        }
+
+        // --- ルーム/同期管理 ---
+        function createRoom() { roomId = Math.floor(1000 + Math.random() * 9000).toString(); isHost = true; enterLobby(); }
+        function joinRoom() { roomId = document.getElementById('roomJoinIn').value; if(roomId.length !== 4) return alert("4桁番号"); isHost = false; enterLobby(); }
+        function enterLobby() { transition('questScreen', 'lobbyScreen'); document.getElementById('lobbyRoomId').innerText = roomId; currentLocation = "Lobby"; if(isHost) document.getElementById('startBtn').style.display = 'block'; }
+        function leaveRoom() { roomId = ""; isHost = false; transition('lobbyScreen', 'gameScreen'); }
+        
+        function hostSignalStart() { currentLocation = "COUNTDOWN"; performSync(); startGlobalCountdown(); }
+
+        function startGlobalCountdown() {
+            if(mActive) return;
+            currentLocation = "COUNTDOWN";
+            document.getElementById('lobbyScreen').style.display = 'none';
+            document.getElementById('countOverlay').style.display = 'flex';
+            let time = 3; const countNum = document.getElementById('countNum');
+            countNum.innerText = time;
+            const timer = setInterval(() => {
+                time--;
+                if(time > 0) { countNum.innerText = time; }
+                else if(time === 0) { countNum.innerText = "GO!"; }
+                else { clearInterval(timer); document.getElementById('countOverlay').style.display = 'none'; launchMaze(); }
+            }, 1000);
+        }
+
+        function startAutoSync() { if(!isSyncing){ isSyncing = true; setInterval(fetchData, 4000); fetchData(); } }
+
+        async function fetchData() {
+            if(!GAS_URL.includes('https')) return;
+            try {
+                const res = await fetch(GAS_URL + "?id=" + myId);
+                const json = await res.json();
+                if(json.result === "success") {
+                    if(roomId !== "") {
+                        const rRes = await fetch(GAS_URL + "?roomId=" + roomId);
+                        const rJson = await rRes.json();
+                        const members = rJson.members || [];
+                        let countdownSignal = false;
+                        for(let i=0; i<4; i++) {
+                            const slot = document.getElementById('slot' + i);
+                            if(members[i]) {
+                                slot.innerHTML = `<img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${members[i].id}" style="width:50px;"><br><span>${members[i].name}</span>`;
+                                if(members[i].location === "COUNTDOWN") countdownSignal = true;
+                                if(mActive && members[i].id !== myId) updateOtherPlayer(members[i].id, members[i].x, members[i].z);
+                            } else { slot.innerHTML = "待機中"; }
+                        }
+                        if(countdownSignal && !mActive && currentLocation !== "COUNTDOWN") startGlobalCountdown();
+                    }
+                    isDataLoaded = true;
+                }
+            } catch(e){}
+            performSync();
+        }
+
+        async function performSync() {
+            if(!isSyncing || !isDataLoaded || !GAS_URL.includes('https')) return;
+            const data = { type: "sync", id: myId, name: localStorage.getItem('gName'), pass: localStorage.getItem('gPass'), level: 1, coins: mScore, location: currentLocation, avatar: "", friends: "", pending: "", x: mCamera?mCamera.position.x:0, z: mCamera?mCamera.position.z:0, roomId: roomId };
+            await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(data) });
+        }
+
+        function saveSettings() {
+            localStorage.setItem('gName', document.getElementById('nIn').value);
+            localStorage.setItem('gPass', document.getElementById('pIn').value);
+            localStorage.setItem('gSync', 'true');
+            document.getElementById('hName').innerText = document.getElementById('nIn').value;
+            performSync(); document.getElementById('modalConfig').close();
+        }
+
+        function updateOtherPlayer(id, x, z) {
+            if(!otherPlayers[id]) {
+                const mesh = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshPhongMaterial({ color: 0x33ffcc, emissive: 0x33ffcc }));
+                mScene.add(mesh); otherPlayers[id] = { mesh: mesh, targetX: x, targetZ: z };
+            } else {
+                otherPlayers[id].targetX = x; otherPlayers[id].targetZ = z;
+            }
+        }
+
+        // --- 3D Maze ゲーム本体 (ご提示いただいたロジックを統合) ---
+        let mWalls = [], mCoins = [], mEnemies = [], M_SIZE = 30, gameStarted = false;
+
+        function launchMaze() {
+            document.getElementById('portalRoot').style.display = 'none';
+            document.getElementById('maze-layer').style.display = 'block';
+            if(!mRenderer) initMazeScene();
+        }
+
+        function startMazeActual() {
+            hideMazeScreens();
+            mControls.lock();
+            if(!gameStarted) {
+                spawnEnemies();
+                gameStarted = true;
+                mActive = true;
+                currentLocation = "MazeDive";
+            }
+        }
+
+        function lockMazeControls() { mControls.lock(); }
+
+        function hideMazeScreens() {
+            document.getElementById('maze-title').style.display = 'none';
+            document.getElementById('instructions').style.display = 'none';
+            document.getElementById('game-over').style.display = 'none';
+            document.getElementById('game-clear').style.display = 'none';
+        }
+
+        function initMazeScene() {
+            mScene = new THREE.Scene(); mScene.background = new THREE.Color(0x020205);
+            mCamera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+            mRenderer = new THREE.WebGLRenderer({ antialias: true }); mRenderer.setSize(window.innerWidth, window.innerHeight);
+            document.getElementById('maze-layer').appendChild(mRenderer.domElement);
+            
+            mControls = new THREE.PointerLockControls(mCamera, document.body);
+            mControls.addEventListener('unlock', () => {
+                if(!mGameOver) { hideMazeScreens(); document.getElementById('instructions').style.display = 'flex'; }
+            });
+
+            mScene.add(new THREE.AmbientLight(0xffffff, 0.3));
+            const pl = new THREE.PointLight(0x00f2ff, 1.5, 50); mCamera.add(pl); mScene.add(mCamera);
+            const ground = new THREE.Mesh(new THREE.PlaneGeometry(M_SIZE, M_SIZE), new THREE.MeshPhongMaterial({color: 0x111111}));
+            ground.rotation.x = -Math.PI/2; mScene.add(ground);
+
+            createMap();
+            animateMaze();
+        }
+
+        function createMap() {
+            let seed = parseInt(roomId) || 123; function pr() { var x = Math.sin(seed++) * 10000; return x - Math.floor(x); }
+            for(let z=0; z<M_SIZE; z++) {
+                for(let x=0; x<M_SIZE; x++) {
+                    let px = x-M_SIZE/2, pz = z-M_SIZE/2;
+                    if(x===0 || x===M_SIZE-1 || z===0 || z===M_SIZE-1) { addWall(px, pz); }
+                    else if(pr()<0.18 && Math.abs(px)>3) { addWall(px, pz); }
+                    else if(pr()<0.04) { addCoin(px, pz); }
+                }
+            }
+            updateHUD();
+        }
+
+        function addWall(x, z) {
+            const w = new THREE.Mesh(new THREE.BoxGeometry(1, 3, 1), new THREE.MeshPhongMaterial({color: 0x2222ff}));
+            w.position.set(x, 1.5, z); mScene.add(w); mWalls.push(w);
+        }
+
+        function addCoin(x, z) {
+            const c = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.1, 16), new THREE.MeshPhongMaterial({color: 0xffd700}));
+            c.position.set(x, 0.8, z); c.rotation.x = Math.PI/2; mScene.add(c); mCoins.push(c);
+        }
+
+        function spawnEnemies() {
+            for(let i=0; i<5; i++) {
+                const e = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshPhongMaterial({color: 0xff0000, emissive: 0x440000}));
+                e.position.set(M_SIZE/2-2, 0.5, M_SIZE/2-2 - i*3); mScene.add(e); mEnemies.push(e);
+            }
+        }
+
+        function updateHUD() {
+            document.getElementById('score').innerText = "Score: " + mScore;
+            document.getElementById('coin-count').innerText = "Coins Left: " + mCoins.length;
+        }
+
+        const mKeys = {}; window.addEventListener('keydown', e => mKeys[e.key.toLowerCase()] = true); window.addEventListener('keyup', e => mKeys[e.key.toLowerCase()] = false);
+
+        function animateMaze() {
+            requestAnimationFrame(animateMaze);
+            if(mControls.isLocked && !mGameOver) {
+                const prev = mCamera.position.clone();
+                if(mKeys.w) mControls.moveForward(0.15); if(mKeys.s) mControls.moveForward(-0.15);
+                if(mKeys.a) mControls.moveRight(-0.15); if(mKeys.d) mControls.moveRight(0.15);
+                mCamera.position.y = 1.5;
+
+                mWalls.forEach(w => { if(Math.abs(mCamera.position.x - w.position.x) < 0.7 && Math.abs(mCamera.position.z - w.position.z) < 0.7) mCamera.position.copy(prev); });
+                
+                for(let i=mCoins.length-1; i>=0; i--) {
+                    if(mCamera.position.distanceTo(mCoins[i].position) < 0.8) {
+                        mScene.remove(mCoins[i]); mCoins.splice(i,1); mScore += 100; updateHUD();
+                        if(mCoins.length === 0) { mGameOver = true; mControls.unlock(); hideMazeScreens(); document.getElementById('game-clear').style.display='flex'; }
+                    }
+                }
+
+                mEnemies.forEach(e => {
+                    const oldE = e.position.clone(); const move = new THREE.Vector3().subVectors(mCamera.position, e.position).normalize();
+                    e.position.x += move.x * 0.055;
+                    for(let w of mWalls) { if(Math.abs(e.position.x-w.position.x)<0.7 && Math.abs(e.position.z-w.position.z)<0.7){ e.position.x = oldE.x; break; } }
+                    e.position.z += move.z * 0.055;
+                    for(let w of mWalls) { if(Math.abs(e.position.x-w.position.x)<0.7 && Math.abs(e.position.z-w.position.z)<0.7){ e.position.z = oldE.z; break; } }
+                    if(Math.sqrt(Math.pow(mCamera.position.x-e.position.x,2)+Math.pow(mCamera.position.z-e.position.z,2)) < 0.95) {
+                        mGameOver = true; mControls.unlock(); hideMazeScreens(); document.getElementById('game-over').style.display = 'flex';
+                    }
+                });
+
+                for(let id in otherPlayers) {
+                    const p = otherPlayers[id]; p.mesh.position.x += (p.targetX - p.mesh.position.x) * 0.1; p.mesh.position.z += (p.targetZ - p.mesh.position.z) * 0.1;
+                }
+                drawMMap();
+            }
+            if(mRenderer) mRenderer.render(mScene, mCamera);
+        }
+
+        function drawMMap() {
+            const ctx = document.getElementById('maze-minimap').getContext('2d'); ctx.clearRect(0,0,150,150); const s = 150/M_SIZE, o = M_SIZE/2;
+            ctx.fillStyle = "#0044aa"; mWalls.forEach(w => ctx.fillRect((w.position.x+o)*s, (w.position.z+o)*s, 2, 2));
+            ctx.fillStyle = "gold"; mCoins.forEach(c => ctx.fillRect((c.position.x+o)*s, (c.position.z+o)*s, 3, 3));
+            ctx.fillStyle = "white"; if(mCamera) ctx.fillRect((mCamera.position.x+o)*s, (mCamera.position.z+o)*s, 4, 4);
+            ctx.fillStyle = "#33ffcc"; for(let id in otherPlayers) { ctx.fillRect((otherPlayers[id].mesh.position.x+o)*s, (otherPlayers[id].mesh.position.z+o)*s, 4, 4); }
+        }
+    </script>
+</body>
+</html>
