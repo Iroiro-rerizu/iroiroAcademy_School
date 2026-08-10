@@ -2,79 +2,99 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Select Game</title>
+  <title>Game Center</title>
   <style>
     body {
       background-color: #000; color: white; font-family: 'Arial Black', sans-serif;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      height: 100vh; margin: 0; overflow: hidden;
+      display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+      margin: 0; padding: 40px;
     }
-    h1 { font-size: 40px; letter-spacing: 2px; margin-bottom: 40px; }
-    .container { display: flex; gap: 30px; }
+    h1 { font-size: 40px; letter-spacing: 4px; margin-bottom: 50px; text-shadow: 0 0 15px rgba(255,255,255,0.3); }
+    
+    /* カードが並ぶコンテナ（自動折り返し） */
+    .container {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; max-width: 1200px;
+    }
+
     .card {
-      width: 250px; height: 320px; background: #111; border: 2px solid #333;
+      width: 240px; height: 320px; background: #111; border: 2px solid #333;
       border-radius: 20px; padding: 20px; cursor: pointer; transition: 0.3s;
       text-align: center; display: flex; flex-direction: column; align-items: center;
     }
-    .card:hover { transform: translateY(-10px); border-color: #666; box-shadow: 0 10px 30px rgba(255,255,255,0.1); }
+    .card:hover { transform: translateY(-10px); border-color: #fff; box-shadow: 0 0 25px rgba(255,255,255,0.2); }
+    
     .thumb { width: 100%; height: 140px; border-radius: 15px; margin-bottom: 20px; }
-    .thumb-left { background: linear-gradient(135deg, #2af598 0%, #009efd 100%); }
-    .thumb-right { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%, #f6d365 100%); }
-    .game-title { font-size: 18px; margin-bottom: 10px; }
-    .game-desc { font-size: 12px; color: #888; font-family: sans-serif; }
+    
+    /* 自動で色を変えるためのグラデーションパターン */
+    .p0 { background: linear-gradient(135deg, #2af598, #009efd); }
+    .p1 { background: linear-gradient(135deg, #f093fb, #f5576c); }
+    .p2 { background: linear-gradient(135deg, #fccb90, #d57eeb); }
+    .p3 { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+
+    .game-title { font-size: 18px; margin-bottom: 10px; color: #fff; }
+    .game-desc { font-size: 12px; color: #777; font-family: sans-serif; }
+
     #loading {
-      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 100;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: #000; display: flex; justify-content: center; align-items: center;
+      z-index: 1000; font-size: 20px; letter-spacing: 5px;
     }
   </style>
 </head>
 <body>
 
+  <div id="loading">FETCHING GAMES...</div>
   <h1>SELECT GAME</h1>
-
-  <div class="container">
-    <div class="card" onclick="fetchGame('B1')">
-      <div class="thumb thumb-left"></div>
-      <div class="game-title">3D NEON MAZE</div>
-      <div class="game-desc">迷路を探索</div>
-    </div>
-
-    <div class="card" onclick="fetchGame('B2')">
-      <div class="thumb thumb-right"></div>
-      <div class="game-title">環境操作ADV</div>
-      <div class="game-desc">時間を操る冒険</div>
-    </div>
-  </div>
-
-  <div id="loading">Now Loading...</div>
+  <div class="container" id="game-container"></div>
 
   <script>
-    // ★ここにコピーしたGASのウェブアプリURLを貼り付けてください★
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbxwvs3eFRcnuguy8-qmNzaUg3ifEGqJN4CjBB4za2Znw7FcU94F0wqL3_nXTy5O2FWc/exec";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbwXeGfzclKX8cOmHBg-2bs5dyYmnxSj1IRvsf2gJG6utNtoQLWps4EJ5HPigw2-vi7L/exec";
 
-    async function fetchGame(cell) {
+    // 起動時にリストを取得してカードを作る
+    async function init() {
+      try {
+        const response = await fetch(`${GAS_URL}?action=getList`);
+        const games = await response.json();
+        const container = document.getElementById('game-container');
+
+        games.forEach((game, index) => {
+          // カードのHTMLを生成
+          const colorClass = "p" + (index % 4); // 4色のデザインをループ
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.onclick = () => fetchGame(game.id);
+          card.innerHTML = `
+            <div class="thumb ${colorClass}"></div>
+            <div class="game-title">${game.title}</div>
+            <div class="game-desc">${game.description}</div>
+          `;
+          container.appendChild(card);
+        });
+
+        document.getElementById('loading').style.display = 'none';
+      } catch (e) {
+        document.getElementById('loading').innerText = "ERROR: CHECK GAS CONFIG";
+      }
+    }
+
+    // コードを取得して実行
+    async function fetchGame(rowId) {
+      document.getElementById('loading').innerText = "LOADING CODE...";
       document.getElementById('loading').style.display = 'flex';
       
       try {
-        // GASにセルのコードをリクエスト
-        const response = await fetch(`${GAS_URL}?cell=${cell}`);
+        const response = await fetch(`${GAS_URL}?action=getCode&row=${rowId}`);
         const data = await response.json();
-        
-        if (data.code) {
-          // 取得したコードで画面を書き換える
-          document.open();
-          document.write(data.code);
-          document.close();
-        } else {
-          alert("コードが見つかりませんでした");
-          document.getElementById('loading').style.display = 'none';
-        }
+        document.open();
+        document.write(data.code);
+        document.close();
       } catch (e) {
-        console.error(e);
-        alert("エラーが発生しました。GASのURLと公開設定を確認してください。");
+        alert("Failed to load game");
         document.getElementById('loading').style.display = 'none';
       }
     }
+
+    init();
   </script>
 </body>
 </html>
