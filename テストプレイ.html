@@ -2,102 +2,79 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Snake Game to GAS</title>
+  <title>Select Game</title>
   <style>
-    body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; background: #eef; }
-    canvas { border: 5px solid #333; background: #fff; }
-    .score { font-size: 24px; margin: 10px; }
+    body {
+      background-color: #000; color: white; font-family: 'Arial Black', sans-serif;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      height: 100vh; margin: 0; overflow: hidden;
+    }
+    h1 { font-size: 40px; letter-spacing: 2px; margin-bottom: 40px; }
+    .container { display: flex; gap: 30px; }
+    .card {
+      width: 250px; height: 320px; background: #111; border: 2px solid #333;
+      border-radius: 20px; padding: 20px; cursor: pointer; transition: 0.3s;
+      text-align: center; display: flex; flex-direction: column; align-items: center;
+    }
+    .card:hover { transform: translateY(-10px); border-color: #666; box-shadow: 0 10px 30px rgba(255,255,255,0.1); }
+    .thumb { width: 100%; height: 140px; border-radius: 15px; margin-bottom: 20px; }
+    .thumb-left { background: linear-gradient(135deg, #2af598 0%, #009efd 100%); }
+    .thumb-right { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%, #f6d365 100%); }
+    .game-title { font-size: 18px; margin-bottom: 10px; }
+    .game-desc { font-size: 12px; color: #888; font-family: sans-serif; }
+    #loading {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 100;
+    }
   </style>
 </head>
 <body>
-  <h1>Snake Game</h1>
-  <div class="score">Score: <span id="scoreVal">0</span></div>
-  <canvas id="gameCanvas" width="300" height="300"></canvas>
-  <p>矢印キーで操作してください</p>
+
+  <h1>SELECT GAME</h1>
+
+  <div class="container">
+    <div class="card" onclick="fetchGame('B1')">
+      <div class="thumb thumb-left"></div>
+      <div class="game-title">3D NEON MAZE</div>
+      <div class="game-desc">迷路を探索</div>
+    </div>
+
+    <div class="card" onclick="fetchGame('B2')">
+      <div class="thumb thumb-right"></div>
+      <div class="game-title">環境操作ADV</div>
+      <div class="game-desc">時間を操る冒険</div>
+    </div>
+  </div>
+
+  <div id="loading">Now Loading...</div>
 
   <script>
-    // ★ここにコピーしたGASのWebアプリURLを貼り付けてください
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbwHBvXJJz1oy1_VP5-9a9xdjGESO0WeLb8jTFKEhBFO79CBamLRl1eoXAZYFJbHDLhI/exec";
+    // ★ここにコピーしたGASのウェブアプリURLを貼り付けてください★
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbxwvs3eFRcnuguy8-qmNzaUg3ifEGqJN4CjBB4za2Znw7FcU94F0wqL3_nXTy5O2FWc/exec";
 
-    const canvas = document.getElementById("gameCanvas");
-    const ctx = canvas.getContext("2d");
-    const scoreVal = document.getElementById("scoreVal");
-
-    let snake, food, dx, dy, score, gameInterval;
-    const gridSize = 15;
-
-    function startGame() {
-      snake = [{x: 150, y: 150}];
-      dx = gridSize; dy = 0; score = 0;
-      scoreVal.innerText = score;
-      createFood();
-      if(gameInterval) clearInterval(gameInterval);
-      gameInterval = setInterval(draw, 150);
-    }
-
-    function createFood() {
-      food = {
-        x: Math.floor(Math.random() * (canvas.width / gridSize)) * gridSize,
-        y: Math.floor(Math.random() * (canvas.height / gridSize)) * gridSize
-      };
-    }
-
-    function draw() {
-      const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+    async function fetchGame(cell) {
+      document.getElementById('loading').style.display = 'flex';
       
-      // 当たり判定
-      if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height || snake.some(s => s.x === head.x && s.y === head.y)) {
-        clearInterval(gameInterval);
-        alert("Game Over! Score: " + score);
-        sendScoreToGAS(score); // GASへ送信
-        return;
+      try {
+        // GASにセルのコードをリクエスト
+        const response = await fetch(`${GAS_URL}?cell=${cell}`);
+        const data = await response.json();
+        
+        if (data.code) {
+          // 取得したコードで画面を書き換える
+          document.open();
+          document.write(data.code);
+          document.close();
+        } else {
+          alert("コードが見つかりませんでした");
+          document.getElementById('loading').style.display = 'none';
+        }
+      } catch (e) {
+        console.error(e);
+        alert("エラーが発生しました。GASのURLと公開設定を確認してください。");
+        document.getElementById('loading').style.display = 'none';
       }
-
-      snake.unshift(head);
-      if (head.x === food.x && head.y === food.y) {
-        score += 10;
-        scoreVal.innerText = score;
-        createFood();
-      } else {
-        snake.pop();
-      }
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "red";
-      ctx.fillRect(food.x, food.y, gridSize, gridSize);
-      ctx.fillStyle = "green";
-      snake.forEach(s => ctx.fillRect(s.x, s.y, gridSize, gridSize));
     }
-
-    // GASにスコアを送信する関数
-    function sendScoreToGAS(finalScore) {
-      const data = {
-        name: "GitHub Player",
-        score: finalScore
-      };
-
-      // fetchを使ってGASにPOST送信
-      fetch(GAS_URL, {
-        method: "POST",
-        mode: "no-cors", // GASの仕様上、no-corsが安定します
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      })
-      .then(() => {
-        alert("スプレッドシートにスコアを保存しました！");
-        startGame();
-      })
-      .catch(err => console.error("Error:", err));
-    }
-
-    document.addEventListener("keydown", e => {
-      if (e.key === "ArrowUp" && dy === 0) { dx = 0; dy = -gridSize; }
-      else if (e.key === "ArrowDown" && dy === 0) { dx = 0; dy = gridSize; }
-      else if (e.key === "ArrowLeft" && dx === 0) { dx = -gridSize; dy = 0; }
-      else if (e.key === "ArrowRight" && dx === 0) { dx = gridSize; dy = 0; }
-    });
-
-    startGame();
   </script>
 </body>
 </html>
