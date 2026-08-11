@@ -3,91 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>幻想クロニクル - Colorful Stage Edition</title>
+    <title>幻想クロニクル - Final System</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --pro-teal: #33ffcc; --pro-pink: #ff3399; --pro-blue: #00ccff;
-            --glass: rgba(0, 0, 0, 0.75); --border: rgba(255, 255, 255, 0.4);
-            --online: #00ff88;
+            --pro-teal: #33ffcc; --pro-pink: #ff3399; --glass: rgba(0, 0, 0, 0.8);
+            --border: rgba(255, 255, 255, 0.4); --online: #00ff88;
         }
         body, html { margin: 0; padding: 0; overflow: hidden; background: #000; font-family: 'Noto Sans JP', sans-serif; color: #fff; height: 100vh; width: 100vw; }
         
-        /* 背景：セカイの日常 */
-        .bg-sekai { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=2000') no-repeat center center/cover; z-index: -1; filter: brightness(0.6) blur(2px); }
-        .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(51,255,204,0.15) 0%, rgba(255,51,153,0.15) 100%); z-index: -1; }
+        /* 背景レイヤー */
+        .bg-sekai { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=2000') no-repeat center center/cover; z-index: -1; filter: brightness(0.6); }
+        .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.6) 100%); z-index: -1; }
 
         /* スクリーン管理 */
         .screen { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); z-index: 100; pointer-events: auto; }
-        .hidden { display: none !important; opacity: 0; transform: scale(1.05); }
+        .hidden { display: none !important; opacity: 0; }
 
         /* キャラクター配置 (50, 200, 350) */
-        .char-original { position: absolute; width: 85px; height: 85px; border-radius: 20px; border: 3px solid #fff; background: var(--glass); backdrop-filter: blur(10px); animation: float 3s infinite ease-in-out; z-index: 1; box-shadow: 0 0 15px var(--pro-teal); }
+        .char-original { position: absolute; width: 85px; height: 85px; border-radius: 20px; border: 3px solid #fff; background: var(--glass); backdrop-filter: blur(10px); animation: float 3s infinite ease-in-out; z-index: 1; box-shadow: 0 0 20px var(--pro-teal); }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
 
-        /* プロセカ風ボタン：斜めカット & 立体感 */
-        .btn-pro {
-            background: #fff; color: #333; border: none; padding: 12px 45px; border-radius: 4px;
-            font-weight: 900; cursor: pointer; transition: 0.2s;
-            transform: skewX(-15deg); 
-            box-shadow: 6px 6px 0 var(--pro-teal);
-            font-family: 'Montserrat', 'Noto Sans JP', sans-serif;
-            text-transform: uppercase; margin: 10px;
-        }
-        .btn-pro span { display: inline-block; transform: skewX(15deg); } /* 文字の歪みを戻す */
+        /* ボタン */
+        .btn-pro { background: #fff; color: #333; border: none; padding: 15px 45px; border-radius: 4px; font-weight: 900; cursor: pointer; transition: 0.2s; transform: skewX(-15deg); box-shadow: 6px 6px 0 var(--pro-teal); z-index: 500; font-family: inherit; margin: 10px; text-transform: uppercase; }
+        .btn-pro span { display: inline-block; transform: skewX(15deg); }
         .btn-pro:hover { transform: skewX(-15deg) translate(2px, 2px); box-shadow: 2px 2px 0 var(--pro-teal); background: var(--pro-teal); color: #fff; }
         .btn-pro.pink { box-shadow: 6px 6px 0 var(--pro-pink); }
         .btn-pro.pink:hover { background: var(--pro-pink); box-shadow: 2px 2px 0 var(--pro-pink); }
         .btn-pro.gray { background: #444; color: #fff; box-shadow: 6px 6px 0 #222; }
 
-        /* ヘッダーUI：プロセカのランク風 */
-        .header-minimal {
-            position: absolute; top: 20px; left: 20px; display: flex; align-items: center; gap: 12px;
-            padding: 8px 20px; background: rgba(0,0,0,0.7); border-radius: 0 20px 20px 0;
-            border-left: 6px solid var(--pro-teal); backdrop-filter: blur(10px); z-index: 200;
-        }
-        .av-mini { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #fff; overflow: hidden; background: #222; box-shadow: 0 0 10px var(--pro-teal); }
-        
-        /* 下部ナビゲーション */
+        /* ヘッダーUI */
+        .header-minimal { position: absolute; top: 20px; left: 20px; display: flex; align-items: center; gap: 12px; padding: 8px 20px; background: rgba(0,0,0,0.7); border-radius: 0 20px 20px 0; border-left: 6px solid var(--pro-teal); backdrop-filter: blur(10px); z-index: 200; }
+        .av-mini { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #fff; overflow: hidden; background: #222; }
+
+        /* 下部ナビ */
         .nav-container { position: absolute; bottom: 30px; display: flex; gap: 12px; width: 95%; max-width: 1000px; z-index: 200; }
-        .nav-card {
-            flex: 1; background: var(--glass); border: 1px solid var(--border); padding: 18px 5px;
-            border-radius: 12px; cursor: pointer; transition: 0.3s; text-align: center;
-            backdrop-filter: blur(15px); font-weight: 900; font-size: 0.8rem;
-            color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-        }
-        .nav-card:hover { background: var(--pro-teal); color: #000; transform: translateY(-10px) rotate(-2deg); }
+        .nav-card { flex: 1; background: var(--glass); border: 1px solid var(--border); padding: 18px 5px; border-radius: 12px; cursor: pointer; transition: 0.3s; text-align: center; backdrop-filter: blur(15px); font-weight: 900; font-size: 0.8rem; color: #fff; }
+        .nav-card:hover { background: var(--pro-teal); color: #000; transform: translateY(-10px); }
         .nav-card.main { background: linear-gradient(to right, var(--pro-pink), #ff66cc); border: none; font-size: 1.2rem; flex: 1.8; box-shadow: 0 0 25px rgba(255,51,153,0.5); }
 
-        /* ゲーム選択グリッド */
+        /* ゲーム選択 */
         .game-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 25px; max-height: 55vh; overflow-y: auto; width: 95%; padding: 20px; }
-        .card-sekai {
-            width: 220px; height: 260px; background: #fff; border-radius: 15px; padding: 10px;
-            cursor: pointer; transition: 0.3s; color: #333; position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-        .card-sekai:hover { transform: scale(1.05) rotate(1deg); }
-        .card-sekai .thumb { height: 140px; background: #eee; border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
+        .card-sekai { width: 220px; height: 260px; background: #fff; border-radius: 15px; padding: 10px; cursor: pointer; transition: 0.3s; color: #333; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .card-sekai .thumb { height: 140px; background: linear-gradient(45deg, var(--pro-teal), var(--pro-blue)); border-radius: 10px; margin-bottom: 15px; }
 
-        /* カウントダウン */
-        #countOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; justify-content: center; align-items: center; z-index: 20000; background: rgba(0,0,0,0.4); pointer-events: none; }
-        .count-text { font-family: Montserrat; font-size: 18rem; font-weight: 900; color: #fff; text-shadow: 0 0 40px var(--pro-teal); animation: countPulse 0.5s ease-out; }
-        @keyframes countPulse { 0% { transform: scale(1.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-
-        /* ポーズメニュー (画像のデザインを再現) */
+        /* ポーズメニュー (画像デザインを再現) */
         #pauseOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.85); z-index: 20000; }
-        .pause-title { font-family: Montserrat; font-size: 5rem; color: var(--pro-teal); margin: 0; letter-spacing: 5px; }
+        .pause-title { font-family: Montserrat; font-size: 5rem; color: var(--pro-teal); margin: 0; letter-spacing: 5px; text-shadow: 0 0 20px var(--pro-teal); }
 
-        /* ゲームレイヤー */
+        /* ゲーム表示 */
         #gameLayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; z-index: 10000; background: #000; }
         #gameFrame { width: 100%; height: 100%; border: none; }
 
-        /* ダイアログ（プロセカ風：白ベースにミント） */
+        /* ダイアログ */
         dialog { background: #fff; color: #333; border: none; padding: 0; border-radius: 20px; width: 420px; z-index: 50000; overflow: hidden; box-shadow: 0 25px 80px rgba(0,0,0,0.6); }
         .dialog-header { background: var(--pro-teal); color: #fff; padding: 15px; font-weight: 900; font-size: 1.2rem; text-align: center; }
         .dialog-body { padding: 30px; }
         input { width: 100%; background: #f0f0f5; border: 2px solid #eee; padding: 15px; border-radius: 10px; margin-bottom: 15px; box-sizing: border-box; font-family: inherit; font-weight: bold; }
-        .id-copy-box { background: #333; color: var(--pro-teal); padding: 12px; border-radius: 8px; font-family: monospace; font-size: 1.2rem; text-align: center; margin: 10px 0 20px; letter-spacing: 2px; border: 1px solid #444; }
+        .id-box { background: #333; color: var(--pro-teal); padding: 12px; border-radius: 8px; font-family: monospace; font-size: 1.2rem; text-align: center; margin: 10px 0 20px; }
+
+        #countOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; justify-content: center; align-items: center; z-index: 20000; background: rgba(0,0,0,0.4); pointer-events: none; }
+        .count-text { font-family: Montserrat; font-size: 18rem; font-weight: 900; color: #fff; text-shadow: 0 0 40px var(--pro-teal); }
     </style>
 </head>
 <body>
@@ -95,10 +71,9 @@
     <div class="bg-sekai"></div>
     <div class="bg-overlay"></div>
 
-    <!-- カウントダウン -->
     <div id="countOverlay"><div id="countNum" class="count-text">3</div></div>
 
-    <!-- ポーズメニュー (Escキー) -->
+    <!-- ポーズメニュー -->
     <div id="pauseOverlay">
         <h1 class="pause-title">PAUSE</h1>
         <button class="btn-pro" onclick="resumeGame()"><span>再開する</span></button>
@@ -119,12 +94,8 @@
 
     <!-- 2. ロード画面 -->
     <div id="loadingScreen" class="screen hidden">
-        <div style="width: 250px; height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; position: relative;">
-            <div style="width: 60%; height: 100%; background: var(--pro-teal); position: absolute; animation: loadBar 1.5s infinite ease-in-out;"></div>
-        </div>
-        <p style="margin-top: 20px; color: var(--pro-teal); font-weight: bold; letter-spacing: 3px;">セカイを同期中...</p>
+        <p style="color: var(--pro-teal); font-weight: bold; letter-spacing: 3px;">同期中...</p>
     </div>
-    <style>@keyframes loadBar { 0% { left: -100%; } 100% { left: 150%; } }</style>
 
     <!-- 3. ホーム画面 -->
     <div id="gameScreen" class="screen hidden">
@@ -132,9 +103,6 @@
             <div class="av-mini"><img id="hAv" src="" style="width:100%; height:100%; object-fit:cover;"></div>
             <div style="font-size: 0.9rem; font-weight: 900;"><span id="hName">---</span></div>
         </div>
-        
-        <h2 style="font-size: 3rem; font-weight: 300; letter-spacing: 8px; opacity: 0.8;">MAIN CONSOLE</h2>
-        
         <nav class="nav-container">
             <div class="nav-card" onclick="openBox('modalFriend')">フレンド</div>
             <div class="nav-card" onclick="alert('ガチャ準備中')">ガチャ</div>
@@ -144,7 +112,7 @@
         </nav>
     </div>
 
-    <!-- 4. ゲーム選択画面 -->
+    <!-- 4. ゲーム選択 -->
     <div id="questScreen" class="screen hidden">
         <h2 style="font-family: Montserrat; font-size: 3.5rem; margin: 0; color: var(--pro-teal);">GAME SELECT</h2>
         <div class="game-grid" id="gameListContainer"></div>
@@ -154,10 +122,10 @@
     <!-- 5. プレイモード選択 -->
     <dialog id="modalMode">
         <div class="dialog-header">PLAY MODE</div>
-        <div class="dialog-body">
-            <button class="btn-pro" style="width:100%; margin: 10px 0;" onclick="startSolo()"><span>一人で遊ぶ</span></button>
-            <button class="btn-pro pink" style="width:100%; margin: 10px 0;" onclick="toMatching()"><span>みんなで遊ぶ</span></button>
-            <button class="btn-pro gray" style="width:100%; margin: 10px 0; box-shadow:none;" onclick="this.closest('dialog').close()"><span>キャンセル</span></button>
+        <div class="dialog-body" style="text-align:center;">
+            <button class="btn-pro" style="width:100%;" onclick="startSolo()"><span>一人で遊ぶ</span></button>
+            <button class="btn-pro pink" style="width:100%;" onclick="toMatching()"><span>みんなで遊ぶ</span></button>
+            <button class="btn-pro gray" style="width:100%; box-shadow:none;" onclick="this.closest('dialog').close()"><span>戻る</span></button>
         </div>
     </dialog>
 
@@ -175,8 +143,8 @@
     <div id="lobbyScreen" class="screen hidden">
         <h2 style="font-family: Montserrat; font-size: 2rem;">ROOM ID: <span id="lobbyRoomId" style="color:var(--pro-teal);">----</span></h2>
         <div style="display:flex; gap:15px; margin-top:30px;" id="lobbyMembers">
-            <div class="slot empty" id="slot0"></div><div class="slot empty" id="slot1"></div>
-            <div class="slot empty" id="slot2"></div><div class="slot empty" id="slot3"></div>
+            <div class="slot" id="slot0">待機中</div><div class="slot" id="slot1">待機中</div>
+            <div class="slot" id="slot2">待機中</div><div class="slot" id="slot3">待機中</div>
         </div>
         <button id="startBtn" class="btn-pro" style="display:none; margin-top:50px;" onclick="hostSignalStart()"><span>ダイブ開始！</span></button>
     </div>
@@ -184,7 +152,7 @@
     <!-- 8. ゲーム表示レイヤー -->
     <div id="gameLayer"><iframe id="gameFrame" src="about:blank"></iframe></div>
 
-    <!-- 設定ダイアログ -->
+    <!-- 各種ダイアログ -->
     <dialog id="modalConfig">
         <div class="dialog-header">PROFILE</div>
         <div class="dialog-body">
@@ -192,35 +160,25 @@
                 <img id="mAv" src="" style="width:90px; height:90px; border-radius:50%; border:3px solid var(--pro-teal); cursor:pointer; object-fit:cover;" onclick="document.getElementById('fileIn').click()">
                 <input type="file" id="fileIn" style="display:none" accept="image/*" onchange="uploadIcon(this)">
             </div>
-            <label style="font-size:0.7rem; font-weight:bold;">プレイヤー名</label>
-            <input type="text" id="nIn">
-            <label style="font-size:0.7rem; font-weight:bold;">プレイヤーID（変更不可）</label>
-            <div class="id-copy-box" id="myIdDisplay">--------</div>
-            <button class="btn-pro" style="width:100%; margin:0;" onclick="saveSettings()"><span>設定を保存</span></button>
-            <button class="btn-pro gray" style="width:100%; margin-top:10px; box-shadow:none;" onclick="this.closest('dialog').close()"><span>閉じる</span></button>
+            ID: <div class="id-box" id="myIdDisplay">--------</div>
+            名前: <input type="text" id="nIn">
+            <button class="btn-pro" style="width:100%; margin:0;" onclick="saveSettings()"><span>保存</span></button>
         </div>
     </dialog>
 
     <dialog id="modalFriend">
         <div class="dialog-header">FRIENDS</div>
-        <div class="dialog-body">
-            <div id="fList" class="list-box" style="color:#333;"></div>
-            <input type="text" id="fIdIn" placeholder="10桁のIDを入力">
-            <button class="btn-pro pink" style="width:100%; margin:0;" onclick="sendReq()"><span>申請を送る</span></button>
-        </div>
+        <div class="dialog-body"><div id="fList" class="list-box" style="color:#333;"></div><input type="text" id="fIdIn" placeholder="10桁ID入力"><button class="btn-pro pink" style="width:100%; margin:0;" onclick="sendReq()"><span>申請</span></button></div>
     </dialog>
 
     <dialog id="modalJoin">
         <div class="dialog-header">ENTER ROOM ID</div>
-        <div class="dialog-body">
-            <input type="text" id="roomJoinIn" placeholder="4桁の番号">
-            <button class="btn-pro" style="width:100%; margin:0;" onclick="joinRoom()"><span>ルームに入る</span></button>
-        </div>
+        <div class="dialog-body"><input type="text" id="roomJoinIn" placeholder="4桁番号"><button class="btn-pro" style="width:100%; margin:0;" onclick="joinRoom()"><span>参加</span></button></div>
     </dialog>
 
     <script>
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbzaAZNIDfKCm9wJQerECcgnD8elg_o_DKJrA47h1nSeS9PqJnXjpett8sSOLass9vOt/exec';
-        let myId = "", roomId = "", isHost = false, isSyncing = false, currentGameRow = "";
+        let myId = "", roomId = "", isHost = false, currentGameRow = "";
 
         function transition(h, s) {
             const cur = document.getElementById(h); const nxt = document.getElementById(s);
@@ -232,16 +190,14 @@
         function closeQuest() { transition('questScreen', 'gameScreen'); }
 
         function initPortal() {
-            if(!localStorage.getItem('gID')) {
-                localStorage.setItem('gID', Math.random().toString(36).substring(2, 12).toUpperCase());
-            }
+            if(!localStorage.getItem('gID')) localStorage.setItem('gID', Math.random().toString(36).substring(2, 12).toUpperCase());
             myId = localStorage.getItem('gID');
             document.getElementById('hName').innerText = localStorage.getItem('gName') || "USER";
             document.getElementById('myIdDisplay').innerText = myId;
             const av = localStorage.getItem('gAv') || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + myId;
             document.getElementById('hAv').src = av; document.getElementById('mAv').src = av;
             document.getElementById('nIn').value = localStorage.getItem('gName') || "";
-            if(!isSyncing) { isSyncing = true; setInterval(fetchData, 5000); fetchData(); }
+            setInterval(fetchData, 5000);
         }
 
         async function loadGameList() {
@@ -250,11 +206,11 @@
             const res = await fetch(`${GAS_URL}?action=getList`);
             const games = await res.json();
             container.innerHTML = "";
-            games.forEach((g) => {
+            games.forEach(g => {
                 const card = document.createElement('div');
                 card.className = 'card-sekai';
                 card.onclick = () => { currentGameRow = g.id; openBox('modalMode'); };
-                card.innerHTML = `<div class="thumb" style="background:linear-gradient(45deg, var(--pro-teal), var(--pro-blue))"></div><div style="font-weight:900;">${g.title}</div>`;
+                card.innerHTML = `<div class="thumb"></div><div style="font-weight:900;">${g.title}</div>`;
                 container.appendChild(card);
             });
         }
@@ -288,19 +244,39 @@
             document.getElementById('gameLayer').style.display = 'block';
             const res = await fetch(`${GAS_URL}?action=getCode&row=${currentGameRow}`);
             const data = await res.json();
-            document.getElementById('gameFrame').srcdoc = data.code;
-            setTimeout(() => document.getElementById('gameFrame').contentWindow.focus(), 500);
+            const frame = document.getElementById('gameFrame');
+            frame.srcdoc = data.code;
+            
+            // ★重要：iframe読み込み完了時にEscキー監視を注入
+            frame.onload = () => {
+                const doc = frame.contentDocument || frame.contentWindow.document;
+                doc.addEventListener('keydown', e => {
+                    if (e.key === "Escape") document.getElementById('pauseOverlay').style.display = 'flex';
+                });
+                frame.contentWindow.focus();
+            };
         }
+
+        function resumeGame() { document.getElementById('pauseOverlay').style.display = 'none'; document.getElementById('gameFrame').contentWindow.focus(); }
+        function exitGame() { document.getElementById('pauseOverlay').style.display = 'none'; document.getElementById('gameLayer').style.display = 'none'; document.getElementById('gameFrame').srcdoc = ""; transition('titleScreen', 'gameScreen'); }
+
+        // ポータル側のEsc監視
+        window.addEventListener('keydown', e => {
+            if (e.key === "Escape" && document.getElementById('gameLayer').style.display === 'block') {
+                document.getElementById('pauseOverlay').style.display = 'flex';
+            }
+        });
 
         async function fetchData() {
             if(!GAS_URL.includes('https')) return;
-            await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "sync", id: myId, name: localStorage.getItem('gName'), location: roomId !== "" ? "Lobby" : "Home", roomId: roomId, avatar: localStorage.getItem('gAv')||"" }) });
+            const res = await fetch(GAS_URL + "?id=" + myId);
+            const json = await res.json();
             if(roomId !== "") {
                 const rRes = await fetch(GAS_URL + "?roomId=" + roomId);
                 const rJson = await rRes.json();
                 const members = rJson.members || [];
-                let startSignal = members.find(m => m.location.startsWith("START:"));
-                if(startSignal && document.getElementById('gameLayer').style.display !== 'block') { currentGameRow = startSignal.location.split(':')[1]; startGlobalCountdown(); }
+                let signal = members.find(m => m.location.startsWith("START:"));
+                if(signal && document.getElementById('gameLayer').style.display !== 'block') { currentGameRow = signal.location.split(':')[1]; startGlobalCountdown(); }
                 for(let i=0; i<4; i++) {
                     const slot = document.getElementById('slot' + i);
                     if(members[i]) slot.innerHTML = `<img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${members[i].id}" style="width:60px;"><br><b>${members[i].name}</b>`;
@@ -309,19 +285,9 @@
             }
         }
 
-        function resumeGame() { document.getElementById('pauseOverlay').style.display = 'none'; }
-        function exitGame() { document.getElementById('pauseOverlay').style.display = 'none'; document.getElementById('gameLayer').style.display = 'none'; document.getElementById('gameFrame').srcdoc = ""; transition('titleScreen', 'gameScreen'); }
-
-        window.addEventListener('keydown', e => {
-            if (e.key === "Escape" && document.getElementById('gameLayer').style.display === 'block') {
-                document.getElementById('pauseOverlay').style.display = 'flex';
-            }
-        });
-
         function saveSettings() {
             localStorage.setItem('gName', document.getElementById('nIn').value);
             document.getElementById('hName').innerText = document.getElementById('nIn').value;
-            fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "sync", id: myId, name: document.getElementById('nIn').value, avatar: localStorage.getItem('gAv')||"" }) });
             document.getElementById('modalConfig').close();
         }
 
