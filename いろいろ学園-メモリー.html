@@ -3,59 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>幻想クロニクル - 究極統合フルコード版</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <title>幻想クロニクル - Colorful Stage Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --pro-teal: #33ffcc; --pro-pink: #ff3399; --pro-blue: #00ccff;
-            --glass: rgba(0, 0, 0, 0.7); --border: rgba(255, 255, 255, 0.3);
-            --online: #00ff88; --offline: #888;
+            --glass: rgba(0, 0, 0, 0.75); --border: rgba(255, 255, 255, 0.4);
+            --online: #00ff88;
         }
         body, html { margin: 0; padding: 0; overflow: hidden; background: #000; font-family: 'Noto Sans JP', sans-serif; color: #fff; height: 100vh; width: 100vw; }
         
-        /* 背景 */
-        .bg-sekai { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=2000') no-repeat center center/cover; z-index: -1; filter: brightness(0.6); }
-        .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.5) 100%); z-index: -1; }
+        /* 背景：セカイの日常 */
+        .bg-sekai { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=2000') no-repeat center center/cover; z-index: -1; filter: brightness(0.6) blur(2px); }
+        .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(51,255,204,0.15) 0%, rgba(255,51,153,0.15) 100%); z-index: -1; }
 
-        /* スクリーン */
-        .screen { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1); z-index: 100; pointer-events: auto; }
-        .hidden { display: none !important; opacity: 0; pointer-events: none !important; }
+        /* スクリーン管理 */
+        .screen { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); z-index: 100; pointer-events: auto; }
+        .hidden { display: none !important; opacity: 0; transform: scale(1.05); }
 
-        /* 元々のキャラクター配置 (50, 200, 350) */
-        .char-original { position: absolute; width: 80px; height: 80px; border-radius: 20px; border: 2.5px solid #fff; background: var(--glass); backdrop-filter: blur(10px); animation: bounce 2s infinite ease-in-out; pointer-events: none; z-index: 1; }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        /* キャラクター配置 (50, 200, 350) */
+        .char-original { position: absolute; width: 85px; height: 85px; border-radius: 20px; border: 3px solid #fff; background: var(--glass); backdrop-filter: blur(10px); animation: float 3s infinite ease-in-out; z-index: 1; box-shadow: 0 0 15px var(--pro-teal); }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
 
-        /* ボタン */
-        .btn-pro { background: #fff; color: #333; border: none; padding: 15px 50px; border-radius: 5px; font-weight: 900; cursor: pointer; transition: 0.3s; transform: skewX(-10deg); box-shadow: 4px 4px 0 var(--pro-teal); z-index: 500; font-family: inherit; }
-        .btn-pro:hover { transform: skewX(-10deg) translate(2px, 2px); box-shadow: 0 0 0 var(--pro-teal); background: var(--pro-teal); color: #fff; }
-        .btn-pro.pink { box-shadow: 4px 4px 0 var(--pro-pink); }
-        .btn-pro.gray { box-shadow: 4px 4px 0 #666; background: #444; color: #fff; }
+        /* プロセカ風ボタン：斜めカット & 立体感 */
+        .btn-pro {
+            background: #fff; color: #333; border: none; padding: 12px 45px; border-radius: 4px;
+            font-weight: 900; cursor: pointer; transition: 0.2s;
+            transform: skewX(-15deg); 
+            box-shadow: 6px 6px 0 var(--pro-teal);
+            font-family: 'Montserrat', 'Noto Sans JP', sans-serif;
+            text-transform: uppercase; margin: 10px;
+        }
+        .btn-pro span { display: inline-block; transform: skewX(15deg); } /* 文字の歪みを戻す */
+        .btn-pro:hover { transform: skewX(-15deg) translate(2px, 2px); box-shadow: 2px 2px 0 var(--pro-teal); background: var(--pro-teal); color: #fff; }
+        .btn-pro.pink { box-shadow: 6px 6px 0 var(--pro-pink); }
+        .btn-pro.pink:hover { background: var(--pro-pink); box-shadow: 2px 2px 0 var(--pro-pink); }
+        .btn-pro.gray { background: #444; color: #fff; box-shadow: 6px 6px 0 #222; }
 
-        /* ヘッダー */
-        .header-minimal { position: absolute; top: 15px; left: 15px; display: flex; align-items: center; gap: 10px; padding: 5px 12px; background: rgba(0,0,0,0.6); border-left: 4px solid var(--pro-teal); backdrop-filter: blur(10px); z-index: 200; border-radius: 5px; }
-        .av-mini { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid #fff; overflow: hidden; background: #222; }
+        /* ヘッダーUI：プロセカのランク風 */
+        .header-minimal {
+            position: absolute; top: 20px; left: 20px; display: flex; align-items: center; gap: 12px;
+            padding: 8px 20px; background: rgba(0,0,0,0.7); border-radius: 0 20px 20px 0;
+            border-left: 6px solid var(--pro-teal); backdrop-filter: blur(10px); z-index: 200;
+        }
+        .av-mini { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #fff; overflow: hidden; background: #222; box-shadow: 0 0 10px var(--pro-teal); }
+        
+        /* 下部ナビゲーション */
+        .nav-container { position: absolute; bottom: 30px; display: flex; gap: 12px; width: 95%; max-width: 1000px; z-index: 200; }
+        .nav-card {
+            flex: 1; background: var(--glass); border: 1px solid var(--border); padding: 18px 5px;
+            border-radius: 12px; cursor: pointer; transition: 0.3s; text-align: center;
+            backdrop-filter: blur(15px); font-weight: 900; font-size: 0.8rem;
+            color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        .nav-card:hover { background: var(--pro-teal); color: #000; transform: translateY(-10px) rotate(-2deg); }
+        .nav-card.main { background: linear-gradient(to right, var(--pro-pink), #ff66cc); border: none; font-size: 1.2rem; flex: 1.8; box-shadow: 0 0 25px rgba(255,51,153,0.5); }
 
-        /* ナビゲーション */
-        .nav-container { position: absolute; bottom: 30px; display: flex; gap: 10px; width: 95%; max-width: 900px; z-index: 200; }
-        .nav-card { flex: 1; background: var(--glass); border: 1px solid var(--border); padding: 15px 5px; border-radius: 10px; cursor: pointer; transition: 0.3s; text-align: center; backdrop-filter: blur(15px); font-weight: bold; font-size: 0.75rem; }
-        .nav-card:hover { background: var(--pro-teal); color: #000; transform: translateY(-10px); }
-        .nav-card.main { background: var(--pro-pink); border: none; font-size: 1.1rem; flex: 1.5; color: #fff; }
-
-        /* 待機ロビー */
-        .slot { width: 140px; height: 180px; background: var(--glass); border: 2px solid var(--border); border-radius: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(20px); }
-        .slot img { width: 60px; height: 60px; border-radius: 50%; border: 3px solid #fff; margin-bottom: 10px; }
+        /* ゲーム選択グリッド */
+        .game-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 25px; max-height: 55vh; overflow-y: auto; width: 95%; padding: 20px; }
+        .card-sekai {
+            width: 220px; height: 260px; background: #fff; border-radius: 15px; padding: 10px;
+            cursor: pointer; transition: 0.3s; color: #333; position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .card-sekai:hover { transform: scale(1.05) rotate(1deg); }
+        .card-sekai .thumb { height: 140px; background: #eee; border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
 
         /* カウントダウン */
-        #countOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; justify-content: center; align-items: center; z-index: 20000; background: rgba(0,0,0,0.3); pointer-events: none; }
-        .count-text { font-family: Montserrat; font-size: 15rem; font-weight: 900; color: #fff; text-shadow: 0 0 50px var(--pro-teal); }
+        #countOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; justify-content: center; align-items: center; z-index: 20000; background: rgba(0,0,0,0.4); pointer-events: none; }
+        .count-text { font-family: Montserrat; font-size: 18rem; font-weight: 900; color: #fff; text-shadow: 0 0 40px var(--pro-teal); animation: countPulse 0.5s ease-out; }
+        @keyframes countPulse { 0% { transform: scale(1.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
-        /* ゲーム表示 */
+        /* ポーズメニュー (画像のデザインを再現) */
+        #pauseOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.85); z-index: 20000; }
+        .pause-title { font-family: Montserrat; font-size: 5rem; color: var(--pro-teal); margin: 0; letter-spacing: 5px; }
+
+        /* ゲームレイヤー */
         #gameLayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; z-index: 10000; background: #000; }
         #gameFrame { width: 100%; height: 100%; border: none; }
-        #pauseOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.85); z-index: 20000; }
 
-        dialog { background: #fff; color: #333; border: none; padding: 30px; border-radius: 20px; width: 380px; z-index: 50000; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
-        .list-box { background: #f5f5f5; border-radius: 15px; height: 150px; overflow-y: auto; padding: 10px; margin-bottom: 10px; font-size: 0.8rem; }
+        /* ダイアログ（プロセカ風：白ベースにミント） */
+        dialog { background: #fff; color: #333; border: none; padding: 0; border-radius: 20px; width: 420px; z-index: 50000; overflow: hidden; box-shadow: 0 25px 80px rgba(0,0,0,0.6); }
+        .dialog-header { background: var(--pro-teal); color: #fff; padding: 15px; font-weight: 900; font-size: 1.2rem; text-align: center; }
+        .dialog-body { padding: 30px; }
+        input { width: 100%; background: #f0f0f5; border: 2px solid #eee; padding: 15px; border-radius: 10px; margin-bottom: 15px; box-sizing: border-box; font-family: inherit; font-weight: bold; }
+        .id-copy-box { background: #333; color: var(--pro-teal); padding: 12px; border-radius: 8px; font-family: monospace; font-size: 1.2rem; text-align: center; margin: 10px 0 20px; letter-spacing: 2px; border: 1px solid #444; }
     </style>
 </head>
 <body>
@@ -63,72 +95,128 @@
     <div class="bg-sekai"></div>
     <div class="bg-overlay"></div>
 
+    <!-- カウントダウン -->
     <div id="countOverlay"><div id="countNum" class="count-text">3</div></div>
 
-    <!-- ポーズメニュー -->
+    <!-- ポーズメニュー (Escキー) -->
     <div id="pauseOverlay">
-        <h1 style="font-family: Montserrat; font-size: 5rem; color: var(--pro-teal);">PAUSE</h1>
-        <button class="btn-pro" onclick="resumeGame()">再開する</button>
-        <button class="btn-pro gray" style="margin-top:20px;" onclick="exitGame()">終了する</button>
+        <h1 class="pause-title">PAUSE</h1>
+        <button class="btn-pro" onclick="resumeGame()"><span>再開する</span></button>
+        <button class="btn-pro pink" onclick="location.reload()"><span>リトライ</span></button>
+        <button class="btn-pro gray" onclick="exitGame()"><span>終了する</span></button>
     </div>
 
-    <!-- 1. タイトル -->
+    <!-- 1. タイトル画面 -->
     <div id="titleScreen" class="screen">
         <div class="char-original" style="left: 50px; top: 300px;"><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=A" style="width:100%"></div>
         <div class="char-original" style="left: 200px; top: 300px; animation-delay: 0.2s;"><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=B" style="width:100%"></div>
         <div class="char-original" style="left: 350px; top: 300px; animation-delay: 0.4s;"><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=C" style="width:100%"></div>
-        <h1 style="font-family: Montserrat; font-size: 5.5rem; margin: 0; letter-spacing: -3px; text-shadow: 0 0 20px var(--pro-teal);">GENSOU</h1>
-        <p style="letter-spacing: 12px; font-weight: bold; color: var(--pro-pink); margin-bottom: 50px;">COLORFUL STAGE</p>
-        <button id="loginBtn" class="btn-pro" onclick="transition('titleScreen', 'loadingScreen')">システムログイン</button>
+
+        <h1 style="font-family: Montserrat; font-size: 6rem; margin: 0; letter-spacing: -3px; text-shadow: 0 0 25px rgba(51,255,204,0.5);">GENSOU</h1>
+        <p style="letter-spacing: 15px; font-weight: 900; color: var(--pro-pink); margin-bottom: 60px;">COLORFUL STAGE</p>
+        <button id="loginBtn" class="btn-pro" onclick="transition('titleScreen', 'loadingScreen')"><span>システムログイン</span></button>
     </div>
 
-    <!-- 2. ロード -->
+    <!-- 2. ロード画面 -->
     <div id="loadingScreen" class="screen hidden">
-        <p style="color: var(--pro-teal); font-weight: bold; letter-spacing: 3px;">セカイを同期中...</p>
+        <div style="width: 250px; height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; position: relative;">
+            <div style="width: 60%; height: 100%; background: var(--pro-teal); position: absolute; animation: loadBar 1.5s infinite ease-in-out;"></div>
+        </div>
+        <p style="margin-top: 20px; color: var(--pro-teal); font-weight: bold; letter-spacing: 3px;">セカイを同期中...</p>
     </div>
+    <style>@keyframes loadBar { 0% { left: -100%; } 100% { left: 150%; } }</style>
 
-    <!-- 3. ホーム -->
+    <!-- 3. ホーム画面 -->
     <div id="gameScreen" class="screen hidden">
         <div class="header-minimal">
             <div class="av-mini"><img id="hAv" src="" style="width:100%; height:100%; object-fit:cover;"></div>
-            <div style="font-size: 0.8rem; font-weight: bold;"><span id="hName">---</span></div>
+            <div style="font-size: 0.9rem; font-weight: 900;"><span id="hName">---</span></div>
         </div>
-        <h2 style="font-size: 2.5rem; font-weight: 300; letter-spacing: 5px;">MAIN CONSOLE</h2>
+        
+        <h2 style="font-size: 3rem; font-weight: 300; letter-spacing: 8px; opacity: 0.8;">MAIN CONSOLE</h2>
+        
         <nav class="nav-container">
             <div class="nav-card" onclick="openBox('modalFriend')">フレンド</div>
-            <div class="nav-card" onclick="openBox('modalGacha')">ガチャ</div>
+            <div class="nav-card" onclick="alert('ガチャ準備中')">ガチャ</div>
             <div class="nav-card main" onclick="transition('gameScreen', 'questScreen'); loadGameList();">ゲーム選択</div>
-            <div class="nav-card" onclick="alert('メンバー未実装')">メンバー</div>
+            <div class="nav-card" onclick="alert('ストーリー準備中')">ストーリー</div>
             <div class="nav-card" onclick="openBox('modalConfig')">設定</div>
         </nav>
     </div>
 
-    <!-- 4. ゲーム選択 -->
+    <!-- 4. ゲーム選択画面 -->
     <div id="questScreen" class="screen hidden">
-        <h2 style="font-family: Montserrat; font-size: 3rem;">SELECT GAME</h2>
-        <div id="gameListContainer" class="lobby-grid" style="flex-wrap:wrap; justify-content:center; max-height:50vh; overflow-y:auto; width:90%;"></div>
-        <button class="btn-pro gray" style="margin-top:40px;" onclick="closeQuest()">戻る</button>
+        <h2 style="font-family: Montserrat; font-size: 3.5rem; margin: 0; color: var(--pro-teal);">GAME SELECT</h2>
+        <div class="game-grid" id="gameListContainer"></div>
+        <button class="btn-pro gray" style="margin-top:40px;" onclick="closeQuest()"><span>戻る</span></button>
     </div>
 
-    <!-- 5. 待機ロビー -->
-    <div id="lobbyScreen" class="screen hidden">
-        <h2 style="font-family: Montserrat; font-size: 2rem;">ROOM: <span id="lobbyRoomId" style="color:var(--pro-teal);">----</span></h2>
-        <div style="display:flex; gap:15px; margin-top:30px;" id="lobbyMembers">
-            <div class="slot" id="slot0">待機中</div><div class="slot" id="slot1">待機中</div>
-            <div class="slot" id="slot2">待機中</div><div class="slot" id="slot3">待機中</div>
+    <!-- 5. プレイモード選択 -->
+    <dialog id="modalMode">
+        <div class="dialog-header">PLAY MODE</div>
+        <div class="dialog-body">
+            <button class="btn-pro" style="width:100%; margin: 10px 0;" onclick="startSolo()"><span>一人で遊ぶ</span></button>
+            <button class="btn-pro pink" style="width:100%; margin: 10px 0;" onclick="toMatching()"><span>みんなで遊ぶ</span></button>
+            <button class="btn-pro gray" style="width:100%; margin: 10px 0; box-shadow:none;" onclick="this.closest('dialog').close()"><span>キャンセル</span></button>
         </div>
-        <button id="startBtn" class="btn-pro" style="display:none; background: var(--pro-teal); margin-top:40px;" onclick="hostSignalStart()">開始！</button>
+    </dialog>
+
+    <!-- 6. マッチング -->
+    <div id="matchScreen" class="screen hidden">
+        <h2 style="font-family: Montserrat; font-size: 3rem;">MATCHING</h2>
+        <div style="display:flex; gap:30px; margin-top:30px;">
+            <div class="nav-card" style="width:220px; height:auto; padding:30px;" onclick="createRoom()"><h3>部屋を作る</h3></div>
+            <div class="nav-card" style="width:220px; height:auto; padding:30px;" onclick="openBox('modalJoin')"><h3>番号で参加</h3></div>
+        </div>
+        <button class="btn-pro gray" style="margin-top:40px;" onclick="transition('matchScreen', 'questScreen')"><span>戻る</span></button>
     </div>
 
-    <!-- 6. ゲームレイヤー -->
-    <div id="gameLayer">
-        <iframe id="gameFrame" src="about:blank"></iframe>
+    <!-- 7. 待機ロビー -->
+    <div id="lobbyScreen" class="screen hidden">
+        <h2 style="font-family: Montserrat; font-size: 2rem;">ROOM ID: <span id="lobbyRoomId" style="color:var(--pro-teal);">----</span></h2>
+        <div style="display:flex; gap:15px; margin-top:30px;" id="lobbyMembers">
+            <div class="slot empty" id="slot0"></div><div class="slot empty" id="slot1"></div>
+            <div class="slot empty" id="slot2"></div><div class="slot empty" id="slot3"></div>
+        </div>
+        <button id="startBtn" class="btn-pro" style="display:none; margin-top:50px;" onclick="hostSignalStart()"><span>ダイブ開始！</span></button>
     </div>
 
-    <!-- 各種ダイアログ -->
-    <dialog id="modalConfig"><h2>設定</h2>名前:<input type="text" id="nIn"> アイコン:<input type="file" id="fileIn" accept="image/*" onchange="uploadIcon(this)"><button class="btn-pro" style="width:100%;" onclick="saveSettings()">保存</button></dialog>
-    <dialog id="modalFriend"><h2>フレンド</h2><div id="fList" class="list-box"></div><input type="text" id="fIdIn" placeholder="ID検索"><button class="btn-pro" onclick="sendReq()">申請</button><button class="btn-pro gray" style="width:100%; margin-top:5px;" onclick="this.closest('dialog').close()">とじる</button></dialog>
-    <dialog id="modalGacha"><h2>ガチャ</h2>準備中...<button class="btn-pro" onclick="this.closest('dialog').close()">とじる</button></dialog>
+    <!-- 8. ゲーム表示レイヤー -->
+    <div id="gameLayer"><iframe id="gameFrame" src="about:blank"></iframe></div>
+
+    <!-- 設定ダイアログ -->
+    <dialog id="modalConfig">
+        <div class="dialog-header">PROFILE</div>
+        <div class="dialog-body">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <img id="mAv" src="" style="width:90px; height:90px; border-radius:50%; border:3px solid var(--pro-teal); cursor:pointer; object-fit:cover;" onclick="document.getElementById('fileIn').click()">
+                <input type="file" id="fileIn" style="display:none" accept="image/*" onchange="uploadIcon(this)">
+            </div>
+            <label style="font-size:0.7rem; font-weight:bold;">プレイヤー名</label>
+            <input type="text" id="nIn">
+            <label style="font-size:0.7rem; font-weight:bold;">プレイヤーID（変更不可）</label>
+            <div class="id-copy-box" id="myIdDisplay">--------</div>
+            <button class="btn-pro" style="width:100%; margin:0;" onclick="saveSettings()"><span>設定を保存</span></button>
+            <button class="btn-pro gray" style="width:100%; margin-top:10px; box-shadow:none;" onclick="this.closest('dialog').close()"><span>閉じる</span></button>
+        </div>
+    </dialog>
+
+    <dialog id="modalFriend">
+        <div class="dialog-header">FRIENDS</div>
+        <div class="dialog-body">
+            <div id="fList" class="list-box" style="color:#333;"></div>
+            <input type="text" id="fIdIn" placeholder="10桁のIDを入力">
+            <button class="btn-pro pink" style="width:100%; margin:0;" onclick="sendReq()"><span>申請を送る</span></button>
+        </div>
+    </dialog>
+
+    <dialog id="modalJoin">
+        <div class="dialog-header">ENTER ROOM ID</div>
+        <div class="dialog-body">
+            <input type="text" id="roomJoinIn" placeholder="4桁の番号">
+            <button class="btn-pro" style="width:100%; margin:0;" onclick="joinRoom()"><span>ルームに入る</span></button>
+        </div>
+    </dialog>
 
     <script>
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbzaAZNIDfKCm9wJQerECcgnD8elg_o_DKJrA47h1nSeS9PqJnXjpett8sSOLass9vOt/exec';
@@ -144,61 +232,43 @@
         function closeQuest() { transition('questScreen', 'gameScreen'); }
 
         function initPortal() {
-            if(!localStorage.getItem('gID')) localStorage.setItem('gID', Math.random().toString(36).substring(2, 12).toUpperCase());
+            if(!localStorage.getItem('gID')) {
+                localStorage.setItem('gID', Math.random().toString(36).substring(2, 12).toUpperCase());
+            }
             myId = localStorage.getItem('gID');
             document.getElementById('hName').innerText = localStorage.getItem('gName') || "USER";
-            document.getElementById('hAv').src = localStorage.getItem('gAv') || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + myId;
+            document.getElementById('myIdDisplay').innerText = myId;
+            const av = localStorage.getItem('gAv') || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + myId;
+            document.getElementById('hAv').src = av; document.getElementById('mAv').src = av;
+            document.getElementById('nIn').value = localStorage.getItem('gName') || "";
             if(!isSyncing) { isSyncing = true; setInterval(fetchData, 5000); fetchData(); }
         }
 
         async function loadGameList() {
             const container = document.getElementById('gameListContainer');
-            container.innerHTML = "読込中...";
+            container.innerHTML = "LOADING...";
             const res = await fetch(`${GAS_URL}?action=getList`);
             const games = await res.json();
             container.innerHTML = "";
-            games.forEach(g => {
+            games.forEach((g) => {
                 const card = document.createElement('div');
-                card.className = "nav-card";
-                card.style.width = "180px";
-                card.onclick = () => { roomId = Math.floor(1000 + Math.random() * 9000).toString(); isHost = true; currentGameRow = g.id; enterLobby(); };
-                card.innerHTML = `<h3>${g.title}</h3><p style="font-size:0.6rem;">${g.desc}</p>`;
+                card.className = 'card-sekai';
+                card.onclick = () => { currentGameRow = g.id; openBox('modalMode'); };
+                card.innerHTML = `<div class="thumb" style="background:linear-gradient(45deg, var(--pro-teal), var(--pro-blue))"></div><div style="font-weight:900;">${g.title}</div>`;
                 container.appendChild(card);
             });
         }
 
-        function enterLobby() {
-            transition('questScreen', 'lobbyScreen');
-            document.getElementById('lobbyRoomId').innerText = roomId;
-            if(isHost) document.getElementById('startBtn').style.display = 'block';
-        }
+        function startSolo() { document.getElementById('modalMode').close(); launchGame(); }
+        function toMatching() { document.getElementById('modalMode').close(); transition('questScreen', 'matchScreen'); }
 
-        async function fetchData() {
-            if(!GAS_URL.includes('https')) return;
-            const syncData = { type: "sync", id: myId, name: localStorage.getItem('gName'), location: roomId !== "" ? "Lobby" : "Home", roomId: roomId };
-            await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(syncData) });
-
-            if(roomId !== "") {
-                const rRes = await fetch(GAS_URL + "?roomId=" + roomId);
-                const rJson = await rRes.json();
-                const members = rJson.members || [];
-                // ホストがゲームを開始したかチェック
-                let startSignal = members.find(m => m.location.startsWith("START:"));
-                if(startSignal && document.getElementById('gameLayer').style.display !== 'block') {
-                    currentGameRow = startSignal.location.split(':')[1];
-                    startGlobalCountdown();
-                }
-                for(let i=0; i<4; i++) {
-                    const slot = document.getElementById('slot' + i);
-                    if(members[i]) slot.innerHTML = `<img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${members[i].id}" style="width:50px;"><br>${members[i].name}`;
-                    else slot.innerHTML = "待機中";
-                }
-            }
-        }
+        function createRoom() { roomId = Math.floor(1000 + Math.random() * 9000).toString(); isHost = true; enterLobby(); }
+        function joinRoom() { roomId = document.getElementById('roomJoinIn').value; if(roomId.length !== 4) return alert("4桁必要"); isHost = false; enterLobby(); document.getElementById('modalJoin').close(); }
+        function enterLobby() { transition('matchScreen', 'lobbyScreen'); document.getElementById('lobbyRoomId').innerText = roomId; if(isHost) document.getElementById('startBtn').style.display = 'block'; }
+        function leaveRoom() { roomId = ""; isHost = false; transition('lobbyScreen', 'gameScreen'); }
 
         function hostSignalStart() {
-            const syncData = { type: "sync", id: myId, name: localStorage.getItem('gName'), location: "START:" + currentGameRow, roomId: roomId };
-            fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(syncData) });
+            fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "sync", id: myId, location: "START:" + currentGameRow, roomId: roomId }) });
             startGlobalCountdown();
         }
 
@@ -208,8 +278,8 @@
             let time = 3; const countNum = document.getElementById('countNum');
             const timer = setInterval(() => {
                 time--;
-                if(time > 0) countNum.innerText = time;
-                else if(time === 0) countNum.innerText = "GO!";
+                if(time > 0) { countNum.innerText = time; }
+                else if(time === 0) { countNum.innerText = "GO!"; }
                 else { clearInterval(timer); document.getElementById('countOverlay').style.display = 'none'; launchGame(); }
             }, 1000);
         }
@@ -220,6 +290,23 @@
             const data = await res.json();
             document.getElementById('gameFrame').srcdoc = data.code;
             setTimeout(() => document.getElementById('gameFrame').contentWindow.focus(), 500);
+        }
+
+        async function fetchData() {
+            if(!GAS_URL.includes('https')) return;
+            await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "sync", id: myId, name: localStorage.getItem('gName'), location: roomId !== "" ? "Lobby" : "Home", roomId: roomId, avatar: localStorage.getItem('gAv')||"" }) });
+            if(roomId !== "") {
+                const rRes = await fetch(GAS_URL + "?roomId=" + roomId);
+                const rJson = await rRes.json();
+                const members = rJson.members || [];
+                let startSignal = members.find(m => m.location.startsWith("START:"));
+                if(startSignal && document.getElementById('gameLayer').style.display !== 'block') { currentGameRow = startSignal.location.split(':')[1]; startGlobalCountdown(); }
+                for(let i=0; i<4; i++) {
+                    const slot = document.getElementById('slot' + i);
+                    if(members[i]) slot.innerHTML = `<img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${members[i].id}" style="width:60px;"><br><b>${members[i].name}</b>`;
+                    else slot.innerHTML = "待機中";
+                }
+            }
         }
 
         function resumeGame() { document.getElementById('pauseOverlay').style.display = 'none'; }
@@ -234,6 +321,7 @@
         function saveSettings() {
             localStorage.setItem('gName', document.getElementById('nIn').value);
             document.getElementById('hName').innerText = document.getElementById('nIn').value;
+            fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "sync", id: myId, name: document.getElementById('nIn').value, avatar: localStorage.getItem('gAv')||"" }) });
             document.getElementById('modalConfig').close();
         }
 
