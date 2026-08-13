@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>幻想クロニクル - ULTIMATE INTEGRATION</title>
+    <title>幻想クロニクル - 究極統合ステージ</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -13,55 +13,51 @@
         }
         body, html { margin: 0; padding: 0; overflow: hidden; background: #000; font-family: 'Noto Sans JP', sans-serif; color: #fff; height: 100vh; width: 100vw; touch-action: manipulation; }
         
-        /* 背景アニメーション */
-        .bg-sekai { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=2000') no-repeat center center/cover; z-index: -1; filter: brightness(0.6) blur(2px); }
+        .bg-sekai { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=2000') no-repeat center center/cover; z-index: -1; filter: brightness(0.6); }
         .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.6) 100%); z-index: -1; }
 
         /* スクリーン管理 */
-        .screen { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); z-index: 100; pointer-events: auto; }
-        .hidden { display: none !important; opacity: 0; }
+        .screen { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; transition: 0.5s; z-index: 100; pointer-events: auto; }
+        .hidden { display: none !important; opacity: 0; pointer-events: none !important; }
 
         /* 初期キャラ配置 (50, 200, 350) */
-        .char-original { position: absolute; width: 85px; height: 85px; border-radius: 20px; border: 3px solid #fff; background: var(--glass); backdrop-filter: blur(10px); animation: float 3s infinite ease-in-out; z-index: 1; box-shadow: 0 0 20px var(--pro-teal); pointer-events: none; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        .char-original { position: absolute; width: 80px; height: 80px; border-radius: 20px; border: 2.5px solid #fff; background: var(--glass); backdrop-filter: blur(10px); animation: float 3s infinite ease-in-out; z-index: 1; box-shadow: 0 0 20px var(--pro-teal); pointer-events: none; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-        /* 斜めボタン */
-        .btn-pro { background: #fff; color: #333; border: none; padding: 12px 45px; border-radius: 4px; font-weight: 900; cursor: pointer; transition: 0.2s; transform: skewX(-15deg); box-shadow: 6px 6px 0 var(--pro-teal); z-index: 500; font-family: inherit; margin: 10px; text-transform: uppercase; text-align: center; }
+        /* プロセカ風ボタン */
+        .btn-pro { background: #fff; color: #333; border: none; padding: 15px 45px; border-radius: 5px; font-weight: 900; cursor: pointer; transition: 0.2s; transform: skewX(-15deg); box-shadow: 4px 4px 0 var(--pro-teal); z-index: 500; font-family: inherit; margin: 10px; text-transform: uppercase; text-align: center; }
         .btn-pro span { display: inline-block; transform: skewX(15deg); }
         .btn-pro:hover { transform: skewX(-15deg) translate(2px, 2px); box-shadow: 0 0 0 var(--pro-teal); background: var(--pro-teal); color: #fff; }
-        .btn-pro.pink { box-shadow: 6px 6px 0 var(--pro-pink); }
-        .btn-pro.gray { background: #444; color: #fff; box-shadow: 6px 6px 0 #222; }
+        .btn-pro.pink { box-shadow: 4px 4px 0 var(--pro-pink); }
+        .btn-pro.pink:hover { background: var(--pro-pink); box-shadow: 0 0 0; }
+        .btn-pro.gray { background: #444; color: #fff; box-shadow: 4px 4px 0 #222; }
 
-        /* ヘッダーUI */
-        .header-minimal { position: absolute; top: 15px; left: 15px; display: flex; align-items: center; gap: 12px; padding: 5px 15px; background: rgba(0,0,0,0.7); border-radius: 0 20px 20px 0; border-left: 6px solid var(--pro-teal); backdrop-filter: blur(10px); z-index: 200; }
+        /* ヘッダー・ナビ */
+        .header-minimal { position: absolute; top: 15px; left: 15px; display: flex; align-items: center; gap: 10px; padding: 5px 12px; background: rgba(0,0,0,0.6); border-radius: 0 20px 20px 0; border-left: 6px solid var(--pro-teal); backdrop-filter: blur(10px); z-index: 200; }
         .av-mini { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #fff; overflow: hidden; background: #222; }
-        .sync-badge { position: absolute; top: 15px; right: 15px; font-size: 0.7rem; font-weight: bold; color: var(--pro-teal); display: flex; align-items: center; gap: 8px; }
-        .dot { width: 10px; height: 10px; background: #555; border-radius: 50%; transition: 0.4s; }
-        .dot.on { background: var(--online); box-shadow: 0 0 10px var(--online); }
+        .nav-container { position: absolute; bottom: 30px; display: flex; gap: 10px; width: 95%; max-width: 900px; z-index: 200; }
+        .nav-card { flex: 1; background: var(--glass); border: 1px solid var(--border); padding: 15px 5px; border-radius: 12px; cursor: pointer; transition: 0.3s; text-align: center; backdrop-filter: blur(15px); font-weight: 900; font-size: 0.8rem; color: #fff; }
+        .nav-card:hover { transform: translateY(-10px); border-color: #fff; }
+        .nav-card.main { background: linear-gradient(to right, var(--pro-pink), #ff66cc); border: none; font-size: 1.1rem; flex: 1.8; box-shadow: 0 0 25px rgba(255,51,153,0.5); }
 
-        /* ナビゲーション */
-        .nav-container { position: absolute; bottom: 30px; display: flex; gap: 12px; width: 95%; max-width: 1000px; z-index: 200; }
-        .nav-card { flex: 1; background: var(--glass); border: 1px solid var(--border); padding: 18px 5px; border-radius: 12px; cursor: pointer; transition: 0.3s; text-align: center; backdrop-filter: blur(15px); font-weight: 900; font-size: 0.8rem; color: #fff; }
-        .nav-card:hover { border-color: #fff; transform: translateY(-10px); }
-        .nav-card.main { background: linear-gradient(to right, var(--pro-pink), #ff66cc); border: none; font-size: 1.2rem; flex: 1.8; box-shadow: 0 0 25px rgba(255,51,153,0.5); }
+        /* ロビー */
+        .lobby-grid { display: flex; gap: 15px; margin-top: 30px; }
+        .slot { width: 140px; height: 180px; background: var(--glass); border: 2px solid var(--border); border-radius: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(20px); }
+        .slot img { width: 65px; height: 60px; border-radius: 50%; border: 3px solid #fff; margin-bottom: 10px; }
 
-        /* スマホ用操作 */
-        #mobilePauseBtn { position: fixed; top: 15px; right: 15px; width: 50px; height: 50px; background: var(--glass); border: 2px solid #fff; border-radius: 50%; display: none; z-index: 15000; justify-content: center; align-items: center; font-weight: 900; cursor: pointer; backdrop-filter: blur(10px); }
-
-        /* 3D Maze UI */
-        #maze-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; z-index: 10000; background: #000; }
-        .ui-3d { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.9); z-index: 10001; text-align: center; }
-        #maze-hud { position: absolute; top: 30px; right: 30px; text-align: right; color: var(--pro-teal); font-family: Montserrat; pointer-events: none; z-index: 10002; }
-        #maze-minimap { position: absolute; top: 30px; left: 30px; border: 2px solid #fff; border-radius: 10px; background: rgba(0,0,0,0.7); z-index: 10002; }
+        /* ゲーム表示 */
+        #gameLayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; z-index: 10000; background: #000; }
+        #gameFrame { width: 100%; height: 100%; border: none; }
+        #pauseOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.85); z-index: 20000; }
+        #mobilePauseBtn { position: fixed; top: 15px; right: 15px; width: 45px; height: 45px; background: var(--glass); border: 1.5px solid #fff; border-radius: 50%; display: none; z-index: 15000; justify-content: center; align-items: center; font-weight: 900; backdrop-filter: blur(10px); cursor: pointer; }
 
         /* カウントダウン */
         #countOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; justify-content: center; align-items: center; z-index: 20000; background: rgba(0,0,0,0.4); pointer-events: none; }
-        .count-text { font-family: Montserrat; font-size: 18rem; font-weight: 900; color: #fff; text-shadow: 0 0 40px var(--pro-teal); animation: countPulse 0.5s ease-out; }
+        .count-text { font-family: Montserrat; font-size: 15rem; font-weight: 900; color: #fff; text-shadow: 0 0 40px var(--pro-teal); animation: countPulse 0.5s ease-out; }
         @keyframes countPulse { 0% { transform: scale(1.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
-        #gameLayer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: none; z-index: 10000; background: #000; }
-        dialog { background: #fff; color: #333; border: none; border-radius: 20px; width: 420px; z-index: 50000; box-shadow: 0 25px 80px rgba(0,0,0,0.6); overflow: hidden; padding: 0; }
-        .dialog-header { background: var(--pro-teal); color: #fff; padding: 15px; font-weight: 900; font-size: 1.2rem; text-align: center; }
+        dialog { background: #fff; color: #333; border: none; border-radius: 20px; width: 400px; z-index: 50000; box-shadow: 0 20px 60px rgba(0,0,0,0.5); overflow: hidden; padding: 0; }
+        .dialog-header { background: var(--pro-teal); color: #fff; padding: 15px; font-weight: 900; text-align: center; }
         .dialog-body { padding: 30px; }
         input { width: 100%; background: #f0f0f5; border: 2px solid #eee; padding: 15px; border-radius: 10px; margin-bottom: 15px; box-sizing: border-box; font-family: inherit; font-weight: bold; }
     </style>
@@ -75,7 +71,7 @@
     <div id="mobilePauseBtn" onclick="showPauseMenu()">II</div>
 
     <!-- ポーズメニュー -->
-    <div id="pauseOverlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.85); z-index: 20000;">
+    <div id="pauseOverlay" class="screen" style="display:none; background:rgba(0,0,0,0.85);">
         <h1 style="font-family: Montserrat; font-size: 5rem; color: var(--pro-teal); margin: 0; letter-spacing: 5px;">PAUSE</h1>
         <button class="btn-pro" onclick="resumeGame()"><span>再開する</span></button>
         <button class="btn-pro gray" style="margin-top:20px;" onclick="exitGame()"><span>終了する</span></button>
@@ -93,8 +89,9 @@
 
     <!-- 2. ロード -->
     <div id="loadingScreen" class="screen hidden">
-        <p style="color: var(--pro-teal); font-weight: bold; letter-spacing: 3px; animation: pulse 1s infinite alternate;">セカイを同期中...</p>
+        <p style="color: var(--pro-teal); font-weight: bold; letter-spacing: 3px; animation: flash 1s infinite alternate;">同期中...</p>
     </div>
+    <style>@keyframes flash { 0% { opacity: 1; } 100% { opacity: 0.3; } }</style>
 
     <!-- 3. ホーム -->
     <div id="gameScreen" class="screen hidden">
@@ -102,25 +99,44 @@
             <div class="av-mini"><img id="hAv" src="" style="width:100%; height:100%; object-fit:cover;"></div>
             <div style="font-size: 0.9rem; font-weight: 900;"><span id="hName">---</span></div>
         </div>
-        <div class="sync-badge"><div id="syncDot" class="dot"></div><span>ONLINE</span></div>
         <h2 style="font-size: 3rem; font-weight: 300; letter-spacing: 8px;">MAIN CONSOLE</h2>
         <nav class="nav-container">
             <div class="nav-card" onclick="openBox('modalFriend')">フレンド</div>
-            <div class="nav-card" onclick="openBox('modalGacha')">ガチャ</div>
+            <div class="nav-card" onclick="alert('ガチャ準備中')">ガチャ</div>
             <div class="nav-card main" onclick="transition('gameScreen', 'questScreen'); loadGameList();">ゲーム選択</div>
-            <div class="nav-card" onclick="alert('準備中')">ストーリー</div>
+            <div class="nav-card" onclick="alert('ストーリー準備中')">ストーリー</div>
             <div class="nav-card" onclick="openBox('modalConfig')">設定</div>
         </nav>
     </div>
 
     <!-- 4. ゲーム選択 -->
     <div id="questScreen" class="screen hidden">
-        <h2 style="font-family: Montserrat; font-size: 3.5rem; margin: 0; color: var(--pro-teal);">GAME SELECT</h2>
+        <h2 style="font-family: Montserrat; font-size: 3.5rem; margin: 0; color: var(--pro-teal);">SELECT GAME</h2>
         <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:20px; max-height:50vh; overflow-y:auto; width:95%;" id="gameListContainer"></div>
         <button class="btn-pro gray" style="margin-top:40px;" onclick="closeQuest()"><span>戻る</span></button>
     </div>
 
-    <!-- 待機ロビー -->
+    <!-- 5. プレイモード選択 -->
+    <dialog id="modalMode">
+        <div class="dialog-header">PLAY MODE</div>
+        <div class="dialog-body" style="text-align:center;">
+            <button class="btn-pro" style="width:100%; margin: 10px 0;" onclick="startSolo()"><span>一人で遊ぶ</span></button>
+            <button class="btn-pro pink" style="width:100%; margin: 10px 0;" onclick="toMatching()"><span>みんなで遊ぶ</span></button>
+            <button class="btn-pro gray" style="width:100%; margin-top:20px;" onclick="this.closest('dialog').close()"><span>キャンセル</span></button>
+        </div>
+    </dialog>
+
+    <!-- 6. マッチング -->
+    <div id="matchScreen" class="screen hidden">
+        <h2>MULTIPLAYER</h2>
+        <div style="display:flex; gap:30px; margin-top:30px;">
+            <div class="nav-card" style="width:220px; height:auto; padding:30px;" onclick="createRoom()"><h3>部屋を作る</h3></div>
+            <div class="nav-card" style="width:220px; height:auto; padding:30px;" onclick="openBox('modalJoin')"><h3>番号で参加</h3></div>
+        </div>
+        <button class="btn-pro gray" style="margin-top:40px;" onclick="transition('matchScreen', 'questScreen')"><span>戻る</span></button>
+    </div>
+
+    <!-- 7. 待機ロビー -->
     <div id="lobbyScreen" class="screen hidden">
         <h2 style="font-family: Montserrat; font-size: 2rem;">ROOM ID: <span id="lobbyRoomId" style="color:var(--pro-teal);">----</span></h2>
         <div style="display:flex; gap:15px; margin-top:30px;" id="lobbyMembers">
@@ -131,15 +147,10 @@
         <button class="btn-pro gray" onclick="leaveRoom()"><span>退室</span></button>
     </div>
 
-    <!-- 3Dゲームレイヤー -->
-    <div id="maze-layer">
-        <canvas id="maze-minimap" width="150" height="150"></canvas>
-        <div id="maze-hud"><div id="mScore" style="font-size: 3rem; font-weight: 800; color:var(--pro-teal);">0</div><div id="mLeft" style="opacity: 0.7;">Remaining: 0</div></div>
-    </div>
+    <!-- 8. ゲーム表示レイヤー -->
+    <div id="gameLayer"><iframe id="gameFrame" src="about:blank"></iframe></div>
 
-    <div id="gameLayer"><iframe id="gameFrame" style="width:100%; height:100%; border:none;" src="about:blank"></iframe></div>
-
-    <!-- ダイアログ -->
+    <!-- 設定ダイアログ -->
     <dialog id="modalConfig">
         <div class="dialog-header">PROFILE</div>
         <div class="dialog-body">
@@ -148,25 +159,51 @@
                 <input type="file" id="fileIn" style="display:none" accept="image/*" onchange="uploadIcon(this)">
             </div>
             名前: <input type="text" id="nIn">
-            <button class="btn-pro" style="width:100%; margin:0;" onclick="saveSettings()"><span>保存</span></button>
+            ID: <div id="myIdDisplay" style="background:#333; color:var(--pro-teal); padding:10px; border-radius:8px; font-family:monospace; text-align:center;">--------</div>
+            <button class="btn-pro" style="width:100%; margin:20px 0 0;" onclick="saveSettings()"><span>保存</span></button>
         </div>
     </dialog>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.110/examples/js/controls/PointerLockControls.js"></script>
+    <dialog id="modalFriend">
+        <div class="dialog-header">FRIENDS</div>
+        <div class="dialog-body"><div id="fList" style="background:#f5f5f5; border-radius:15px; height:150px; overflow-y:auto; color:#333; padding:10px; margin-bottom:10px;"></div><input type="text" id="fIdIn" placeholder="10桁ID入力"><button class="btn-pro pink" style="width:100%; margin:0;" onclick="sendReq()"><span>申請</span></button></div>
+    </dialog>
+
+    <dialog id="modalJoin"><div class="dialog-header">ROOM ID</div><div class="dialog-body"><input type="text" id="roomJoinIn" placeholder="4桁番号"><button class="btn-pro" style="width:100%; margin:0;" onclick="joinRoom()"><span>参加</span></button></div></dialog>
 
     <script>
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbzhLnDBqcCdjf5_nvzBrAhRn2f_a3XLN1KDgMk-lOQWxLXaoDV4IkZUW66MdeTr9AA/exec';
-        let myId = "", roomId = "", isHost = false, currentGameRow = "", isSyncing = false;
-        let mScene, mCamera, mRenderer, mControls, mActive = false, mGameOver = false, mScore = 0;
-        let otherPlayers = {}, playerFriends = [], playerPending = [], currentLocation = "ホーム";
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbzeRb2gfquvN7YABX228zQ1VKDFe3iKYctHy4ma2NdMMq2J-I8-gMXI-JthpRaPXWLY/exec';
+        let myId = "", roomId = "", isHost = false, currentGameRow = "";
 
+        // --- 画面遷移の核となる修正 ---
         function transition(h, s) {
-            const cur = document.getElementById(h); const nxt = document.getElementById(s);
-            if(cur) { cur.classList.add('hidden'); setTimeout(() => { cur.style.display = 'none'; }, 600); }
-            if(nxt) { nxt.style.display = 'flex'; setTimeout(() => { nxt.classList.remove('hidden'); }, 50); }
+            const cur = document.getElementById(h); 
+            const nxt = document.getElementById(s);
+            
+            // 1. 全てのスクリーンを一度 pointer-events: none にする
+            document.querySelectorAll('.screen').forEach(scr => {
+                scr.style.pointerEvents = 'none';
+            });
+
+            // 2. 現在のスクリーンを隠す
+            if(cur) {
+                cur.classList.add('hidden');
+                setTimeout(() => { cur.style.display = 'none'; }, 600);
+            }
+            
+            // 3. 次のスクリーンを表示する
+            if(nxt) {
+                nxt.style.display = 'flex';
+                // 表示を確実にするための遅延
+                setTimeout(() => { 
+                    nxt.classList.remove('hidden'); 
+                    nxt.style.pointerEvents = 'auto'; // ★ここでクリックを有効化
+                }, 50);
+            }
+            
             if(s === 'loadingScreen') setTimeout(() => { transition('loadingScreen', 'gameScreen'); initPortal(); }, 1500);
         }
+
         function openBox(id) { document.getElementById(id).showModal(); }
         function closeQuest() { transition('questScreen', 'gameScreen'); }
 
@@ -174,10 +211,11 @@
             if(!localStorage.getItem('gID')) localStorage.setItem('gID', Math.random().toString(36).substring(2, 12).toUpperCase());
             myId = localStorage.getItem('gID');
             document.getElementById('hName').innerText = localStorage.getItem('gName') || "USER";
+            document.getElementById('myIdDisplay').innerText = myId;
             const av = localStorage.getItem('gAv') || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + myId;
             document.getElementById('hAv').src = av; document.getElementById('mAv').src = av;
             document.getElementById('nIn').value = localStorage.getItem('gName') || "";
-            if(!isSyncing) { isSyncing = true; setInterval(fetchSync, 5000); }
+            setInterval(fetchSync, 5000);
         }
 
         async function loadGameList() {
@@ -189,102 +227,78 @@
             games.forEach(g => {
                 const card = document.createElement('div');
                 card.className = "nav-card"; card.style.width = "180px"; card.style.height = "180px";
-                card.onclick = () => { currentGameRow = g.id; launchGame(g.id); };
+                card.onclick = () => { currentGameRow = g.id; openBox('modalMode'); };
                 card.innerHTML = `<div style="height:100px; background:var(--pro-teal); border-radius:10px; margin-bottom:10px;"></div><b>${g.title}</b>`;
                 container.appendChild(card);
             });
-            // 3D迷路ボタンを追加
-            const mazeCard = document.createElement('div');
-            mazeCard.className = "nav-card"; mazeCard.style.width = "180px"; mazeCard.style.height = "180px";
-            mazeCard.onclick = () => { roomId = Math.floor(1000 + Math.random()*9000).toString(); isHost = true; transition('questScreen', 'lobbyScreen'); document.getElementById('lobbyRoomId').innerText = roomId; document.getElementById('startBtn').style.display='block'; };
-            mazeCard.innerHTML = `<div style="height:100px; background:var(--pro-pink); border-radius:10px; margin-bottom:10px;"></div><b>3D NEON MAZE</b>`;
-            container.appendChild(mazeCard);
         }
 
-        // --- 3D Maze Logic (ヌルヌル動く & コインブースト) ---
-        function launchMaze() {
-            mActive = true;
+        function startSolo() { document.getElementById('modalMode').close(); launchGame(); }
+        function toMatching() { document.getElementById('modalMode').close(); transition('questScreen', 'matchScreen'); }
+        function createRoom() { roomId = Math.floor(1000 + Math.random() * 9000).toString(); isHost = true; enterLobby(); }
+        function joinRoom() { roomId = document.getElementById('roomJoinIn').value; if(roomId.length !== 4) return alert("4桁必要"); isHost = false; enterLobby(); document.getElementById('modalJoin').close(); }
+        function enterLobby() { transition('matchScreen', 'lobbyScreen'); document.getElementById('lobbyRoomId').innerText = roomId; if(isHost) document.getElementById('startBtn').style.display = 'block'; }
+        function leaveRoom() { roomId = ""; isHost = false; transition('lobbyScreen', 'gameScreen'); }
+
+        function hostSignalStart() {
+            fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "sync", id: myId, location: "START:" + currentGameRow, roomId: roomId }) });
+            startGlobalCountdown();
+        }
+
+        function startGlobalCountdown() {
             document.getElementById('lobbyScreen').style.display = 'none';
-            document.getElementById('maze-layer').style.display = 'block';
+            document.getElementById('countOverlay').style.display = 'flex';
+            let time = 3; const countNum = document.getElementById('countNum');
+            const timer = setInterval(() => {
+                time--;
+                if(time > 0) { countNum.innerText = time; }
+                else if(time === 0) { countNum.innerText = "GO!"; }
+                else { clearInterval(timer); document.getElementById('countOverlay').style.display = 'none'; launchGame(); }
+            }, 1000);
+        }
+
+        async function launchGame() {
+            document.getElementById('gameLayer').style.display = 'block';
             document.getElementById('mobilePauseBtn').style.display = 'flex';
-            if(!mRenderer) initMazeScene();
-            resetPlayer();
-        }
-
-        function initMazeScene() {
-            mScene = new THREE.Scene(); mScene.background = new THREE.Color(0x020205);
-            mCamera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-            mRenderer = new THREE.WebGLRenderer({ antialias: true }); mRenderer.setSize(window.innerWidth, window.innerHeight);
-            document.getElementById('maze-layer').appendChild(mRenderer.domElement);
-            mControls = new THREE.PointerLockControls(mCamera, document.body);
-            mControls.addEventListener('unlock', () => { if(mActive) showPauseMenu(); });
-            mScene.add(new THREE.AmbientLight(0xffffff, 0.4));
-            const pl = new THREE.PointLight(0x00f2ff, 1.5, 50); mCamera.add(pl); mScene.add(mCamera);
-            const ground = new THREE.Mesh(new THREE.PlaneGeometry(50, 50), new THREE.MeshPhongMaterial({color: 0x111111}));
-            ground.rotation.x = -Math.PI/2; mScene.add(ground);
-            animateMaze();
-        }
-
-        function resetPlayer() {
-            mGameOver = false; mScore = 0; mCamera.position.set(0, 1.5, 0); mControls.lock();
+            const res = await fetch(`${GAS_URL}?action=getCode&row=${currentGameRow}`);
+            const data = await res.json();
+            const frame = document.getElementById('gameFrame');
+            frame.srcdoc = data.code;
+            frame.onload = () => {
+                const doc = frame.contentDocument || frame.contentWindow.document;
+                doc.addEventListener('keydown', e => { if (e.key === "Escape") showPauseMenu(); });
+                frame.contentWindow.focus();
+            };
         }
 
         function showPauseMenu() { document.getElementById('pauseOverlay').style.display = 'flex'; }
-        function resumeGame() { document.getElementById('pauseOverlay').style.display = 'none'; mControls.lock(); }
+        function resumeGame() { document.getElementById('pauseOverlay').style.display = 'none'; }
         function exitGame() { location.reload(); }
 
-        const mKeys = {}; window.addEventListener('keydown', e => mKeys[e.key.toLowerCase()] = true); window.addEventListener('keyup', e => mKeys[e.key.toLowerCase()] = false);
-        
-        function animateMaze() {
-            requestAnimationFrame(animateMaze);
-            if(mActive && mControls.isLocked) {
-                let speed = 0.12 + (mScore * 0.0001); // コイン取得で加速！
-                if(mKeys.w) mControls.moveForward(speed); if(mKeys.s) mControls.moveForward(-speed);
-                if(mKeys.a) mControls.moveRight(-speed); if(mKeys.d) mControls.moveRight(speed);
-                
-                // 他プレイヤー補間
-                for(let id in otherPlayers) {
-                    const p = otherPlayers[id];
-                    p.mesh.position.x += (p.targetX - p.mesh.position.x) * 0.08;
-                    p.mesh.position.z += (p.targetZ - p.mesh.position.z) * 0.08;
-                }
-            }
-            if(mRenderer) mRenderer.render(mScene, mCamera);
-        }
+        window.addEventListener('keydown', e => { if (e.key === "Escape" && document.getElementById('gameLayer').style.display === 'block') showPauseMenu(); });
 
         async function fetchSync() {
             if(!GAS_URL.includes('https')) return;
-            const data = { type: "sync", id: myId, name: localStorage.getItem('gName'), location: mActive?"Maze":"Home", roomId: roomId, x: mCamera?mCamera.position.x:0, z: mCamera?mCamera.position.z:0 };
+            const data = { type: "sync", id: myId, name: localStorage.getItem('gName'), location: roomId!==""?"Lobby":"Home", roomId: roomId, avatar: localStorage.getItem('gAv')||"" };
             await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(data) });
-            
             if(roomId !== "") {
                 const rRes = await fetch(GAS_URL + "?roomId=" + roomId);
                 const rJson = await rRes.json();
                 const members = rJson.members || [];
-                let signal = members.find(m => m.location === "COUNTDOWN");
-                if(signal && !mActive) startGlobalCountdown();
+                let signal = members.find(m => m.location.startsWith("START:"));
+                if(signal && document.getElementById('gameLayer').style.display !== 'block') { currentGameRow = signal.location.split(':')[1]; startGlobalCountdown(); }
                 for(let i=0; i<4; i++) {
                     const slot = document.getElementById('slot' + i);
-                    if(members[i]) {
-                        slot.innerHTML = `<img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${members[i].id}" style="width:60px;"><br><b>${members[i].name}</b>`;
-                        if(mActive && members[i].id !== myId) updateOtherPlayer(members[i].id, members[i].x, members[i].z);
-                    } else slot.innerHTML = "待機中";
+                    if(members[i]) slot.innerHTML = `<img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${members[i].id}" style="width:60px;"><br><b>${members[i].name}</b>`;
+                    else slot.innerHTML = "待機中";
                 }
             }
         }
 
-        function updateOtherPlayer(id, x, z) {
-            if(!otherPlayers[id]) {
-                const mesh = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshPhongMaterial({ color: 0x33ffcc, emissive: 0x33ffcc }));
-                mScene.add(mesh); otherPlayers[id] = { mesh: mesh, targetX: x, targetZ: z };
-            } else { otherPlayers[id].targetX = x; otherPlayers[id].targetZ = z; }
-        }
-
         function saveSettings() {
-            const newName = document.getElementById('nIn').value;
-            localStorage.setItem('gName', newName);
-            document.getElementById('hName').innerText = newName;
-            fetchSync();
+            localStorage.setItem('gName', document.getElementById('nIn').value);
+            document.getElementById('hName').innerText = document.getElementById('nIn').value;
+            fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "sync", id: myId, name: document.getElementById('nIn').value, avatar: localStorage.getItem('gAv')||"" }) });
             document.getElementById('modalConfig').close();
         }
 
