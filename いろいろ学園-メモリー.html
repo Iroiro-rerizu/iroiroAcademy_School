@@ -3,148 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>幻想クロニクル - SEKAI STAGE</title>
+    <title>幻想クロニクル - Colorful Stage Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --pro-teal: #33ffcc; --pro-pink: #ff3399; --pro-blue: #00ccff;
-            --bg-dark: rgba(10, 15, 25, 0.9); --border: rgba(255, 255, 255, 0.4);
+            --pro-teal: #33ffcc;   /* Leo/need / Miku color */
+            --pro-pink: #ff3399;   /* MORE MORE JUMP! color */
+            --pro-orange: #ff9933; /* Vivid BAD SQUAD color */
+            --pro-blue: #00ccff;   /* Wonderland x Showtime color */
+            --pro-purple: #cc66ff; /* 25-ji color */
+            --glass: rgba(0, 0, 0, 0.7);
+            --border: rgba(255, 255, 255, 0.4);
             --online: #00ff88;
         }
+
         body, html { margin: 0; padding: 0; overflow: hidden; background: #000; font-family: 'Noto Sans JP', sans-serif; color: #fff; height: 100vh; width: 100vw; touch-action: manipulation; }
         
-        /* 背景：セカイの日常 */
-        .bg-sekai { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=2000') no-repeat center center/cover; z-index: -1; filter: brightness(0.6) blur(2px); transform: scale(1.1); }
-        .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(160deg, rgba(51,255,204,0.1) 0%, rgba(0,0,0,0.6) 50%, rgba(255,51,153,0.1) 100%); z-index: -1; }
+        /* 背景：日常 × カラフル */
+        .bg-sekai { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=2000') no-repeat center center/cover; z-index: -1; filter: brightness(0.6); transform: scale(1.05); }
+        .bg-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: linear-gradient(135deg, rgba(51,255,204,0.2) 0%, rgba(0,0,0,0.4) 50%, rgba(204,102,255,0.2) 100%); 
+            z-index: -1; 
+        }
 
-        /* スクリーン管理 */
-        .screen { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); z-index: 100; }
+        /* 画面管理 */
+        .screen { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); z-index: 100; pointer-events: auto; }
         .hidden { display: none !important; opacity: 0; transform: scale(1.1); }
 
-        /* 装飾キャラ配置 (50, 200, 350) */
-        .char-original { position: absolute; width: 90px; height: 90px; border-radius: 50%; border: 3px solid #fff; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); animation: float 4s infinite ease-in-out; z-index: 1; box-shadow: 0 0 20px var(--pro-teal); pointer-events: none; }
+        /* 元々のキャラクター配置 (50, 200, 350) をカラフルに復活 */
+        .char-original { position: absolute; width: 85px; height: 85px; border-radius: 50%; border: 3px solid #fff; background: var(--glass); backdrop-filter: blur(10px); animation: float 3.5s infinite ease-in-out; z-index: 1; pointer-events: none; }
+        .char-original img { width: 100%; height: 100%; border-radius: 50%; }
         @keyframes float { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-20px) rotate(5deg); } }
 
-        /* --- プロセカ風ボタン：究極再現 --- */
-        .btn-sekai {
-            background: #fff; color: #333; border: none; padding: 14px 50px; border-radius: 4px;
+        /* --- プロセカ風ボタン：多彩なカラー --- */
+        .btn-pro {
+            background: #fff; color: #333; border: none; padding: 14px 45px; border-radius: 4px;
             font-weight: 900; cursor: pointer; transition: 0.2s;
             transform: skewX(-15deg); 
             box-shadow: 6px 6px 0 var(--pro-teal);
-            font-family: 'Montserrat', sans-serif;
-            text-transform: uppercase; margin: 12px; position: relative;
+            font-family: 'Montserrat', sans-serif; text-transform: uppercase; margin: 10px; text-align: center;
         }
-        .btn-sekai span { display: inline-block; transform: skewX(15deg); }
-        .btn-sekai:hover { transform: skewX(-15deg) translate(2px, 2px); box-shadow: 2px 2px 0 var(--pro-teal); background: var(--pro-teal); color: #fff; }
-        .btn-sekai.pink { box-shadow: 6px 6px 0 var(--pro-pink); }
-        .btn-sekai.pink:hover { background: var(--pro-pink); box-shadow: 2px 2px 0 var(--pro-pink); }
-        .btn-sekai.sub { background: #444; color: #fff; box-shadow: 6px 6px 0 #222; }
+        .btn-pro span { display: inline-block; transform: skewX(15deg); }
+        .btn-pro:active { transform: skewX(-15deg) translate(2px, 2px); box-shadow: 0 0 0; }
+        
+        .btn-teal { box-shadow: 6px 6px 0 var(--pro-teal); }
+        .btn-teal:hover { background: var(--pro-teal); color: #fff; }
+        .btn-pink { box-shadow: 6px 6px 0 var(--pro-pink); }
+        .btn-pink:hover { background: var(--pro-pink); color: #fff; }
+        .btn-orange { box-shadow: 6px 6px 0 var(--pro-orange); }
+        .btn-orange:hover { background: var(--pro-orange); color: #fff; }
+        .btn-purple { box-shadow: 6px 6px 0 var(--pro-purple); }
+        .btn-purple:hover { background: var(--pro-purple); color: #fff; }
+        .btn-gray { background: #444; color: #fff; box-shadow: 6px 6px 0 #222; }
 
         /* ヘッダーUI */
-        .header-sekai {
-            position: absolute; top: 20px; left: 0; display: flex; align-items: center; gap: 15px;
-            padding: 10px 30px 10px 20px; background: rgba(0,0,0,0.8); border-radius: 0 40px 40px 0;
-            border-left: 8px solid var(--pro-teal); backdrop-filter: blur(15px); z-index: 200;
-            box-shadow: 10px 0 30px rgba(0,0,0,0.5);
-        }
-        .av-sekai { width: 35px; height: 35px; border-radius: 50%; border: 2px solid #fff; overflow: hidden; background: #222; box-shadow: 0 0 10px var(--pro-teal); }
-        .p-name-label { font-weight: 900; font-size: 1rem; color: #fff; letter-spacing: 1px; }
-
-        /* 下部ナビゲーション：プロセカ・スタイル */
-        .nav-sekai { position: absolute; bottom: 30px; display: flex; gap: 12px; width: 95%; max-width: 1100px; z-index: 200; }
+        .header-minimal { position: absolute; top: 15px; left: 0; display: flex; align-items: center; gap: 12px; padding: 6px 25px 6px 15px; background: rgba(0,0,0,0.8); border-radius: 0 30px 30px 0; border-left: 6px solid var(--pro-teal); backdrop-filter: blur(10px); z-index: 200; }
+        .av-mini { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; overflow: hidden; background: #222; }
+        
+        /* 下部ナビゲーション：カラフルに */
+        .nav-container { position: absolute; bottom: 30px; display: flex; gap: 10px; width: 95%; max-width: 1000px; z-index: 200; }
         .nav-card {
-            flex: 1; background: var(--glass); border: 1px solid var(--border); padding: 20px 5px;
-            border-radius: 15px; cursor: pointer; transition: 0.3s; text-align: center;
-            backdrop-filter: blur(20px); font-weight: 900; font-size: 0.85rem;
-            position: relative; overflow: hidden;
+            flex: 1; background: var(--glass); border: 1px solid var(--border); padding: 18px 5px;
+            border-radius: 12px; cursor: pointer; transition: 0.3s; text-align: center;
+            backdrop-filter: blur(15px); font-weight: 900; font-size: 0.8rem; color: #fff;
         }
-        .nav-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent); transform: rotate(45deg); transition: 0.5s; }
-        .nav-card:hover::before { left: 100%; }
-        .nav-card:hover { border-color: #fff; transform: translateY(-10px); background: rgba(255,255,255,0.2); }
-        .nav-card.main { background: linear-gradient(135deg, var(--pro-pink), #ff66cc); border: none; font-size: 1.3rem; flex: 2; box-shadow: 0 10px 30px rgba(255,51,153,0.4); }
+        .nav-card.main { background: linear-gradient(135deg, var(--pro-pink), #ff66cc); border: none; font-size: 1.1rem; flex: 1.8; box-shadow: 0 5px 20px rgba(255,51,153,0.4); }
+        .nav-card.config { border-bottom: 4px solid var(--pro-teal); }
+        .nav-card.friend { border-bottom: 4px solid var(--pro-orange); }
+        .nav-card.gacha { border-bottom: 4px solid var(--pro-blue); }
 
-        /* スライドUI (ボトムシート) */
-        .bottom-sheet { position: fixed; bottom: -100%; left: 0; width: 100%; height: 90%; background: #fff; color: #333; border-radius: 30px 30px 0 0; z-index: 50000; transition: bottom 0.5s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 -20px 60px rgba(0,0,0,0.5); display: flex; flex-direction: column; overflow: hidden; }
+        /* スライド式ボトムシート */
+        .bottom-sheet { position: fixed; bottom: -100%; left: 0; width: 100%; height: 90%; background: #fff; color: #333; border-radius: 30px 30px 0 0; z-index: 50000; transition: bottom 0.5s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 -10px 40px rgba(0,0,0,0.5); display: flex; flex-direction: column; }
         .bottom-sheet.open { bottom: 0; }
-        .sheet-header { height: 60px; background: var(--pro-teal); display: flex; align-items: center; justify-content: center; position: relative; }
-        .sheet-header::after { content: ''; width: 40px; height: 4px; background: rgba(255,255,255,0.5); border-radius: 10px; }
-        .sheet-content { padding: 30px; overflow-y: auto; flex-grow: 1; background-image: radial-gradient(#e5e5e5 1px, transparent 1px); background-size: 20px 20px; }
+        .sheet-header { height: 6px; width: 40px; background: #ddd; border-radius: 10px; margin: 15px auto; flex-shrink: 0; }
+        .sheet-content { padding: 0 25px 30px; overflow-y: auto; flex-grow: 1; }
+        .sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 49999; display: none; backdrop-filter: blur(5px); }
 
         /* 学生証デザイン */
-        .student-card { background: #fff; border: 3px solid #333; border-radius: 15px; padding: 30px; position: relative; box-shadow: 15px 15px 0 rgba(0,0,0,0.1); max-width: 400px; margin: 0 auto; }
-        .student-card h3 { border-bottom: 3px solid #333; padding-bottom: 10px; margin: 0 0 20px; font-size: 1.4rem; }
-        .id-photo-box { width: 110px; height: 140px; border: 3px solid #333; background: #eee; float: left; margin-right: 20px; overflow: hidden; }
-        .id-details { text-align: left; }
-        .id-label { font-size: 0.7rem; color: #888; font-weight: bold; margin: 0; }
-        .id-text { font-size: 1.1rem; font-weight: 900; border-bottom: 2px solid #ddd; margin-bottom: 15px; display: block; padding-bottom: 5px; }
+        .student-card { background: #fff; border: 2px solid #555; border-radius: 15px; padding: 25px; position: relative; box-shadow: 10px 10px 0 rgba(0,0,0,0.1); max-width: 350px; margin: 0 auto; text-align: left; background-image: radial-gradient(#ddd 1px, transparent 1px); background-size: 20px 20px; }
+        .id-photo { width: 90px; height: 115px; border: 2px solid #333; background: #eee; float: left; margin-right: 15px; object-fit: cover; cursor: pointer; }
+        .id-label { font-size: 0.6rem; color: #888; font-weight: bold; margin: 0; }
+        .id-value { font-size: 1rem; font-weight: 900; border-bottom: 1.5px solid #ccc; margin-bottom: 12px; display: block; }
 
-        /* ゲーム表示 */
+        /* カウントダウン */
+        #countOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; justify-content: center; align-items: center; z-index: 20000; background: rgba(0,0,0,0.4); pointer-events: none; }
+        .count-text { font-family: Montserrat; font-size: 18rem; font-weight: 900; animation: countPulse 0.6s ease-out; }
+        @keyframes countPulse { 0% { transform: scale(1.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+        /* 3D/Pause UI */
         #gameLayer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: none; z-index: 10000; background: #000; }
         #pauseOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.85); z-index: 20000; }
+        #mobilePauseBtn { position: fixed; top: 15px; right: 15px; width: 45px; height: 45px; background: var(--glass); border: 2.5px solid #fff; border-radius: 50%; display: none; z-index: 15000; justify-content: center; align-items: center; font-weight: 900; color: #fff; cursor: pointer; }
 
-        #countOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; justify-content: center; align-items: center; z-index: 30000; background: rgba(0,0,0,0.4); pointer-events: none; }
-        .count-text { font-family: Montserrat; font-size: 20rem; font-weight: 900; color: #fff; text-shadow: 0 0 50px var(--pro-teal); animation: countPulse 0.5s ease-out; }
+        dialog { background: #fff; color: #333; border: none; border-radius: 25px; width: 90%; max-width: 400px; z-index: 60000; box-shadow: 0 20px 80px rgba(0,0,0,0.6); padding: 0; overflow: hidden; }
+        .dialog-head { background: var(--pro-teal); color: #fff; padding: 15px; font-weight: 900; text-align: center; font-size: 1.2rem; }
+        .dialog-body { padding: 30px; }
+        .list-box { background: #f0f2f5; border-radius: 20px; padding: 15px; margin-bottom: 10px; max-height: 200px; overflow-y: auto; }
     </style>
 </head>
 <body>
 
     <div class="bg-sekai"></div>
     <div class="bg-overlay"></div>
-    <div id="sheetOverlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:49999; display:none; backdrop-filter:blur(5px);" onclick="closeAllSheets()"></div>
-    
+    <div id="sheetOverlay" onclick="closeAllSheets()"></div>
+    <div id="mobilePauseBtn" onclick="showPauseMenu()">II</div>
     <div id="countOverlay"><div id="countNum" class="count-text">3</div></div>
 
-    <!-- 共通ポーズメニュー -->
+    <!-- ポーズメニュー -->
     <div id="pauseOverlay">
-        <h1 style="font-family: Montserrat; font-size: 5rem; color: var(--pro-teal); margin-bottom: 40px; letter-spacing: 5px;">PAUSE</h1>
-        <button class="btn-sekai" onclick="resumeGame()"><span>再開する</span></button>
-        <button class="btn-sekai pink" onclick="triggerRetry()"><span>リトライ</span></button>
-        <button class="btn-sekai sub" onclick="exitGame()"><span>終了する</span></button>
+        <h1 style="font-family: Montserrat; font-size: 5rem; color: var(--pro-teal); margin: 0; letter-spacing: 5px;">PAUSE</h1>
+        <button class="btn-pro btn-teal" onclick="resumeGame()"><span>再開する</span></button>
+        <button class="btn-pro btn-pink" onclick="triggerRetry()"><span>リトライ</span></button>
+        <button class="btn-pro btn-gray" onclick="exitGame()"><span>終了する</span></button>
     </div>
 
     <!-- 1. タイトル -->
     <div id="titleScreen" class="screen">
-        <div class="char-original" style="left: 50px; top: 300px;"><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=Miku" style="width:100%"></div>
-        <div class="char-original" style="left: 200px; top: 300px; animation-delay: 0.2s;"><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=Rin" style="width:100%"></div>
-        <div class="char-original" style="left: 350px; top: 300px; animation-delay: 0.4s;"><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=Len" style="width:100%"></div>
-
-        <h1 class="main-title">GENSOU</h1>
-        <p style="letter-spacing: 15px; font-weight: 900; color: var(--pro-pink); margin: 10px 0 60px;">COLORFUL STAGE</p>
+        <div class="char-original" style="left: 50px; top: 300px;"><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=Miku"></div>
+        <div class="char-original" style="left: 200px; top: 300px; animation-delay: 0.2s;"><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=Rin"></div>
+        <div class="char-original" style="left: 350px; top: 300px; animation-delay: 0.4s;"><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=Len"></div>
         
-        <button id="loginBtn" class="btn-sekai" onclick="transition('titleScreen', 'loadingScreen')"><span>システムログイン</span></button>
-        <button class="btn-sekai pink" onclick="openBox('modalTransfer')"><span>データ引き継ぎ</span></button>
-        <button class="btn-sekai sub" style="width:auto; font-size:0.7rem;" onclick="openBox('modalSupport')"><span>サポート</span></button>
+        <h1 style="font-family: Montserrat; font-size: 6rem; margin: 0; letter-spacing: -3px; text-shadow: 0 0 25px rgba(51,255,204,0.5);">GENSOU</h1>
+        <p style="letter-spacing: 12px; font-weight: 900; color: var(--pro-pink); margin-bottom: 40px;">COLORFUL STAGE</p>
+        
+        <button id="loginBtn" class="btn-pro btn-teal" onclick="transition('titleScreen', 'loadingScreen')"><span>ログイン</span></button>
+        <button id="transferBtn" class="btn-pro btn-pink" onclick="openBox('modalTransfer')"><span>データ引き継ぎ</span></button>
+        <button id="supportBtn" class="btn-pro btn-gray" style="width:auto; font-size:0.7rem;" onclick="openBox('modalSupport')"><span>サポート</span></button>
     </div>
 
     <!-- 2. ロード -->
     <div id="loadingScreen" class="screen hidden">
-        <p style="color: var(--pro-teal); font-weight: 900; letter-spacing: 5px; animation: blink 1s infinite alternate;">CONNECTING...</p>
+        <div style="width: 250px; height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden;">
+            <div style="width: 50%; height: 100%; background: var(--pro-teal); animation: loadBar 1.5s infinite ease-in-out;"></div>
+        </div>
+        <p style="margin-top: 20px; font-weight: 900; color: var(--pro-teal); letter-spacing: 5px;">同期中...</p>
     </div>
-    <style>@keyframes blink { 0% { opacity: 1; } 100% { opacity: 0.3; } }</style>
+    <style>@keyframes loadBar { 0% { transform: translateX(-100%); } 100% { transform: translateX(250%); } }</style>
 
     <!-- 3. ホーム -->
     <div id="gameScreen" class="screen hidden">
         <div class="header-sekai">
             <div class="av-sekai"><img id="hAv" src="" style="width:100%; height:100%; object-fit:cover;"></div>
             <div class="p-name-label" id="hName">---</div>
-            <div id="syncDot" style="width:10px; height:10px; background:#555; border-radius:50%;"></div>
+            <div id="syncDot" style="width:10px; height:10px; background:#555; border-radius:50%; margin-left:10px;"></div>
         </div>
-
-        <h2 style="font-size: 3.5rem; font-weight: 300; letter-spacing: 10px; opacity: 0.6; font-family: Montserrat;">COMMAND</h2>
         
-        <nav class="nav-sekai">
-            <div class="nav-card" onclick="openSheet('sheetFriend')">フレンド</div>
-            <div class="nav-card" onclick="alert('準備中')">ガチャ</div>
+        <h2 style="font-size: 3rem; font-weight: 300; letter-spacing: 10px; opacity: 0.6; font-family: Montserrat;">COMMAND</h2>
+        
+        <nav class="nav-container">
+            <div class="nav-card friend" onclick="openSheet('sheetFriend')">フレンド</div>
+            <div class="nav-card gacha" onclick="alert('準備中')">ガチャ</div>
             <div class="nav-card main" onclick="transition('gameScreen', 'questScreen'); loadGameList();">ゲーム選択</div>
             <div class="nav-card" onclick="alert('準備中')">ストーリー</div>
-            <div class="nav-card" onclick="openSheet('sheetConfig')">設定・学生証</div>
+            <div class="nav-card config" onclick="openSheet('sheetConfig')">設定・学生証</div>
         </nav>
     </div>
 
-    <!-- 4. 学生証ボトムシート -->
+    <!-- 4. 設定：学生証 -->
     <div id="sheetConfig" class="bottom-sheet">
         <div class="sheet-header"></div>
-        <div class="sheet-content">
+        <div class="sheet-content" style="text-align: center;">
             <div class="student-card">
                 <h3>幻想クロニクル 学生証</h3>
                 <div class="id-photo-box">
@@ -152,49 +171,44 @@
                     <input type="file" id="fileIn" style="display:none" accept="image/*" onchange="uploadIcon(this)">
                 </div>
                 <div class="id-details">
-                    <p class="id-label">学籍番号 (プレイヤーID)</p>
-                    <span class="id-text" id="myIdDisplay">--------</span>
-                    <p class="id-label">氏名 (ニックネーム)</p>
-                    <input type="text" id="nIn" style="border:none; border-bottom:2px solid #333; background:none; width:100%; font-size:1.1rem; font-weight:900;">
-                    <p class="id-label" style="margin-top:10px;">合言葉 (パスワード)</p>
-                    <input type="password" id="pIn" style="border:none; border-bottom:2px solid #333; background:none; width:100%; font-size:1.1rem;">
+                    <p class="id-label">学籍番号 (ID)</p><span class="id-value" id="myIdDisplay">--------</span>
+                    <p class="id-label">氏名 (Name)</p><input type="text" id="nIn" style="border:none; border-bottom:2px solid #333; background:none; width:100%; font-size:1.1rem; font-weight:900;">
+                    <p class="id-label" style="margin-top:10px;">合言葉 (Pass)</p><input type="password" id="pIn" style="border:none; border-bottom:2px solid #333; background:none; width:100%;">
                 </div>
             </div>
-            <button class="btn-sekai" style="width:100%; margin-top:40px;" onclick="saveSettings()"><span>設定を保存する</span></button>
+            <button class="btn-pro btn-teal" style="width:100%; margin-top:30px;" onclick="saveSettings()"><span>設定を保存</span></button>
         </div>
     </div>
 
-    <!-- 5. フレンドボトムシート -->
+    <!-- 5. フレンド -->
     <div id="sheetFriend" class="bottom-sheet">
         <div class="sheet-header"></div>
         <div class="sheet-content">
-            <h2 style="font-weight:900; color:var(--pro-pink);">FRIENDS</h2>
-            <p style="font-size:0.7rem; opacity:0.6;">届いた申請</p>
-            <div id="reqList" style="background:#f0f2f5; border-radius:15px; padding:15px; margin-bottom:15px;"></div>
-            <p style="font-size:0.7rem; opacity:0.6;">フレンド一覧</p>
-            <div id="fList" style="background:#f0f2f5; border-radius:15px; padding:15px; margin-bottom:15px; max-height:200px; overflow-y:auto;"></div>
-            <input type="text" id="fIdIn" placeholder="10桁のIDを入力">
-            <button class="btn-sekai pink" style="width:100%; margin:0;" onclick="sendReq()"><span>申請を送る</span></button>
+            <h2 style="color:var(--pro-pink); font-weight:900;">FRIENDS</h2>
+            <p style="font-size:0.7rem; opacity:0.6;">届いた申請</p><div id="reqList" class="list-box"></div>
+            <p style="font-size:0.7rem; opacity:0.6;">フレンド一覧</p><div id="fList" class="list-box"></div>
+            <input type="text" id="fIdIn" placeholder="10桁IDを入力">
+            <button class="btn-pro btn-pink" style="width:100%; margin:0;" onclick="sendReq()"><span>申請を送る</span></button>
         </div>
     </div>
 
-    <!-- 6. ゲーム選択 -->
     <div id="questScreen" class="screen hidden">
         <h2 style="font-family: Montserrat; font-size: 3.5rem; color: var(--pro-teal);">SELECT GAME</h2>
-        <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:20px; width:95%; max-height:55vh; overflow-y:auto;" id="gameListContainer"></div>
-        <button class="btn-sekai sub" style="margin-top:40px;" onclick="closeQuest()"><span>戻る</span></button>
+        <div id="gameListContainer" style="display:flex; flex-wrap:wrap; justify-content:center; gap:20px; width:95%; max-height:55vh; overflow-y:auto; padding:20px;"></div>
+        <button class="btn-pro btn-gray" style="margin-top:40px;" onclick="closeQuest()"><span>戻る</span></button>
     </div>
 
-    <!-- ダイアログ：復旧・サポート -->
-    <dialog id="modalTransfer"><div class="dialog-header">ACCOUNT RECOVERY</div><div class="dialog-body"><input type="text" id="tIdIn" placeholder="ID"><input type="password" id="tPassIn" placeholder="合言葉"><button class="btn-sekai pink" style="width:100%;" onclick="executeTransfer()"><span>引き継ぎ実行</span></button></div></dialog>
-    <dialog id="modalSupport"><div class="dialog-header">SUPPORT</div><div class="dialog-body"><p style="font-size:0.8rem;">IDを忘れた場合は管理者に連絡してください。</p><button class="btn-sekai sub" style="width:100%;" onclick="this.closest('dialog').close()"><span>閉じる</span></button></div></dialog>
-    <dialog id="modalProfile"><div class="dialog-header">PROFILE</div><div class="dialog-body" style="text-align:center;"><img id="fpAv" src="" style="width:120px; border-radius:20px; border:2px solid #333;"><h2 id="fpName"></h2><p id="fpStatus"></p><p id="fpLoc" style="font-size:0.8rem;"></p><button class="btn-sekai" style="width:100%;" onclick="this.closest('dialog').close()"><span>閉じる</span></button></div></dialog>
+    <!-- アカウント復旧ダイアログ -->
+    <dialog id="modalTransfer"><div class="dialog-head">ACCOUNT RECOVERY</div><div class="dialog-body"><input type="text" id="tIdIn" placeholder="ID"><input type="password" id="tPassIn" placeholder="合言葉"><button class="btn-pro btn-pink" style="width:100%" onclick="executeTransfer()"><span>実行</span></button></div></dialog>
+    <dialog id="modalSupport"><div class="dialog-head">SUPPORT</div><div class="dialog-body"><p>IDを忘れた場合は管理者に連絡してください。</p><button class="btn-pro btn-gray" style="width:100%" onclick="this.closest('dialog').close()"><span>閉じる</span></button></div></dialog>
+    <dialog id="modalProfile"><div class="dialog-head">PROFILE</div><div class="dialog-body" style="text-align:center;"><img id="fpAv" src="" style="width:120px; border-radius:20px; border:2px solid #333;"><h2 id="fpName"></h2><p id="fpStatus"></p><p id="fpLoc" style="font-size:0.8rem;"></p><button class="btn-pro btn-teal" style="width:100%" onclick="this.closest('dialog').close()"><span>戻る</span></button></div></dialog>
+    <dialog id="modalMode"><div class="dialog-head">PLAY MODE</div><div class="dialog-body" style="text-align:center;"><button class="btn-pro btn-teal" style="width:100%" onclick="startSolo()"><span>一人で遊ぶ</span></button><button class="btn-pro btn-pink" style="width:100%" onclick="toMatching()"><span>みんなで遊ぶ</span></button></div></dialog>
 
     <div id="gameLayer" style="position:fixed; top:0; left:0; width:100vw; height:100vh; display:none; z-index:10000;"><iframe id="gameFrame" style="width:100%; height:100%; border:none;" src="about:blank"></iframe></div>
 
     <script>
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbyzlWRQ-jEWfbihNrI0adarAWQ3zn_Q6cCvdq7BFydW_wBtUYfxYbUoeSchNXUzI6IT/exec';
-        let myId = "", isSyncing = false;
+        let myId = "", roomId = "", isHost = false, isSyncing = false, currentGameRow = "", isSolo = false;
 
         function transition(h, s) {
             const cur = document.getElementById(h); const nxt = document.getElementById(s);
@@ -208,7 +222,7 @@
         function closeQuest() { transition('questScreen', 'gameScreen'); }
 
         function initPortal() {
-            if(!localStorage.getItem('gID')) localStorage.setItem('gID', Math.random().toString(36).substring(2, 12).toUpperCase());
+            if(!localStorage.getItem('gID')) localStorage.setItem('gID', "UID" + Math.random().toString().substring(2, 12));
             myId = localStorage.getItem('gID');
             document.getElementById('myIdDisplay').innerText = myId;
             document.getElementById('hName').innerText = localStorage.getItem('gName') || "USER";
@@ -223,34 +237,21 @@
             if(!GAS_URL.includes('https')) return;
             const data = { type: "sync", id: myId, name: localStorage.getItem('gName'), avatar: localStorage.getItem('gAv')||"", pass: localStorage.getItem('gPass')||"" };
             await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(data) });
-            document.getElementById('syncDot').classList.add('on');
+            document.getElementById('syncDot').className = "dot on";
             
             const res = await fetch(GAS_URL + "?id=" + myId); const json = await res.json();
             if(json.result === "success") {
                 const pending = json.pending ? json.pending.split(',') : [];
-                document.getElementById('reqList').innerHTML = pending.map(id => `<div class="row" style="color:#333;"><span>ID: ${id}</span><button class="btn-sekai" style="width:auto; padding:5px 15px; font-size:0.6rem; box-shadow:none;" onclick="acceptF('${id}')"><span>承認</span></button></div>`).join('') || "申請なし";
+                document.getElementById('reqList').innerHTML = pending.map(id => `<div class="row"><span>ID: ${id}</span><button class="btn-sekai" style="width:auto; padding:5px 15px; font-size:0.6rem; transform:none; box-shadow:none; border:1px solid #ccc;" onclick="acceptF('${id}')">承認</button></div>`).join('') || "なし";
                 const friends = json.friends ? json.friends.split(',') : [];
                 const fList = [];
                 for(let fid of friends) { if(fid) { const fr = await fetch(GAS_URL + "?id=" + fid); const fj = await fr.json(); if(fj.result === "success") fList.push({id: fid, name: fj.name, online: (new Date() - new Date(fj.lastSeen)) < 60000}); } }
-                document.getElementById('fList').innerHTML = fList.map(f => `<div class="row" style="color:#333;"><span><span style="width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;background:${f.online?'#0f8':'#555'}"></span>${f.name}</span><button onclick="viewProfile('${f.id}')" style="width:auto; padding:5px 10px; font-size:0.6rem; box-shadow:none; background:#eee;"><span>詳細</span></button></div>`).join('') || "なし";
+                document.getElementById('fList').innerHTML = fList.map(f => `<div class="row"><span><span style="width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;background:${f.online?'#0f8':'#ccc'}"></span>${f.name}</span><button onclick="viewProfile('${f.id}')" style="width:auto; padding:5px 10px; font-size:0.6rem; background:#eee;">詳細</button></div>`).join('') || "なし";
             }
         }
 
         async function acceptF(id) { await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "accept", myId: myId, targetId: id }) }); fetchSync(); }
-        async function sendReq() { const tid = document.getElementById('fIdIn').value.toUpperCase(); await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "request", targetId: tid, myId: myId }) }); alert("申請を送りました"); }
-
-        async function viewProfile(id) {
-            document.getElementById('fpName').innerText = "CONNECTING..."; document.getElementById('modalProfile').showModal();
-            const res = await fetch(GAS_URL + "?id=" + id); const json = await res.json();
-            if(json.result === "success") {
-                const online = (new Date() - new Date(json.lastSeen)) < 60000;
-                document.getElementById('fpName').innerText = json.name;
-                document.getElementById('fpAv').src = json.avatar || "";
-                document.getElementById('fpStatus').innerText = online ? "● ONLINE" : "○ OFFLINE";
-                document.getElementById('fpStatus').style.color = online ? "#00ff88" : "#888";
-                document.getElementById('fpLoc').innerText = "Location: " + json.location;
-            }
-        }
+        async function sendReq() { const tid = document.getElementById('fIdIn').value.toUpperCase(); await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "request", targetId: tid, myId: myId }) }); alert("申請完了"); }
 
         async function loadGameList() {
             const container = document.getElementById('gameListContainer');
@@ -258,23 +259,27 @@
             const res = await fetch(`${GAS_URL}?action=getList`);
             const games = await res.json();
             container.innerHTML = "";
-            games.forEach(g => {
+            const colors = ['var(--pro-teal)', 'var(--pro-pink)', 'var(--pro-blue)', 'var(--pro-purple)'];
+            games.forEach((g, i) => {
                 const card = document.createElement('div');
-                card.className = "nav-card"; card.style.width = "180px"; card.style.height = "150px";
-                card.onclick = () => launchGame(g.id);
-                card.innerHTML = `<div style="height:80px; background:var(--pro-teal); border-radius:10px; margin-bottom:10px;"></div><b>${g.title}</b>`;
+                card.className = "card-sekai"; card.style.width = "160px";
+                card.onclick = () => { currentGameRow = g.id; openBox('modalMode'); };
+                card.innerHTML = `<div class="thumb" style="background:${colors[i%4]}"></div><b>${g.title}</b>`;
                 container.appendChild(card);
             });
         }
 
+        function startSolo() { isSolo = true; document.getElementById('modalMode').close(); launchGame(currentGameRow); }
         function launchGame(id) {
             document.getElementById('gameLayer').style.display = 'block';
+            document.getElementById('mobilePauseBtn').style.display = 'flex';
             fetch(`${GAS_URL}?action=getCode&row=${id}`).then(r => r.json()).then(data => {
                 const frame = document.getElementById('gameFrame'); frame.srcdoc = data.code;
-                frame.onload = () => { frame.contentWindow.addEventListener('keydown', e => { if (e.key === "Escape") document.getElementById('pauseOverlay').style.display = 'flex'; }); };
+                frame.onload = () => { frame.contentWindow.addEventListener('keydown', e => { if (e.key === "Escape") showPauseMenu(); }); };
             });
         }
         function triggerRetry() { const f = document.getElementById('gameFrame'); f.srcdoc = f.srcdoc; resumeGame(); }
+        function showPauseMenu() { document.getElementById('pauseOverlay').style.display = 'flex'; }
         function resumeGame() { document.getElementById('pauseOverlay').style.display = 'none'; }
         function exitGame() { location.reload(); }
 
@@ -296,17 +301,6 @@
                 };
                 reader.readAsDataURL(input.files[0]);
             }
-        }
-
-        async function executeTransfer() {
-            const tid = document.getElementById('tIdIn').value.toUpperCase();
-            const tp = document.getElementById('tPassIn').value;
-            const res = await fetch(`${GAS_URL}?id=${tid}`);
-            const json = await res.json();
-            if(json.result === "success" && json.pass === tp) {
-                localStorage.setItem('gID', tid); localStorage.setItem('gName', json.name); localStorage.setItem('gAv', json.avatar||""); localStorage.setItem('gPass', tp);
-                alert("復旧成功！"); location.reload();
-            } else alert("IDまたは合言葉が違います。");
         }
     </script>
 </body>
