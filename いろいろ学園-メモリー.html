@@ -3,184 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>幻想クロニクル - 究極統合フルコード版</title>
+    <title>幻想クロニクル - Mobile Stage</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --pro-teal: #33ffcc; --pro-pink: #ff3399; --glass: rgba(0, 0, 0, 0.75);
-            --border: rgba(255, 255, 255, 0.3); --online: #00ff88; --offline: #888;
+            --pro-teal: #33ffcc; --pro-pink: #ff3399; --pro-blue: #00ccff;
+            --glass: rgba(0, 0, 0, 0.75); --border: rgba(255, 255, 255, 0.4);
+            --online: #00ff88;
         }
-        body, html { margin: 0; padding: 0; overflow: hidden; background: #000; font-family: 'Noto Sans JP', sans-serif; color: #fff; height: 100vh; width: 100vw; }
+        body, html { margin: 0; padding: 0; overflow: hidden; background: #000; font-family: 'Noto Sans JP', sans-serif; color: #fff; height: 100vh; width: 100vw; touch-action: manipulation; }
         
-        .bg-sekai { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=2000') no-repeat center center/cover; z-index: -1; filter: brightness(0.6); }
+        /* 背景 */
+        .bg-sekai { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=2000') no-repeat center center/cover; z-index: -1; filter: brightness(0.6) blur(2px); }
         .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.6) 100%); z-index: -1; }
 
-        .screen { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); z-index: 100; pointer-events: auto; }
-        .hidden { display: none !important; opacity: 0; transform: scale(1.05); }
+        /* スクリーン管理 */
+        .screen { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; transition: 0.5s; z-index: 100; overflow-y: auto; padding: 20px; box-sizing: border-box; }
+        .hidden { display: none !important; opacity: 0; }
 
-        /* 元々のキャラクター配置 (50, 200, 350) */
-        .char-original { position: absolute; width: 85px; height: 85px; border-radius: 20px; border: 3px solid #fff; background: var(--glass); backdrop-filter: blur(10px); animation: float 3s infinite ease-in-out; z-index: 1; box-shadow: 0 0 20px var(--pro-teal); pointer-events: none; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        /* キャラクター配置 (レスポンシブ対応) */
+        .char-container { position: absolute; width: 450px; height: 400px; pointer-events: none; transform-origin: top left; }
+        .char-original { position: absolute; width: 80px; height: 80px; border-radius: 20px; border: 3px solid #fff; background: var(--glass); backdrop-filter: blur(10px); animation: float 3s infinite ease-in-out; box-shadow: 0 0 20px var(--pro-teal); }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
         /* プロセカ風ボタン */
-        .btn-pro { background: #fff; color: #333; border: none; padding: 12px 45px; border-radius: 4px; font-weight: 900; cursor: pointer; transition: 0.2s; transform: skewX(-15deg); box-shadow: 6px 6px 0 var(--pro-teal); z-index: 500; font-family: inherit; margin: 10px; text-transform: uppercase; text-align: center; width: 220px; }
+        .btn-pro {
+            background: #fff; color: #333; border: none; padding: 12px 30px; border-radius: 4px;
+            font-weight: 900; cursor: pointer; transition: 0.2s;
+            transform: skewX(-15deg); box-shadow: 4px 4px 0 var(--pro-teal);
+            font-family: 'Montserrat', sans-serif; text-transform: uppercase; margin: 8px; font-size: 1rem;
+        }
         .btn-pro span { display: inline-block; transform: skewX(15deg); }
-        .btn-pro:hover { transform: skewX(-15deg) translate(2px, 2px); box-shadow: 0 0 0 var(--pro-teal); background: var(--pro-teal); color: #fff; }
-        .btn-pro.pink { box-shadow: 6px 6px 0 var(--pro-pink); }
-        .btn-pro.pink:hover { background: var(--pro-pink); box-shadow: 0 0 0; }
-        .btn-pro.gray { background: #444; color: #fff; box-shadow: 6px 6px 0 #222; }
+        .btn-pro:active { transform: skewX(-15deg) translate(2px, 2px); box-shadow: 0 0 0; background: var(--pro-teal); color: #fff; }
+        .btn-pro.pink { box-shadow: 4px 4px 0 var(--pro-pink); }
+        .btn-pro.gray { background: #444; color: #fff; box-shadow: 4px 4px 0 #222; }
 
         /* ヘッダーUI */
-        .header-minimal { position: absolute; top: 20px; left: 20px; display: flex; align-items: center; gap: 12px; padding: 5px 15px; background: rgba(0,0,0,0.7); border-radius: 0 20px 20px 0; border-left: 6px solid var(--pro-teal); backdrop-filter: blur(10px); z-index: 200; }
-        .av-mini { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #fff; overflow: hidden; background: #222; }
+        .header-minimal { position: absolute; top: 10px; left: 10px; display: flex; align-items: center; gap: 8px; padding: 6px 15px; background: rgba(0,0,0,0.7); border-radius: 0 15px 15px 0; border-left: 4px solid var(--pro-teal); backdrop-filter: blur(10px); z-index: 200; }
+        .av-mini { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #fff; overflow: hidden; }
         
-        .sync-badge { position: absolute; top: 20px; right: 20px; font-size: 0.7rem; font-weight: bold; color: var(--pro-teal); display: flex; align-items: center; gap: 8px; }
-        .dot { width: 10px; height: 10px; background: #555; border-radius: 50%; transition: 0.4s; }
-        .dot.on { background: var(--online); box-shadow: 0 0 10px var(--online); }
+        /* 下部ナビゲーション (スマホ向け) */
+        .nav-container { position: absolute; bottom: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 90%; max-width: 800px; z-index: 200; }
+        .nav-card { background: var(--glass); border: 1px solid var(--border); padding: 12px 5px; border-radius: 10px; cursor: pointer; text-align: center; font-weight: 900; font-size: 0.7rem; color: #fff; }
+        .nav-card.main { grid-column: span 3; background: var(--pro-pink); font-size: 1.2rem; padding: 15px; }
 
-        /* ナビゲーション */
-        .nav-container { position: absolute; bottom: 30px; display: flex; gap: 12px; width: 95%; max-width: 1000px; z-index: 200; }
-        .nav-card { flex: 1; background: var(--glass); border: 1px solid var(--border); padding: 18px 5px; border-radius: 12px; cursor: pointer; transition: 0.3s; text-align: center; backdrop-filter: blur(15px); font-weight: 900; font-size: 0.8rem; color: #fff; }
-        .nav-card:hover { border-color: #fff; transform: translateY(-10px); }
-        .nav-card.main { background: linear-gradient(to right, var(--pro-pink), #ff66cc); border: none; font-size: 1.1rem; flex: 1.8; box-shadow: 0 0 25px rgba(255,51,153,0.5); }
+        /* スマホ用ポーズボタン */
+        #mobilePauseBtn { position: fixed; top: 15px; right: 15px; width: 45px; height: 45px; background: var(--glass); border: 1px solid #fff; border-radius: 50%; display: none; z-index: 15000; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; }
 
-        /* ゲーム表示レイヤー */
-        #gameLayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; z-index: 10000; background: #000; }
-        #gameFrame { width: 100%; height: 100%; border: none; }
-        #pauseOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.85); z-index: 20000; }
-
-        /* カウントダウン */
-        #countOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; justify-content: center; align-items: center; z-index: 20000; background: rgba(0,0,0,0.4); pointer-events: none; }
-        .count-text { font-family: Montserrat; font-size: 18rem; font-weight: 900; color: #fff; text-shadow: 0 0 40px var(--pro-teal); animation: countPulse 0.5s ease-out; }
-        @keyframes countPulse { 0% { transform: scale(1.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        /* 待機ロビー (スマホ対応) */
+        .lobby-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 20px; }
+        .slot { width: 100%; max-width: 140px; height: 160px; background: var(--glass); border: 2px solid var(--border); border-radius: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.8rem; }
+        .slot img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #fff; margin-bottom: 8px; }
 
         /* ダイアログ */
-        dialog { background: #fff; color: #333; border: none; border-radius: 20px; width: 420px; z-index: 50000; box-shadow: 0 25px 80px rgba(0,0,0,0.6); overflow: hidden; padding: 0; }
-        .dialog-header { background: var(--pro-teal); color: #fff; padding: 15px; font-weight: 900; font-size: 1.2rem; text-align: center; }
-        .dialog-body { padding: 30px; }
-        input { width: 100%; background: #f0f0f5; border: 2px solid #eee; padding: 15px; border-radius: 10px; margin-bottom: 15px; box-sizing: border-box; font-family: inherit; font-weight: bold; }
-        .list-box { background: #f0f0f5; border-radius: 15px; height: 180px; overflow-y: auto; padding: 15px; margin-bottom: 10px; font-size: 0.8rem; }
-        .st-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+        dialog { background: #fff; color: #333; border: none; border-radius: 20px; width: 90%; max-width: 400px; z-index: 50000; padding: 0; overflow: hidden; }
+        .dialog-header { background: var(--pro-teal); color: #fff; padding: 12px; font-weight: 900; text-align: center; }
+        .dialog-body { padding: 20px; }
+        input { width: 100%; background: #f0f0f5; border: 2px solid #eee; padding: 12px; border-radius: 10px; margin-bottom: 10px; box-sizing: border-box; }
+
+        /* スマホ向けメディアクエリ */
+        @media (max-width: 600px) {
+            h1 { font-size: 3.5rem !important; }
+            .char-container { transform: scale(0.7); left: -20px; top: 100px; }
+            .nav-card.main { font-size: 1rem; }
+            .slot { max-width: 120px; height: 140px; }
+        }
+
+        #gameLayer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: none; z-index: 10000; background: #000; }
+        #gameFrame { width: 100%; height: 100%; border: none; }
+        #pauseOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.85); z-index: 20000; }
     </style>
 </head>
 <body>
 
     <div class="bg-sekai"></div>
     <div class="bg-overlay"></div>
-    <div id="countOverlay"><div id="countNum" class="count-text">3</div></div>
 
-    <!-- ポーズメニュー (Escキー) -->
+    <!-- スマホ用フローティングポーズボタン -->
+    <div id="mobilePauseBtn" onclick="showPauseMenu()">II</div>
+
+    <!-- ポーズメニュー -->
     <div id="pauseOverlay">
-        <h1 style="font-family: Montserrat; font-size: 5rem; color: var(--pro-teal); margin: 0; letter-spacing: 5px;">PAUSE</h1>
+        <h1 style="font-family: Montserrat; font-size: 3rem; color: var(--pro-teal); margin-bottom: 20px;">PAUSE</h1>
         <button class="btn-pro" onclick="resumeGame()"><span>再開する</span></button>
-        <button class="btn-pro gray" style="margin-top:20px;" onclick="exitGame()"><span>終了する</span></button>
+        <button class="btn-pro gray" onclick="exitGame()"><span>終了する</span></button>
     </div>
 
     <!-- 1. タイトル -->
     <div id="titleScreen" class="screen">
-        <div class="char-original" style="left: 50px; top: 300px;"><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=A" style="width:100%"></div>
-        <div class="char-original" style="left: 200px; top: 300px; animation-delay: 0.2s;"><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=B" style="width:100%"></div>
-        <div class="char-original" style="left: 350px; top: 300px; animation-delay: 0.4s;"><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=C" style="width:100%"></div>
-        <h1 style="font-family: Montserrat; font-size: 6rem; margin: 0; letter-spacing: -3px; text-shadow: 0 0 25px rgba(51,255,204,0.5);">GENSOU</h1>
-        <p style="letter-spacing: 12px; font-weight: 900; color: var(--pro-pink); margin-bottom: 50px;">COLORFUL STAGE</p>
-        <button id="loginBtn" class="btn-pro" onclick="transition('titleScreen', 'loadingScreen')"><span>システムログイン</span></button>
+        <div class="char-container">
+            <div class="char-original" style="left: 50px; top: 300px;"><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=A" style="width:100%"></div>
+            <div class="char-original" style="left: 200px; top: 300px; animation-delay: 0.2s;"><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=B" style="width:100%"></div>
+            <div class="char-original" style="left: 350px; top: 300px; animation-delay: 0.4s;"><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=C" style="width:100%"></div>
+        </div>
+        <h1 style="font-family: Montserrat; font-size: 5.5rem; margin: 0; letter-spacing: -3px; text-shadow: 0 0 20px var(--pro-teal);">GENSOU</h1>
+        <p style="letter-spacing: 5px; font-weight: 900; color: var(--pro-pink); margin-bottom: 40px;">COLORFUL STAGE</p>
+        <button class="btn-pro" onclick="transition('titleScreen', 'loadingScreen')"><span>ログイン</span></button>
     </div>
 
     <!-- 2. ロード -->
     <div id="loadingScreen" class="screen hidden">
-        <p style="color: var(--pro-teal); font-weight: bold; letter-spacing: 3px;">セカイを同期中...</p>
+        <p style="color: var(--pro-teal); font-weight: bold; letter-spacing: 3px;">データを同期中...</p>
     </div>
 
     <!-- 3. ホーム -->
     <div id="gameScreen" class="screen hidden">
         <div class="header-minimal">
             <div class="av-mini"><img id="hAv" src="" style="width:100%; height:100%; object-fit:cover;"></div>
-            <div style="font-size: 0.9rem; font-weight: 900;"><span id="hName">---</span></div>
+            <div style="font-size: 0.7rem; font-weight: 900;"><span id="hName">---</span></div>
         </div>
-        <div class="sync-badge"><div id="syncDot" class="dot"></div><span>ONLINE</span></div>
-        <h2 style="font-size: 3rem; font-weight: 300; letter-spacing: 8px;">MAIN CONSOLE</h2>
+        
+        <h2 style="font-size: 2rem; font-weight: 300; letter-spacing: 5px;">COMMAND CENTER</h2>
+        
         <nav class="nav-container">
-            <div class="nav-card" onclick="openBox('modalFriend')">フレンド</div>
-            <div class="nav-card" onclick="alert('準備中')">ガチャ</div>
             <div class="nav-card main" onclick="transition('gameScreen', 'questScreen'); loadGameList();">ゲーム選択</div>
-            <div class="nav-card" onclick="alert('準備中')">ストーリー</div>
+            <div class="nav-card" onclick="openBox('modalFriend')">フレンド</div>
             <div class="nav-card" onclick="openBox('modalConfig')">設定</div>
+            <div class="nav-card" onclick="alert('準備中')">ガチャ</div>
         </nav>
     </div>
 
-    <!-- 4. ゲームリスト -->
+    <!-- 4. ゲーム選択 -->
     <div id="questScreen" class="screen hidden">
-        <h2 style="font-family: Montserrat; font-size: 3.5rem; margin: 0; color: var(--pro-teal);">GAME SELECT</h2>
-        <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:20px; max-height:50vh; overflow-y:auto; width:95%;" id="gameListContainer"></div>
-        <button class="btn-pro gray" style="margin-top:40px;" onclick="closeQuest()"><span>戻る</span></button>
+        <h2 style="font-family: Montserrat; font-size: 2.5rem; margin: 0; color: var(--pro-teal);">SELECT GAME</h2>
+        <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:15px; width:100%; margin-top:20px;" id="gameListContainer"></div>
+        <button class="btn-pro gray" style="margin-top:30px;" onclick="closeQuest()"><span>戻る</span></button>
     </div>
 
-    <!-- 5. モード選択 -->
+    <!-- 5. プレイモード選択 -->
     <dialog id="modalMode">
         <div class="dialog-header">PLAY MODE</div>
         <div class="dialog-body" style="text-align:center;">
-            <button class="btn-pro" style="width:100%; margin: 10px 0;" onclick="startSolo()"><span>一人で遊ぶ</span></button>
-            <button class="btn-pro pink" style="width:100%; margin: 10px 0;" onclick="transitionToMatching()"><span>みんなで遊ぶ</span></button>
-            <button class="btn-pro gray" style="width:100%; margin: 10px 0;" onclick="this.closest('dialog').close()"><span>キャンセル</span></button>
+            <button class="btn-pro" style="width:100%;" onclick="startSolo()"><span>一人で遊ぶ</span></button>
+            <button class="btn-pro pink" style="width:100%;" onclick="toMatching()"><span>みんなで遊ぶ</span></button>
+            <button class="btn-pro gray" style="width:100%; margin-top:10px;" onclick="this.closest('dialog').close()"><span>キャンセル</span></button>
         </div>
     </dialog>
 
     <!-- 6. マッチング -->
     <div id="matchScreen" class="screen hidden">
-        <h2 style="font-family: Montserrat; font-size: 3rem;">MATCHING</h2>
-        <div style="display:flex; gap:30px; margin-top:30px;">
-            <div class="nav-card" style="width:220px; height:auto; padding:30px;" onclick="createRoom()"><h3>部屋を作る</h3></div>
-            <div class="nav-card" style="width:220px; height:auto; padding:30px;" onclick="openBox('modalJoin')"><h3>番号で参加</h3></div>
+        <h2>MULTIPLAYER</h2>
+        <div style="display:flex; flex-direction:column; gap:10px; width:100%; align-items:center;">
+            <button class="btn-pro" style="width:80%;" onclick="createRoom()"><span>部屋を作る</span></button>
+            <button class="btn-pro pink" style="width:80%;" onclick="openBox('modalJoin')"><span>番号で参加</span></button>
         </div>
-        <button class="btn-pro gray" style="margin-top:40px;" onclick="transition('matchScreen', 'questScreen')"><span>戻る</span></button>
+        <button class="btn-pro gray" style="margin-top:20px;" onclick="transition('matchScreen', 'questScreen')"><span>戻る</span></button>
     </div>
 
     <!-- 7. 待機ロビー -->
     <div id="lobbyScreen" class="screen hidden">
-        <h2 style="font-family: Montserrat; font-size: 2rem;">ROOM ID: <span id="lobbyRoomId" style="color:var(--pro-teal);">----</span></h2>
-        <div style="display:flex; gap:15px; margin-top:30px;" id="lobbyMembers">
+        <h2 style="font-size: 1.5rem;">ROOM: <span id="lobbyRoomId" style="color:var(--pro-teal);">----</span></h2>
+        <div class="lobby-grid" id="lobbyMembers">
             <div class="slot" id="slot0">待機中</div><div class="slot" id="slot1">待機中</div>
             <div class="slot" id="slot2">待機中</div><div class="slot" id="slot3">待機中</div>
         </div>
-        <button id="startBtn" class="btn-pro" style="display:none; margin-top:50px;" onclick="hostSignalStart()"><span>ダイブ開始！</span></button>
-        <button class="btn-pro gray" onclick="leaveRoom()"><span>退室</span></button>
+        <button id="startBtn" class="btn-pro" style="display:none; margin-top:30px;" onclick="hostSignalStart()"><span>開始！</span></button>
+        <button class="btn-pro gray" style="margin-top:10px;" onclick="leaveRoom()"><span>退室</span></button>
     </div>
 
     <!-- 8. ゲーム表示レイヤー -->
-    <div id="gameLayer" style="position:fixed; top:0; left:0; width:100vw; height:100vh; display:none; z-index:10000;">
-        <iframe id="gameFrame" style="width:100%; height:100%; border:none;" src="about:blank"></iframe>
-    </div>
+    <div id="gameLayer"><iframe id="gameFrame" src="about:blank"></iframe></div>
 
-    <!-- ダイアログ -->
     <dialog id="modalConfig">
         <div class="dialog-header">PROFILE</div>
         <div class="dialog-body">
-            <div style="text-align: center; margin-bottom: 20px;">
-                <img id="mAv" src="" style="width:90px; height:90px; border-radius:50%; border:3px solid var(--pro-teal); cursor:pointer; object-fit:cover;" onclick="document.getElementById('fileIn').click()">
+            <div style="text-align: center; margin-bottom: 15px;">
+                <img id="mAv" src="" style="width:70px; height:70px; border-radius:50%; border:2px solid var(--pro-teal); object-fit:cover;" onclick="document.getElementById('fileIn').click()">
                 <input type="file" id="fileIn" style="display:none" accept="image/*" onchange="uploadIcon(this)">
             </div>
-            ID: <div style="background:#333; color:var(--pro-teal); padding:10px; border-radius:10px; font-family:monospace; text-align:center; margin-bottom:20px;" id="myIdDisplay">--------</div>
+            ID: <div style="background:#eee; padding:10px; border-radius:5px; font-family:monospace; text-align:center; margin-bottom:15px; font-size:1rem;" id="myIdDisplay">--------</div>
             名前: <input type="text" id="nIn">
-            合言葉: <input type="password" id="pIn" placeholder="サーバー同期用">
-            <button class="btn-pro" style="width:100%; margin:0;" onclick="saveSettings()"><span>保存して同期</span></button>
+            <button class="btn-pro" style="width:100%; margin:0;" onclick="saveSettings()"><span>保存</span></button>
         </div>
     </dialog>
 
     <dialog id="modalFriend">
         <div class="dialog-header">FRIENDS</div>
-        <div class="dialog-body">
-            <p style="font-size:0.6rem; opacity:0.5;">▼ 申請</p><div id="reqList" class="list-box"></div>
-            <p style="font-size:0.6rem; opacity:0.5;">▼ 一覧</p><div id="fList" class="list-box"></div>
-            <input type="text" id="fIdIn" placeholder="10桁ID"><button class="btn-pro pink" style="width:100%; margin:0;" onclick="sendReq()"><span>申請を送る</span></button>
-        </div>
+        <div class="dialog-body"><div id="fList" style="background:#f0f0f5; border-radius:10px; height:120px; overflow-y:auto; padding:10px; margin-bottom:10px;"></div><input type="text" id="fIdIn" placeholder="10桁ID"><button class="btn-pro pink" style="width:100%; margin:0;" onclick="sendReq()"><span>申請</span></button></div>
     </dialog>
 
-    <dialog id="modalProfile"><h2 id="fpName" style="color:var(--pro-teal);"></h2><div style="text-align:center; padding:20px; background:#f9f9f9; border-radius:20px;"><img id="fpAv" src="" style="width:120px; border-radius:20px; border:2px solid #333; object-fit:cover;"><p id="fpStatus" style="margin-top:10px; font-weight:bold;"></p><p id="fpLoc" style="font-size:0.8rem;"></p></div><button class="btn-pro" style="width:100%; margin-top:20px;" onclick="this.closest('dialog').close()">戻る</button></dialog>
-    <dialog id="modalJoin"><div class="dialog-header">JOIN ROOM</div><div class="dialog-body"><input type="text" id="roomJoinIn" placeholder="4桁番号"><button class="btn-pro" style="width:100%; margin:0;" onclick="joinRoom()"><span>ルームへ</span></button></div></dialog>
+    <dialog id="modalJoin">
+        <div class="dialog-header">ROOM ID</div>
+        <div class="dialog-body"><input type="number" id="roomJoinIn" placeholder="4桁番号"><button class="btn-pro" style="width:100%; margin:0;" onclick="joinRoom()"><span>参加</span></button></div>
+    </dialog>
 
     <script>
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbxeInwr3-sEaGh2SBzYHPuJ7gM6JxUhqSrjdG-Z0EVL7Ojwp30NBuR71iJFN_uEe3aP/exec';
-        let myId = "", roomId = "", isHost = false, currentGameRow = "", isSyncing = false, playerFriends = [], playerPending = [];
+        let myId = "", roomId = "", isHost = false, currentGameRow = "";
 
         function transition(h, s) {
             const cur = document.getElementById(h); const nxt = document.getElementById(s);
@@ -199,8 +208,7 @@
             const av = localStorage.getItem('gAv') || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + myId;
             document.getElementById('hAv').src = av; document.getElementById('mAv').src = av;
             document.getElementById('nIn').value = localStorage.getItem('gName') || "";
-            document.getElementById('pIn').value = localStorage.getItem('gPass') || "";
-            if(!isSyncing) { isSyncing = true; setInterval(fetchSync, 5000); fetchSync(); }
+            setInterval(fetchSync, 5000);
         }
 
         async function loadGameList() {
@@ -211,19 +219,53 @@
             container.innerHTML = "";
             games.forEach(g => {
                 const card = document.createElement('div');
-                card.className = "nav-card"; card.style.width = "180px"; card.style.height = "180px";
+                card.className = "nav-card"; card.style.width = "40%"; card.style.height = "100px";
                 card.onclick = () => { currentGameRow = g.id; openBox('modalMode'); };
-                card.innerHTML = `<div style="height:100px; background:var(--pro-teal); border-radius:10px; margin-bottom:10px;"></div><b>${g.title}</b>`;
+                card.innerHTML = `<div style="height:50px; background:var(--pro-teal); border-radius:10px; margin-bottom:5px;"></div><b>${g.title}</b>`;
                 container.appendChild(card);
             });
         }
 
         function startSolo() { document.getElementById('modalMode').close(); launchGame(); }
-        function transitionToMatching() { document.getElementById('modalMode').close(); transition('questScreen', 'matchScreen'); }
+        function toMatching() { document.getElementById('modalMode').close(); transition('questScreen', 'matchScreen'); }
         function createRoom() { roomId = Math.floor(1000 + Math.random() * 9000).toString(); isHost = true; enterLobby(); }
         function joinRoom() { roomId = document.getElementById('roomJoinIn').value; if(roomId.length !== 4) return alert("4桁必要"); isHost = false; enterLobby(); document.getElementById('modalJoin').close(); }
         function enterLobby() { transition('matchScreen', 'lobbyScreen'); document.getElementById('lobbyRoomId').innerText = roomId; if(isHost) document.getElementById('startBtn').style.display = 'block'; }
         function leaveRoom() { roomId = ""; isHost = false; transition('lobbyScreen', 'gameScreen'); }
+
+        async function launchGame() {
+            document.getElementById('gameLayer').style.display = 'block';
+            document.getElementById('mobilePauseBtn').style.display = 'flex'; // ポーズボタン表示
+            const res = await fetch(`${GAS_URL}?action=getCode&row=${currentGameRow}`);
+            const data = await res.json();
+            const frame = document.getElementById('gameFrame');
+            frame.srcdoc = data.code;
+            frame.onload = () => {
+                frame.contentWindow.addEventListener('keydown', e => { if (e.key === "Escape") showPauseMenu(); });
+            };
+        }
+
+        function showPauseMenu() { document.getElementById('pauseOverlay').style.display = 'flex'; }
+        function resumeGame() { document.getElementById('pauseOverlay').style.display = 'none'; }
+        function exitGame() { document.getElementById('pauseOverlay').style.display = 'none'; document.getElementById('gameLayer').style.display = 'none'; document.getElementById('mobilePauseBtn').style.display = 'none'; document.getElementById('gameFrame').srcdoc = ""; transition('titleScreen', 'gameScreen'); }
+
+        async function fetchSync() {
+            if(!GAS_URL.includes('https')) return;
+            const data = { type: "sync", id: myId, name: localStorage.getItem('gName'), location: roomId!==""?"Lobby":"Home", roomId: roomId, avatar: localStorage.getItem('gAv')||"" };
+            await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(data) });
+            if(roomId !== "") {
+                const rRes = await fetch(GAS_URL + "?roomId=" + roomId);
+                const rJson = await rRes.json();
+                const members = rJson.members || [];
+                let signal = members.find(m => m.location.startsWith("START:"));
+                if(signal && document.getElementById('gameLayer').style.display !== 'block') { currentGameRow = signal.location.split(':')[1]; startGlobalCountdown(); }
+                for(let i=0; i<4; i++) {
+                    const slot = document.getElementById('slot' + i);
+                    if(members[i]) slot.innerHTML = `<img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${members[i].id}" style="width:40px;"><br><b>${members[i].name}</b>`;
+                    else slot.innerHTML = "待機中";
+                }
+            }
+        }
 
         function hostSignalStart() {
             fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "sync", id: myId, location: "START:" + currentGameRow, roomId: roomId }) });
@@ -242,86 +284,9 @@
             }, 1000);
         }
 
-        async function launchGame() {
-            document.getElementById('gameLayer').style.display = 'block';
-            const res = await fetch(`${GAS_URL}?action=getCode&row=${currentGameRow}`);
-            const data = await res.json();
-            const frame = document.getElementById('gameFrame');
-            frame.srcdoc = data.code;
-            frame.onload = () => {
-                const doc = frame.contentDocument || frame.contentWindow.document;
-                doc.addEventListener('keydown', e => { if (e.key === "Escape") document.getElementById('pauseOverlay').style.display = 'flex'; });
-                frame.contentWindow.focus();
-            };
-        }
-
-        function resumeGame() { document.getElementById('pauseOverlay').style.display = 'none'; document.getElementById('gameFrame').contentWindow.focus(); }
-        function exitGame() { document.getElementById('pauseOverlay').style.display = 'none'; document.getElementById('gameLayer').style.display = 'none'; document.getElementById('gameFrame').srcdoc = ""; transition('titleScreen', 'gameScreen'); }
-
-        window.addEventListener('keydown', e => { if (e.key === "Escape" && document.getElementById('gameLayer').style.display === 'block') document.getElementById('pauseOverlay').style.display = 'flex'; });
-
-        async function fetchSync() {
-            if(!GAS_URL.includes('https')) return;
-            const data = { type: "sync", id: myId, name: localStorage.getItem('gName'), location: roomId!==""?"Lobby":"Home", roomId: roomId, avatar: localStorage.getItem('gAv')||"" };
-            const syncRes = await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(data) });
-            document.getElementById('syncDot').classList.add('on');
-
-            const res = await fetch(GAS_URL + "?id=" + myId);
-            const json = await res.json();
-            if(json.result === "success") {
-                playerPending = json.pending ? json.pending.split(',') : [];
-                const fIds = json.friends ? json.friends.split(',') : [];
-                const newList = [];
-                for(let fid of fIds) { if(fid && fid !== "undefined") { const fr = await fetch(GAS_URL + "?id=" + fid); const fj = await fr.json(); if(fj.result === "success") newList.push({id: fid, name: fj.name, online: (new Date() - new Date(fj.lastSeen)) < 60000}); } }
-                playerFriends = newList;
-                updateFriendUI();
-            }
-
-            if(roomId !== "") {
-                const rRes = await fetch(GAS_URL + "?roomId=" + roomId);
-                const rJson = await rRes.json();
-                const members = rJson.members || [];
-                let signal = members.find(m => m.location.startsWith("START:"));
-                if(signal && document.getElementById('gameLayer').style.display !== 'block') { currentGameRow = signal.location.split(':')[1]; startGlobalCountdown(); }
-                for(let i=0; i<4; i++) {
-                    const slot = document.getElementById('slot' + i);
-                    if(members[i]) slot.innerHTML = `<img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${members[i].id}" style="width:60px;"><br><b>${members[i].name}</b>`;
-                    else slot.innerHTML = "待機中";
-                }
-            }
-        }
-
-        function updateFriendUI() {
-            document.getElementById('fList').innerHTML = playerFriends.map(f => `<div class="row"><span><span class="st-dot ${f.online?'online':'offline'}"></span>${f.name}</span> <button class="btn-pro" style="padding:2px 8px; font-size:0.6rem; width:auto; box-shadow:none;" onclick="viewProfile('${f.id}')">詳細</button></div>`).join('') || "フレンドなし";
-            document.getElementById('reqList').innerHTML = playerPending.map(id => `<div class="row"><span>ID: ${id}</span><button class="btn-pro" style="background:var(--pro-teal); color:#000; padding:2px 8px; width:auto; box-shadow:none;" onclick="acceptF('${id}')">承認</button></div>`).join('') || "申請なし";
-        }
-
-        async function sendReq() {
-            const tid = document.getElementById('fIdIn').value.toUpperCase();
-            if(tid === myId) return alert("自分不可");
-            await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "request", targetId: tid, myId: myId }) });
-            alert("申請完了");
-        }
-
-        async function acceptF(id) { await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "accept", myId: myId, targetId: id }) }); fetchSync(); }
-
-        async function viewProfile(id) {
-            document.getElementById('fpName').innerText = "取得中..."; document.getElementById('modalProfile').showModal();
-            const res = await fetch(GAS_URL + "?id=" + id); const json = await res.json();
-            if(json.result === "success") {
-                const online = (new Date() - new Date(json.lastSeen)) < 60000;
-                document.getElementById('fpName').innerText = json.name;
-                document.getElementById('fpAv').src = json.avatar || "";
-                document.getElementById('fpStatus').innerText = online ? "● ONLINE" : "○ OFFLINE";
-                document.getElementById('fpStatus').style.color = online ? "#00ff88" : "#888";
-                document.getElementById('fpLoc').innerText = "最終地点: " + json.location;
-            }
-        }
-
         function saveSettings() {
             localStorage.setItem('gName', document.getElementById('nIn').value);
             document.getElementById('hName').innerText = document.getElementById('nIn').value;
-            fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "sync", id: myId, name: document.getElementById('nIn').value, avatar: localStorage.getItem('gAv')||"" }) });
             document.getElementById('modalConfig').close();
         }
 
