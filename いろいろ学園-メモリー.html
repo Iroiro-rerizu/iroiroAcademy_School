@@ -3,21 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>幻想クロニクル - Slide UI Edition</title>
+    <title>幻想クロニクル - Ultimate Stage</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --pro-teal: #33ffcc; --pro-pink: #ff3399; --pro-blue: #00ccff;
-            --glass: rgba(0, 0, 0, 0.85); --border: rgba(255, 255, 255, 0.3);
-            --online: #00ff88; --offline: #888;
+            --pro-teal: #33ffcc; --pro-pink: #ff3399; --glass: rgba(0, 0, 0, 0.8);
+            --border: rgba(255, 255, 255, 0.3); --online: #00ff88;
         }
         body, html { margin: 0; padding: 0; overflow: hidden; background: #000; font-family: 'Noto Sans JP', sans-serif; color: #fff; height: 100vh; width: 100vw; touch-action: manipulation; }
         
-        /* 背景 */
+        /* 背景レイヤー */
         .bg-sekai { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=2000') no-repeat center center/cover; z-index: -1; filter: brightness(0.6); }
         .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.6) 100%); z-index: -1; }
 
-        /* スクリーン管理 */
         .screen { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); z-index: 100; pointer-events: auto; }
         .hidden { display: none !important; opacity: 0; }
 
@@ -25,41 +23,29 @@
         .char-original { position: absolute; width: 80px; height: 80px; border-radius: 20px; border: 2.5px solid #fff; background: var(--glass); backdrop-filter: blur(10px); animation: float 3s infinite ease-in-out; z-index: 1; box-shadow: 0 0 20px var(--pro-teal); pointer-events: none; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-        /* ボタンデザイン */
-        .btn-pro { background: #fff; color: #333; border: none; padding: 15px 45px; border-radius: 4px; font-weight: 900; cursor: pointer; transition: 0.2s; transform: skewX(-15deg); box-shadow: 4px 4px 0 var(--pro-teal); z-index: 500; font-family: inherit; margin: 10px; text-transform: uppercase; text-align: center; }
+        /* プロセカ風ボタン */
+        .btn-pro { background: #fff; color: #333; border: none; padding: 12px 45px; border-radius: 4px; font-weight: 900; cursor: pointer; transition: 0.2s; transform: skewX(-15deg); box-shadow: 5px 5px 0 var(--pro-teal); font-family: inherit; margin: 10px; text-transform: uppercase; text-align: center; }
         .btn-pro span { display: inline-block; transform: skewX(15deg); }
         .btn-pro:hover { transform: skewX(-15deg) translate(2px, 2px); box-shadow: 0 0 0 var(--pro-teal); background: var(--pro-teal); color: #fff; }
-        .btn-pro.pink { box-shadow: 4px 4px 0 var(--pro-pink); }
-        .btn-pro.gray { background: #444; color: #fff; box-shadow: 4px 4px 0 #222; }
 
-        /* ヘッダーUI */
-        .header-minimal { position: absolute; top: 15px; left: 15px; display: flex; align-items: center; gap: 10px; padding: 5px 15px; background: rgba(0,0,0,0.6); border-radius: 0 15px 15px 0; border-left: 5px solid var(--pro-teal); backdrop-filter: blur(10px); z-index: 200; }
-        .av-mini { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid #fff; overflow: hidden; background: #222; }
+        .header-minimal { position: absolute; top: 15px; left: 15px; display: flex; align-items: center; gap: 10px; padding: 5px 15px; background: rgba(0,0,0,0.7); border-radius: 0 15px 15px 0; border-left: 5px solid var(--pro-teal); backdrop-filter: blur(10px); z-index: 200; }
+        .av-mini { width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid #fff; overflow: hidden; background: #222; }
 
-        /* 下部ナビゲーション */
         .nav-container { position: absolute; bottom: 30px; display: flex; gap: 10px; width: 95%; max-width: 900px; z-index: 200; }
-        .nav-card { flex: 1; background: var(--glass); border: 1px solid var(--border); padding: 15px 5px; border-radius: 12px; cursor: pointer; transition: 0.3s; text-align: center; backdrop-filter: blur(15px); font-weight: 900; font-size: 0.8rem; color: #fff; }
-        .nav-card:hover { transform: translateY(-10px); border-color: #fff; }
-        .nav-card.main { background: linear-gradient(to right, var(--pro-pink), #ff66cc); border: none; font-size: 1.1rem; flex: 1.8; box-shadow: 0 0 25px rgba(255,51,153,0.5); }
+        .nav-card { flex: 1; background: var(--glass); border: 1px solid var(--border); padding: 15px 5px; border-radius: 10px; cursor: pointer; transition: 0.3s; text-align: center; backdrop-filter: blur(15px); font-weight: bold; font-size: 0.8rem; color: #fff; }
+        .nav-card.main { background: var(--pro-pink); border: none; font-size: 1.1rem; flex: 1.5; box-shadow: 0 0 20px var(--pro-pink); }
 
-        /* --- スライド式ボトムシート (スマホ対応) --- */
-        .bottom-sheet {
-            position: fixed; bottom: -100%; left: 0; width: 100%; height: 85%;
-            background: #fff; color: #333; border-radius: 30px 30px 0 0;
-            z-index: 50000; transition: bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.5); display: flex; flex-direction: column;
-        }
+        /* --- スライド式ボトムシート --- */
+        .bottom-sheet { position: fixed; bottom: -100%; left: 0; width: 100%; height: 85%; background: #fff; color: #333; border-radius: 30px 30px 0 0; z-index: 50000; transition: bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 -10px 40px rgba(0,0,0,0.5); display: flex; flex-direction: column; }
         .bottom-sheet.open { bottom: 0; }
         .sheet-handle { width: 40px; height: 5px; background: #ddd; border-radius: 10px; margin: 15px auto; flex-shrink: 0; }
-        .sheet-content { padding: 0 30px 30px; overflow-y: auto; flex-grow: 1; }
+        .sheet-content { padding: 0 25px 30px; overflow-y: auto; flex-grow: 1; }
         .sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 49999; display: none; backdrop-filter: blur(5px); }
 
-        /* リスト表示 */
         .list-box { background: #f0f2f5; border-radius: 20px; padding: 15px; margin-bottom: 15px; max-height: 200px; overflow-y: auto; }
         .row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #ddd; }
         input { width: 100%; background: #f0f0f5; border: 2px solid #eee; padding: 15px; border-radius: 12px; margin-bottom: 15px; box-sizing: border-box; font-family: inherit; font-weight: bold; }
-
-        /* 3D/Game部 */
+        
         #gameLayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; z-index: 10000; background: #000; }
         #pauseOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.85); z-index: 20000; }
     </style>
@@ -75,14 +61,14 @@
         <div class="char-original" style="left: 50px; top: 300px;"><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=A" style="width:100%"></div>
         <div class="char-original" style="left: 200px; top: 300px; animation-delay: 0.2s;"><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=B" style="width:100%"></div>
         <div class="char-original" style="left: 350px; top: 300px; animation-delay: 0.4s;"><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=C" style="width:100%"></div>
-        <h1 style="font-family: Montserrat; font-size: 5rem; margin: 0; letter-spacing: -3px; text-shadow: 0 0 20px var(--pro-teal);">GENSOU</h1>
+        <h1 style="font-family: Montserrat; font-size: 5.5rem; margin: 0; letter-spacing: -3px; text-shadow: 0 0 20px var(--pro-teal);">GENSOU</h1>
         <p style="letter-spacing: 12px; font-weight: 900; color: var(--pro-pink); margin-bottom: 50px;">COLORFUL STAGE</p>
         <button id="loginBtn" class="btn-pro" onclick="transition('titleScreen', 'loadingScreen')"><span>ログイン</span></button>
     </div>
 
     <!-- 2. ロード中 -->
     <div id="loadingScreen" class="screen hidden">
-        <p style="color: var(--pro-teal); font-weight: bold; letter-spacing: 3px;">データを同期中...</p>
+        <p style="color: var(--pro-teal); font-weight: bold; letter-spacing: 3px;">セカイを同期中...</p>
     </div>
 
     <!-- 3. ホーム -->
@@ -99,7 +85,7 @@
         </nav>
     </div>
 
-    <!-- 4. ゲーム選択 -->
+    <!-- 4. クエスト/ゲーム選択 -->
     <div id="questScreen" class="screen hidden">
         <h2 style="font-family: Montserrat; font-size: 3rem;">SELECT GAME</h2>
         <div id="gameListContainer" style="display:flex; flex-wrap:wrap; justify-content:center; gap:20px; width:95%; max-height:50vh; overflow-y:auto;"></div>
@@ -110,17 +96,14 @@
     <div id="sheetConfig" class="bottom-sheet">
         <div class="sheet-handle"></div>
         <div class="sheet-content">
-            <h2 style="color:var(--pro-teal); font-weight:900;">PROFILE SETTINGS</h2>
+            <h2 style="color:var(--pro-teal); font-weight:900;">SETTINGS</h2>
             <div style="text-align: center; margin-bottom: 20px;">
                 <img id="mAv" src="" style="width:90px; height:90px; border-radius:50%; border:3px solid var(--pro-teal); cursor:pointer; object-fit:cover;" onclick="document.getElementById('fileIn').click()">
-                <p style="font-size:0.7rem; color:#999;">タップして画像を変更</p>
                 <input type="file" id="fileIn" style="display:none" accept="image/*" onchange="uploadIcon(this)">
             </div>
-            <p style="font-size:0.7rem; font-weight:bold; margin-bottom:5px;">プレイヤーID</p>
-            <div id="myIdDisplay" style="background:#333; color:var(--pro-teal); padding:12px; border-radius:10px; font-family:monospace; text-align:center; font-size:1.2rem; margin-bottom:20px;">--------</div>
-            <p style="font-size:0.7rem; font-weight:bold; margin-bottom:5px;">ニックネーム</p>
-            <input type="text" id="nIn">
-            <button class="btn-pro" style="width:100%; margin:0;" onclick="saveSettings()"><span>設定を保存</span></button>
+            ID: <div id="myIdDisplay" style="background:#333; color:var(--pro-teal); padding:12px; border-radius:10px; font-family:monospace; text-align:center; margin-bottom:20px;">--------</div>
+            名前: <input type="text" id="nIn">
+            <button class="btn-pro" style="width:100%; margin:0;" onclick="saveSettings()"><span>保存</span></button>
         </div>
     </div>
 
@@ -141,37 +124,17 @@
     <div id="gameLayer"><iframe id="gameFrame" style="width:100%; height:100%; border:none;"></iframe></div>
 
     <script>
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbzeRb2gfquvN7YABX228zQ1VKDFe3iKYctHy4ma2NdMMq2J-I8-gMXI-JthpRaPXWLY/exec';
-        let myId = "", isSyncing = false;
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbxNRNFGD4ZoBAIRBJXuGa4UlZ19-wa389kerrJsVAkv0yBBwbOCVyyXX6vuvTCfHAbu/exec';
+        let myId = "", isSyncing = false, playerPending = [], playerFriends = [];
 
-        // --- 画面遷移 ---
         function transition(h, s) {
-            const cur = document.getElementById(h); const nxt = document.getElementById(s);
-            if(cur) { cur.classList.add('hidden'); setTimeout(() => { cur.style.display = 'none'; }, 600); }
-            if(nxt) { nxt.style.display = 'flex'; setTimeout(() => { nxt.classList.remove('hidden'); }, 50); }
-            if(s === 'loadingScreen') setTimeout(() => { transition('loadingScreen', 'gameScreen'); initPortal(); }, 1500);
+            document.getElementById(h).classList.add('hidden');
+            document.getElementById(s).classList.remove('hidden');
+            if(s === 'loadingScreen') setTimeout(() => { transition('loadingScreen', 'gameScreen'); initPortal(); }, 1200);
         }
         function closeQuest() { transition('questScreen', 'gameScreen'); }
-
-        // --- スライドUI制御 ---
-        function openSheet(id) {
-            document.getElementById('sheetOverlay').style.display = 'block';
-            document.getElementById(id).classList.add('open');
-        }
-        function closeAllSheets() {
-            document.getElementById('sheetOverlay').style.display = 'none';
-            document.querySelectorAll('.bottom-sheet').forEach(s => s.classList.remove('open'));
-        }
-
-        // スワイプで閉じる機能の実装
-        let touchStart = 0;
-        document.querySelectorAll('.bottom-sheet').forEach(sheet => {
-            sheet.addEventListener('touchstart', e => touchStart = e.touches[0].clientY);
-            sheet.addEventListener('touchmove', e => {
-                let move = e.touches[0].clientY - touchStart;
-                if(move > 100) closeAllSheets(); // 100px以上下にスライドしたら閉じる
-            });
-        });
+        function openSheet(id) { document.getElementById('sheetOverlay').style.display = 'block'; document.getElementById(id).classList.add('open'); }
+        function closeAllSheets() { document.getElementById('sheetOverlay').style.display = 'none'; document.querySelectorAll('.bottom-sheet').forEach(s => s.classList.remove('open')); }
 
         function initPortal() {
             if(!localStorage.getItem('gID')) localStorage.setItem('gID', Math.random().toString(36).substring(2, 12).toUpperCase());
@@ -181,13 +144,80 @@
             const av = localStorage.getItem('gAv') || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + myId;
             document.getElementById('hAv').src = av; document.getElementById('mAv').src = av;
             document.getElementById('nIn').value = localStorage.getItem('gName') || "";
-            if(!isSyncing) { isSyncing = true; setInterval(performSync, 10000); performSync(); }
+            if(!isSyncing) { isSyncing = true; setInterval(fetchSync, 5000); fetchSync(); }
         }
 
-        async function performSync() {
+        // --- ★重要：リアルタイム申請受信ロジック ---
+        async function fetchSync() {
             if(!GAS_URL.includes('https')) return;
-            const data = { type: "sync", id: myId, name: localStorage.getItem('gName'), avatar: localStorage.getItem('gAv')||"" };
-            await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(data) });
+            // 自分の状態を保存
+            const syncData = { type: "sync", id: myId, name: localStorage.getItem('gName'), avatar: localStorage.getItem('gAv')||"" };
+            await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(syncData) });
+
+            // 自分の最新情報を取得（届いた申請を確認）
+            const res = await fetch(GAS_URL + "?id=" + myId);
+            const json = await res.json();
+            if(json.result === "success") {
+                // 届いた申請リストの更新
+                playerPending = json.pending ? json.pending.split(',') : [];
+                // フレンドリストの更新
+                const fIds = json.friends ? json.friends.split(',') : [];
+                playerFriends = [];
+                for(let fid of fIds) {
+                    if(fid) {
+                        const fr = await fetch(GAS_URL + "?id=" + fid);
+                        const fj = await fr.json();
+                        if(fj.result === "success") playerFriends.push({id: fid, name: fj.name});
+                    }
+                }
+                updateUI();
+            }
+        }
+
+        function updateUI() {
+            // 申請リスト
+            document.getElementById('reqList').innerHTML = playerPending.map(id => `
+                <div class="row">
+                    <span>ID: ${id}</span>
+                    <button class="btn-pro" style="padding:5px 15px; font-size:0.6rem; width:auto;" onclick="acceptF('${id}')">承認</button>
+                </div>
+            `).join('') || "なし";
+            // フレンドリスト
+            document.getElementById('fList').innerHTML = playerFriends.map(f => `
+                <div class="row"><span>${f.name}</span></div>
+            `).join('') || "なし";
+        }
+
+        async function sendReq() {
+            const tid = document.getElementById('fIdIn').value.toUpperCase();
+            if(tid.length !== 10) return alert("IDは10桁です");
+            await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "request", targetId: tid, myId: myId }) });
+            alert("申請を送信しました！");
+            document.getElementById('fIdIn').value = "";
+        }
+
+        async function acceptF(id) {
+            await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "accept", myId: myId, targetId: id }) });
+            fetchSync(); // 即座に更新
+        }
+
+        function saveSettings() {
+            localStorage.setItem('gName', document.getElementById('nIn').value);
+            document.getElementById('hName').innerText = document.getElementById('nIn').value;
+            fetchSync(); closeAllSheets();
+        }
+
+        function uploadIcon(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    localStorage.setItem('gAv', e.target.result);
+                    document.getElementById('hAv').src = e.target.result;
+                    document.getElementById('mAv').src = e.target.result;
+                    fetchSync();
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
         }
 
         async function loadGameList() {
@@ -199,29 +229,9 @@
             games.forEach(g => {
                 const card = document.createElement('div');
                 card.className = "nav-card"; card.style.width = "140px"; card.style.height = "160px";
-                card.onclick = () => { /* ゲーム開始処理 */ };
                 card.innerHTML = `<div style="height:80px; background:var(--pro-teal); border-radius:10px; margin-bottom:10px;"></div><b>${g.title}</b>`;
                 container.appendChild(card);
             });
-        }
-
-        function saveSettings() {
-            localStorage.setItem('gName', document.getElementById('nIn').value);
-            document.getElementById('hName').innerText = document.getElementById('nIn').value;
-            performSync(); closeAllSheets();
-        }
-
-        function uploadIcon(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    localStorage.setItem('gAv', e.target.result);
-                    document.getElementById('hAv').src = e.target.result;
-                    document.getElementById('mAv').src = e.target.result;
-                    performSync();
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
         }
     </script>
 </body>
