@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>幻想クロニクル - GENSOU Portal</title>
+    <title>幻想クロニクル - THE COMPLETE STAGE</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -12,38 +12,48 @@
         }
         body, html { margin: 0; padding: 0; overflow: hidden; background: #000; font-family: 'Noto Sans JP', sans-serif; color: #fff; height: 100vh; width: 100vw; touch-action: manipulation; }
         
-        /* 背景アニメーション */
+        /* 背景 */
         .bg-sekai { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=2000') no-repeat center center/cover; z-index: -1; filter: brightness(0.6); }
         .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.6) 100%); z-index: -1; }
 
-        .screen { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); z-index: 100; pointer-events: auto; }
+        /* スクリーン遷移 */
+        .screen { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); z-index: 100; }
         .hidden { display: none !important; opacity: 0; pointer-events: none; }
 
-        .char-original { position: absolute; width: 85px; height: 85px; border-radius: 20px; border: 3px solid #fff; background: var(--glass); backdrop-filter: blur(10px); animation: float 3s infinite ease-in-out; z-index: 1; box-shadow: 0 0 20px var(--pro-teal); pointer-events: none; }
+        /* キャラクター浮遊 */
+        .char-original { position: absolute; width: 85px; height: 85px; border-radius: 20px; border: 3px solid #fff; background: var(--glass); backdrop-filter: blur(10px); animation: float 3s infinite ease-in-out; z-index: 1; box-shadow: 0 0 20px var(--pro-teal); }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
+        /* 共通ボタン */
         .btn-pro { background: #fff; color: #333; border: none; padding: 14px 45px; border-radius: 4px; font-weight: 900; cursor: pointer; transition: 0.2s; transform: skewX(-15deg); box-shadow: 6px 6px 0 var(--pro-teal); z-index: 500; font-family: inherit; margin: 10px; text-transform: uppercase; text-align: center; width: 240px; }
         .btn-pro span { display: inline-block; transform: skewX(15deg); }
         .btn-pro:hover { transform: skewX(-15deg) translate(2px, 2px); box-shadow: 0 0 0 var(--pro-teal); background: var(--pro-teal); color: #fff; }
         .btn-pro.pink { box-shadow: 6px 6px 0 var(--pro-pink); background: var(--pro-pink); color: #fff; }
 
+        /* ヘッダー */
         .header-minimal { position: absolute; top: 15px; left: 15px; display: flex; align-items: center; gap: 10px; padding: 5px 15px; background: rgba(0,0,0,0.6); border-left: 4px solid var(--pro-teal); backdrop-filter: blur(10px); z-index: 200; border-radius: 0 15px 15px 0; }
         .av-mini { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; overflow: hidden; background: #222; }
         .iro-coin-disp { margin-left: 20px; font-weight: 900; color: var(--pro-teal); text-shadow: 0 0 10px var(--pro-teal); }
 
+        /* ナビゲーション */
         .nav-container { position: absolute; bottom: 30px; display: flex; gap: 12px; width: 95%; max-width: 1000px; z-index: 300; pointer-events: auto; }
-        .nav-card { flex: 1; background: var(--glass); border: 1px solid var(--border); padding: 18px 5px; border-radius: 12px; cursor: pointer; transition: 0.3s; text-align: center; backdrop-filter: blur(15px); font-weight: 900; font-size: 0.8rem; color: #fff; display: flex; align-items: center; justify-content: center; min-height: 60px; }
-        .nav-card:hover { border-color: #fff; transform: translateY(-10px); background: rgba(255,255,255,0.1); }
-        .nav-card.main { background: linear-gradient(to right, var(--pro-pink), #ff66cc); border: none; font-size: 1.1rem; flex: 1.8; box-shadow: 0 0 25px rgba(255,51,153,0.5); }
+        .nav-card { flex: 1; background: var(--glass); border: 1px solid var(--border); padding: 18px 5px; border-radius: 12px; cursor: pointer; transition: 0.3s; text-align: center; backdrop-filter: blur(15px); font-weight: 900; font-size: 0.75rem; color: #fff; display: flex; align-items: center; justify-content: center; min-height: 60px; }
+        .nav-card:hover { border-color: #fff; transform: translateY(-10px); }
+        .nav-card.main { background: linear-gradient(to right, var(--pro-pink), #ff66cc); border: none; font-size: 1rem; flex: 1.8; box-shadow: 0 0 25px rgba(255,51,153,0.5); }
 
-        .bottom-sheet { position: fixed; bottom: -100%; left: 0; width: 100%; height: 90%; background: #0a0b10; border-radius: 30px 30px 0 0; z-index: 50000; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 -10px 40px rgba(0,0,0,0.5); overflow-y: auto; }
+        /* ボトムシート */
+        .bottom-sheet { position: fixed; bottom: -100%; left: 0; width: 100%; height: 90%; background: #0a0b10; border-radius: 30px 30px 0 0; z-index: 50000; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 -10px 40px rgba(0,0,0,0.5); overflow-y: auto; color: #fff; }
         .bottom-sheet.open { bottom: 0; }
         .sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 49999; display: none; backdrop-filter: blur(5px); }
 
+        /* 学生証 */
+        .student-id-card { background: #fff; color: #333; border-radius: 10px; padding: 20px; border: 2px solid #555; position: relative; max-width: 350px; margin: 20px auto; text-align: left; }
+        .student-input { background: none; border: none; border-bottom: 1px solid #333; width: 100%; font-size: 1rem; padding: 5px 0; margin-bottom: 10px; font-family: inherit; }
+
+        /* ゲーム表示 */
         #gameLayer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: none; z-index: 10000; background: #000; }
         #gameFrame { width: 100%; height: 100%; border: none; }
         #mobilePauseBtn { position: fixed; top: 15px; right: 15px; width: 45px; height: 45px; background: var(--glass); border: 1.5px solid #fff; border-radius: 50%; display: none; z-index: 15000; justify-content: center; align-items: center; font-weight: 900; cursor: pointer; color: #fff; }
-        #pauseOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.85); z-index: 20000; }
     </style>
 </head>
 <body>
@@ -53,27 +63,29 @@
     <div id="sheetOverlay" class="sheet-overlay" onclick="closeAllSheets()"></div>
     <div id="mobilePauseBtn" onclick="showPauseMenu()">II</div>
 
-    <div id="pauseOverlay">
-        <h1 style="font-family: Montserrat; font-size: 4rem; color: var(--pro-teal); margin:0;">PAUSE</h1>
-        <button class="btn-pro" onclick="resumeGame()"><span>再開する</span></button>
-        <button class="btn-pro pink" onclick="exitGame()"><span>終了する</span></button>
+    <!-- ポーズメニュー -->
+    <div id="pauseOverlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:20000; display:none; flex-direction:column; justify-content:center; align-items:center;">
+        <h1 style="font-family: Montserrat; font-size: 4rem; color: var(--pro-teal); margin: 0;">PAUSE</h1>
+        <button class="btn-pro" onclick="resumeGame()"><span>再開</span></button>
+        <button class="btn-pro pink" onclick="exitGame()"><span>終了</span></button>
     </div>
 
-    <!-- 画面1: タイトル -->
+    <!-- スクリーン1: タイトル -->
     <div id="titleScreen" class="screen">
-        <div class="char-original" style="left: 10%; top: 300px;"><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=A" style="width:100%"></div>
-        <div class="char-original" style="right: 10%; top: 300px;"><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=B" style="width:100%"></div>
+        <div class="char-original" style="left: 10%; top: 250px;"><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=A" style="width:100%"></div>
+        <div class="char-original" style="right: 10%; top: 250px;"><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=B" style="width:100%"></div>
         <h1 style="font-family: Montserrat; font-size: 6rem; margin: 0; text-shadow: 0 0 25px var(--pro-teal);">GENSOU</h1>
         <p style="letter-spacing: 12px; font-weight: 900; color: var(--pro-pink); margin-bottom: 50px;">COLORFUL STAGE</p>
         <button class="btn-pro" onclick="transition('titleScreen', 'loadingScreen')"><span>ログイン</span></button>
+        <button class="btn-pro pink" onclick="document.getElementById('modalTransfer').showModal()"><span>データ引き継ぎ</span></button>
     </div>
 
-    <!-- 画面2: ロード -->
+    <!-- スクリーン2: ロード -->
     <div id="loadingScreen" class="screen hidden">
-        <p style="color: var(--pro-teal); font-weight: bold; letter-spacing: 3px; animation: flash 1.5s infinite alternate;">データ同期中...</p>
+        <p style="color: var(--pro-teal); font-weight: bold; letter-spacing: 3px; animation: flash 1.5s infinite alternate;">同期中...</p>
     </div>
 
-    <!-- 画面3: ホーム -->
+    <!-- スクリーン3: ホーム -->
     <div id="gameScreen" class="screen hidden">
         <div class="header-minimal">
             <div class="av-mini"><img id="hAv" src="" style="width:100%; height:100%; object-fit:cover;"></div>
@@ -85,44 +97,70 @@
             <div class="nav-card" onclick="openSheet('sheetFriend')">フレンド</div>
             <div class="nav-card" onclick="launchGachaUI()" style="border: 2px solid var(--pro-teal);">ガチャ</div>
             <div class="nav-card main" onclick="transition('gameScreen', 'questScreen'); loadGameList();">ゲーム選択</div>
+            <div class="nav-card" onclick="alert('準備中')">メンバー</div>
             <div class="nav-card" onclick="openSheet('sheetConfig')">設定</div>
         </nav>
     </div>
 
-    <!-- シート類 -->
+    <!-- 設定シート (学生証) -->
     <div id="sheetConfig" class="bottom-sheet">
-        <div style="padding: 40px; text-align: center;">
-            <h3>設定</h3>
-            <p>学籍番号: <span id="myIdDisplay">---</span></p>
-            <input type="text" id="nIn" placeholder="名前" style="padding:12px; width:80%; margin-bottom:10px;"><br>
-            <input type="password" id="pIn" placeholder="合言葉" style="padding:12px; width:80%; margin-bottom:20px;"><br>
-            <button class="btn-pro" onclick="saveSettings()"><span>保存</span></button>
+        <div style="padding: 30px; text-align: center;">
+            <div class="student-id-card">
+                <h3>幻想クロニクル 学生証</h3>
+                <div style="display:flex; gap:15px; text-align:left;">
+                    <div style="text-align:center;">
+                        <img id="mAv" style="width:90px; height:110px; border:2px solid #333; object-fit:cover; background:#eee;" src="" onclick="document.getElementById('fileIn').click()">
+                        <p style="font-size:0.5rem;">タップで変更</p>
+                    </div>
+                    <div style="flex-grow:1;">
+                        <p style="font-size:0.6rem; color:#888;">ID: <span id="myIdDisplay" style="font-weight:bold; color:#000;">---</span></p>
+                        <p style="font-size:0.6rem; color:#888; margin-top:10px;">名前</p><input type="text" id="nIn" class="student-input">
+                        <p style="font-size:0.6rem; color:#888; margin-top:5px;">合言葉</p><input type="password" id="pIn" class="student-input">
+                    </div>
+                </div>
+                <input type="file" id="fileIn" style="display:none" accept="image/*" onchange="uploadIcon(this)">
+            </div>
+            <button class="btn-pro" style="width:100%;" onclick="saveSettings()"><span>保存</span></button>
         </div>
     </div>
 
+    <!-- フレンドシート -->
     <div id="sheetFriend" class="bottom-sheet">
-        <div style="padding: 40px;">
-            <h3>フレンド</h3>
-            <div id="reqList" style="background:rgba(255,255,255,0.1); padding:15px; border-radius:15px; margin-bottom:10px;">届いた申請: なし</div>
-            <div id="fList" style="background:rgba(255,255,255,0.1); padding:15px; border-radius:15px; min-height:100px;"></div>
+        <div style="padding: 30px;">
+            <h2 style="color:var(--pro-pink);">FRIENDS</h2>
+            <div id="reqList" style="background:rgba(255,255,255,0.1); padding:15px; border-radius:15px; margin-bottom:15px;">届いた申請: なし</div>
+            <div id="fList" style="background:rgba(255,255,255,0.1); padding:15px; border-radius:15px; min-height:150px; margin-bottom:15px;">フレンドはいません</div>
+            <input type="text" id="fIdIn" placeholder="相手のIDを検索" style="width:60%; padding:10px; border-radius:10px; border:none;">
+            <button class="btn-pro pink" style="width:auto; padding:10px 20px;" onclick="sendReq()"><span>申請</span></button>
         </div>
     </div>
 
-    <!-- クエスト画面 -->
+    <!-- クエスト選択 -->
     <div id="questScreen" class="screen hidden">
-        <h2 style="font-size: 3rem; color: var(--pro-teal);">SELECT QUEST</h2>
+        <h2 style="font-size: 3rem; color: var(--pro-teal);">QUESTS</h2>
         <div id="gameListContainer" style="display:flex; flex-wrap:wrap; justify-content:center; gap:20px; padding:20px; width:95%;"></div>
         <button class="btn-pro gray" onclick="transition('questScreen', 'gameScreen')">戻る</button>
     </div>
 
+    <!-- 引き継ぎモーダル -->
+    <dialog id="modalTransfer" style="background:#111; color:#fff; border:1px solid var(--pro-pink); border-radius:15px; padding:20px;">
+        <h3>引き継ぎ</h3>
+        <input type="text" id="tIdIn" placeholder="ID" style="width:100%; margin-bottom:10px; padding:10px;">
+        <input type="password" id="tPassIn" placeholder="合言葉" style="width:100%; margin-bottom:15px; padding:10px;">
+        <button class="btn-pro pink" style="width:100%" onclick="executeTransfer()">実行</button>
+        <button class="btn-pro gray" style="width:100%; margin-top:10px;" onclick="this.closest('dialog').close()">閉じる</button>
+    </dialog>
+
     <div id="gameLayer"><iframe id="gameFrame" src="about:blank"></iframe></div>
 
     <script>
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbxKCEoEZNTA5BtTYJbGPnSPXtBv0lV4Aa0O9UaYQkyajbtfGjbxbTyDjkyqWOfpKiyB/exec';
+        // --- 共通設定 ---
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbz-CrDuHziuTiWKEQZOmcnoRU66322rYaR4sY1DiJnh66DsVU5G6Ar2LjkkXbcFvdy4/exec'; 
         let myId = localStorage.getItem('gID') || Math.random().toString(36).substring(2, 12).toUpperCase();
         let iroCoins = 0;
         let isSyncing = false;
 
+        // --- 画面遷移 ---
         function transition(h, s) {
             document.getElementById(h).classList.add('hidden');
             setTimeout(() => { 
@@ -139,43 +177,53 @@
             document.getElementById('hName').innerText = localStorage.getItem('gName') || "USER";
             document.getElementById('nIn').value = localStorage.getItem('gName') || "";
             document.getElementById('pIn').value = localStorage.getItem('gPass') || "";
-            const av = "https://api.dicebear.com/7.x/avataaars/svg?seed=" + myId;
-            document.getElementById('hAv').src = av;
+            const av = localStorage.getItem('gAv') || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + myId;
+            document.getElementById('hAv').src = av; document.getElementById('mAv').src = av;
             
-            if(!isSyncing) { isSyncing = true; fetchSync(); setInterval(fetchSync, 15000); }
+            if(!isSyncing) { isSyncing = true; fetchSync(); setInterval(fetchSync, 10000); }
         }
 
+        // --- GASデータ同期 ---
         async function fetchSync() {
             if(!GAS_URL.includes('https')) return;
-            const data = {
-                type: "sync",
-                id: myId,
-                name: localStorage.getItem('gName') || "USER",
-                pass: localStorage.getItem('gPass') || "",
-                iroCoin: iroCoins,
-                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=" + myId
+            const syncData = {
+                type: "sync", id: myId, name: localStorage.getItem('gName') || "USER",
+                pass: localStorage.getItem('gPass') || "", iroCoin: iroCoins,
+                avatar: localStorage.getItem('gAv') || ""
             };
-            await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(data) });
+            await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(syncData) });
             const res = await fetch(GAS_URL + "?id=" + myId);
             const json = await res.json();
             if(json.result === "success") {
                 iroCoins = Number(json.iroCoin);
                 document.getElementById('hIroCoin').innerText = iroCoins.toLocaleString();
-                if(json.pending) document.getElementById('reqList').innerText = "申請: " + json.pending;
+                if(json.pending) {
+                    document.getElementById('reqList').innerHTML = json.pending.split(',').map(id => `
+                        <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                        <span>${id}</span><button onclick="acceptF('${id}')">承認</button></div>`).join('');
+                }
                 if(json.friends) document.getElementById('fList').innerText = json.friends;
             }
         }
 
+        // --- ガチャ統合ロジック ---
         async function launchGachaUI() {
             document.getElementById('gameLayer').style.display = 'block';
             document.getElementById('mobilePauseBtn').style.display = 'flex';
             const res = await fetch(`${GAS_URL}?action=getGachaUI`);
             const data = await res.json();
+            
+            // プログラム2(ガチャ)のコードを現在のアカウントに置換して起動
             let code = data.code.replace(/const USER_ID = "[^"]*";/g, `const USER_ID = "${myId}";`);
             code = code.replace(/const GAS_URL = "[^"]*";/g, `const GAS_URL = "${GAS_URL}";`);
-            document.getElementById('gameFrame').srcdoc = code;
+            // 通貨名の置換
+            code = code.replace(/crystal-count/g, "irocoin-count").replace(/クリスタル/g, "いろコイン");
+            
+            const frame = document.getElementById('gameFrame');
+            frame.srcdoc = code;
         }
 
+        // --- ゲーム選択 ---
         async function loadGameList() {
             const container = document.getElementById('gameListContainer');
             container.innerHTML = "読み込み中...";
@@ -199,12 +247,49 @@
             document.getElementById('gameFrame').srcdoc = data.code;
         }
 
+        // --- 設定・画像アップロード ---
         function saveSettings() {
             localStorage.setItem('gName', document.getElementById('nIn').value);
             localStorage.setItem('gPass', document.getElementById('pIn').value);
             fetchSync(); closeAllSheets();
         }
 
+        function uploadIcon(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    localStorage.setItem('gAv', e.target.result);
+                    document.getElementById('hAv').src = e.target.result;
+                    document.getElementById('mAv').src = e.target.result;
+                    fetchSync();
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // --- フレンド・引き継ぎ ---
+        async function sendReq() {
+            const tid = document.getElementById('fIdIn').value.toUpperCase();
+            await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "request", myId: myId, targetId: tid }) });
+            alert("申請を送りました");
+        }
+        async function acceptF(tid) {
+            await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "accept", myId: myId, targetId: tid }) });
+            fetchSync();
+        }
+        async function executeTransfer() {
+            const tid = document.getElementById('tIdIn').value.toUpperCase();
+            const tp = document.getElementById('tPassIn').value;
+            const res = await fetch(`${GAS_URL}?id=${tid}`);
+            const json = await res.json();
+            if(json.result === "success" && json.pass === tp) {
+                localStorage.setItem('gID', tid); localStorage.setItem('gName', json.name); localStorage.setItem('gPass', tp);
+                localStorage.setItem('gAv', json.avatar || "");
+                location.reload();
+            } else { alert("IDまたは合言葉が違います"); }
+        }
+
+        // --- UI操作 ---
         function openSheet(id) { document.getElementById('sheetOverlay').style.display = 'block'; document.getElementById(id).classList.add('open'); }
         function closeAllSheets() { document.getElementById('sheetOverlay').style.display = 'none'; document.querySelectorAll('.bottom-sheet').forEach(s => s.classList.remove('open')); }
         function showPauseMenu() { document.getElementById('pauseOverlay').style.display = 'flex'; }
