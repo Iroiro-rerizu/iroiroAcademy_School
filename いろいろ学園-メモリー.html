@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>幻想クロニクル - ULTIMATE INTEGRATED STAGE</title>
+    <title>幻想クロニクル - THE ULTIMATE STAGE</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -16,44 +16,58 @@
         .bg-sekai { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=2000') no-repeat center center/cover; z-index: -1; filter: brightness(0.6); }
         .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.6) 100%); z-index: -1; }
 
-        /* 画面管理 */
+        /* スクリーン管理 */
         .screen { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); z-index: 100; }
         .hidden { display: none !important; opacity: 0; pointer-events: none; }
 
-        /* ボタンデザイン */
+        /* キャラクター装飾 */
+        .char-original { position: absolute; width: 85px; height: 85px; border-radius: 20px; border: 3px solid #fff; background: var(--glass); backdrop-filter: blur(10px); animation: float 3s infinite ease-in-out; z-index: 1; box-shadow: 0 0 20px var(--pro-teal); pointer-events: none; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+        /* ボタン */
         .btn-pro { background: #fff; color: #333; border: none; padding: 14px 45px; border-radius: 4px; font-weight: 900; cursor: pointer; transition: 0.2s; transform: skewX(-15deg); box-shadow: 6px 6px 0 var(--pro-teal); z-index: 500; font-family: inherit; margin: 10px; text-transform: uppercase; text-align: center; width: 240px; }
         .btn-pro span { display: inline-block; transform: skewX(15deg); }
         .btn-pro:hover { transform: skewX(-15deg) translate(2px, 2px); box-shadow: 0 0 0 var(--pro-teal); background: var(--pro-teal); color: #fff; }
         .btn-pro.pink { box-shadow: 6px 6px 0 var(--pro-pink); background: var(--pro-pink); color: #fff; }
         .btn-pro.gray { background: #444; color: #fff; box-shadow: 6px 6px 0 #222; }
 
-        /* 公式マーク */
-        .badge-verify { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; background: var(--verify); color: #fff; border-radius: 50%; font-size: 10px; margin-left: 5px; vertical-align: middle; }
-
         /* ヘッダー */
         .header-minimal { position: absolute; top: 15px; left: 15px; display: flex; align-items: center; gap: 10px; padding: 5px 15px; background: rgba(0,0,0,0.6); border-left: 4px solid var(--pro-teal); backdrop-filter: blur(10px); z-index: 200; border-radius: 0 15px 15px 0; }
         .av-mini { width: 35px; height: 35px; border-radius: 50%; border: 2px solid #fff; overflow: hidden; background: #222; cursor: pointer; }
         .iro-coin-disp { margin-left: 20px; font-weight: 900; color: var(--pro-teal); text-shadow: 0 0 10px var(--pro-teal); font-size: 1.1rem; }
+
+        /* 公式マーク */
+        .badge-verify { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; background: var(--verify); color: #fff; border-radius: 50%; font-size: 10px; margin-left: 5px; vertical-align: middle; }
 
         /* ナビゲーション */
         .nav-container { position: absolute; bottom: 30px; display: flex; gap: 12px; width: 95%; max-width: 1000px; z-index: 300; pointer-events: auto; }
         .nav-card { flex: 1; background: var(--glass); border: 1px solid var(--border); padding: 18px 5px; border-radius: 12px; cursor: pointer; transition: 0.3s; text-align: center; backdrop-filter: blur(15px); font-weight: 900; font-size: 0.8rem; color: #fff; display: flex; align-items: center; justify-content: center; min-height: 60px; }
         .nav-card.main { background: linear-gradient(to right, var(--pro-pink), #ff66cc); border: none; font-size: 1rem; flex: 1.8; }
 
+        /* プレゼントボタン */
+        .present-btn { position: absolute; top: 80px; left: 20px; width: 55px; height: 55px; background: var(--glass); border: 1.5px solid var(--border); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 300; transition: 0.3s; backdrop-filter: blur(10px); font-size: 1.6rem; }
+        .present-badge { position: absolute; top: 0; right: 0; width: 20px; height: 20px; background: red; border-radius: 50%; border: 2px solid #fff; font-size: 0.7rem; display: none; justify-content: center; align-items: center; font-weight: bold; }
+
         /* ボトムシート */
-        .bottom-sheet { position: fixed; bottom: -100%; left: 0; width: 100%; height: 90%; background: #0a0b10; border-radius: 30px 30px 0 0; z-index: 50000; transition: 0.4s; overflow-y: auto; color: #fff; }
+        .bottom-sheet { position: fixed; bottom: -100%; left: 0; width: 100%; height: 90%; background: #0a0b10; border-radius: 30px 30px 0 0; z-index: 50000; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 -10px 40px rgba(0,0,0,0.5); overflow-y: auto; color: #fff; }
         .bottom-sheet.open { bottom: 0; }
         .sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 49999; display: none; backdrop-filter: blur(5px); }
 
+        /* アイテム・要素 */
         .friend-box { background: #f0f0f5; color: #333; padding: 15px; border-radius: 15px; margin-bottom: 15px; }
         .friend-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; padding: 8px 0; }
-        .history-item { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; margin-bottom: 5px; display: flex; justify-content: space-between; font-size: 0.8rem; }
+        .history-item { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 10px; margin-bottom: 5px; display: flex; justify-content: space-between; font-size: 0.8rem; }
+        .history-item.plus { border-left: 4px solid var(--pro-teal); }
+        .history-item.minus { border-left: 4px solid var(--pro-pink); }
         .present-item { background: rgba(255,255,255,0.1); margin: 10px; padding: 15px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .student-id-card { background: #fff; color: #333; border-radius: 10px; padding: 25px; border: 2px solid #555; position: relative; max-width: 350px; margin: 20px auto; text-align: left; }
+        .student-input { background: none; border: none; border-bottom: 1px solid #333; width: 100%; font-size: 1rem; padding: 5px 0; margin-bottom: 15px; color:#000; font-family: inherit; }
 
         /* レイヤー */
         #gameLayer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: none; z-index: 10000; background: #000; }
         #gameFrame { width: 100%; height: 100%; border: none; }
         #mobilePauseBtn { position: fixed; top: 15px; right: 15px; width: 45px; height: 45px; background: var(--glass); border: 1.5px solid #fff; border-radius: 50%; display: none; z-index: 15000; justify-content: center; align-items: center; font-weight: 900; cursor: pointer; color: #fff; }
+        #pauseOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.85); z-index: 20000; }
     </style>
 </head>
 <body>
@@ -64,33 +78,35 @@
     <div id="mobilePauseBtn" onclick="showPauseMenu()">II</div>
 
     <!-- ポーズメニュー -->
-    <div id="pauseOverlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:20000; display:none; flex-direction:column; justify-content:center; align-items:center;">
-        <h1 style="font-family: Montserrat; font-size: 4rem; color: var(--pro-teal); margin-bottom: 30px;">PAUSE</h1>
+    <div id="pauseOverlay">
+        <h1 style="font-family: Montserrat; font-size: 4rem; color: var(--pro-teal); margin-bottom: 20px;">PAUSE</h1>
         <button class="btn-pro" onclick="resumeGame()"><span>再開</span></button>
         <button class="btn-pro pink" onclick="exitGame()"><span>終了</span></button>
     </div>
 
-    <!-- 1. タイトル -->
+    <!-- スクリーン1: タイトル -->
     <div id="titleScreen" class="screen">
+        <div class="char-original" style="left: 10%; top: 250px;"><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=A" style="width:100%"></div>
+        <div class="char-original" style="right: 10%; top: 250px;"><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=B" style="width:100%"></div>
         <h1 style="font-family: Montserrat; font-size: 6rem; margin: 0; text-shadow: 0 0 25px var(--pro-teal);">GENSOU</h1>
         <p style="letter-spacing: 12px; font-weight: 900; color: var(--pro-pink); margin-bottom: 50px;">COLORFUL STAGE</p>
         <button class="btn-pro" onclick="startLoading()"><span>ログイン</span></button>
         <button class="btn-pro pink" onclick="document.getElementById('modalTransfer').showModal()"><span>データ復旧</span></button>
     </div>
 
-    <!-- 2. ロード -->
+    <!-- スクリーン2: ロード -->
     <div id="loadingScreen" class="screen hidden">
         <p style="color: var(--pro-teal); font-weight: bold; letter-spacing: 3px; animation: flash 1.5s infinite alternate;">同期中...</p>
     </div>
 
-    <!-- 3. ホーム -->
+    <!-- スクリーン3: ホーム -->
     <div id="gameScreen" class="screen hidden">
         <div class="header-minimal">
             <div class="av-mini" onclick="openSheet('sheetConfig')"><img id="hAv" src="" style="width:100%; height:100%; object-fit:cover;"></div>
             <div style="font-size: 0.9rem; font-weight: 900;"><span id="hName">---</span><span id="hVerified"></span></div>
             <div class="iro-coin-disp">🪙 <span id="hIroCoin">---</span></div>
         </div>
-        <div style="position:absolute; top:80px; left:20px; width:55px; height:55px; background:var(--glass); border-radius:50%; display:flex; justify-content:center; align-items:center; cursor:pointer; z-index:300; border:1.5px solid var(--border);" onclick="openSheet('sheetPresent')">🎁<div id="pBadge" style="position:absolute; top:0; right:0; width:20px; height:20px; background:red; border-radius:50%; border:2px solid #fff; font-size:0.7rem; display:none; justify-content:center; align-items:center; font-weight:bold;">0</div></div>
+        <div class="present-btn" onclick="openSheet('sheetPresent')">🎁<div id="pBadge" class="present-badge">0</div></div>
         <h2 style="font-size: 3.5rem; font-weight: 300; letter-spacing: 10px; opacity: 0.8; font-family: Montserrat;">MAIN CONSOLE</h2>
         <nav class="nav-container">
             <div class="nav-card" onclick="openSheet('sheetFriend')">フレンド</div>
@@ -100,7 +116,7 @@
         </nav>
     </div>
 
-    <!-- 各ボトムシート -->
+    <!-- ボトムシート：プレゼント & 履歴 -->
     <div id="sheetPresent" class="bottom-sheet">
         <div style="padding: 30px;">
             <h2 style="color:var(--pro-teal); font-family: Montserrat;">PRESENTS</h2><div id="pListContainer"></div>
@@ -110,12 +126,12 @@
 
     <div id="sheetConfig" class="bottom-sheet">
         <div style="padding: 30px; text-align: center;">
-            <div style="background:#fff; color:#333; border-radius:15px; padding:25px; max-width:350px; margin:0 auto; text-align:left;">
+            <div class="student-id-card">
                 <h3 style="margin-top:0">学生証設定</h3>
                 <img id="mAv" style="width:95px; height:120px; border:2px solid #333; object-fit:cover; background:#eee; cursor:pointer;" src="" onclick="document.getElementById('fileIn').click()">
                 <p style="font-size:0.6rem; color:#888;">ID: <span id="myIdDisplay">---</span></p>
-                <input type="text" id="nIn" placeholder="名前" style="width:100%; border:none; border-bottom:1px solid #333; padding:10px 0; margin-bottom:15px; color:#000;">
-                <input type="password" id="pIn" placeholder="秘密の合言葉（復旧用）" style="width:100%; border:none; border-bottom:1px solid #333; padding:10px 0; color:#000;">
+                <input type="text" id="nIn" placeholder="名前" class="student-input">
+                <input type="password" id="pIn" placeholder="合言葉（復旧用）" class="student-input">
                 <input type="file" id="fileIn" style="display:none" accept="image/*" onchange="uploadIcon(this)">
             </div><br>
             <button class="btn-pro" style="width:100%" onclick="saveSettings()"><span>保存して同期</span></button>
@@ -139,7 +155,6 @@
 
     <dialog id="modalTransfer" style="background:#111; color:#fff; border:1px solid var(--pro-pink); border-radius:20px; padding:30px; width:300px; border:none; box-shadow: 0 0 30px rgba(255,51,153,0.5);">
         <h3 style="margin-top:0">データ復元</h3>
-        <p style="font-size:0.7rem; opacity:0.7;">IDと合言葉（シートD列一番下）を入力してください。</p>
         <input type="text" id="tIdIn" placeholder="ID (例:ABC1234567)" style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:none; box-sizing:border-box;"><br>
         <input type="password" id="tPassIn" placeholder="合言葉" style="width:100%; padding:12px; margin-bottom:20px; border-radius:8px; border:none; box-sizing:border-box;"><br>
         <button class="btn-pro pink" style="width:100%; margin:0;" onclick="executeTransfer()">復元を実行</button>
@@ -148,7 +163,7 @@
     <div id="gameLayer"><iframe id="gameFrame" src="about:blank"></iframe></div>
 
     <script>
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbxVDeDCXG3YHOlDrlrftoo9XySX8-Onj0D0TpxZ7k_p_jW2AcNNl9iZ7CogMnjBP8hA/exec';
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycby7wcrnm2dNYWiTCJoHN4J1MOPPsLb50NkpApFalJzd245_JNNSIWD25NK-YtpZOOwS/exec';
         let myId = localStorage.getItem('gID') || Math.random().toString(36).substring(2, 12).toUpperCase();
         let iroCoins = parseInt(localStorage.getItem('gCoins')) || 0;
         let claimedPresents = [], firstSyncDone = false;
@@ -202,16 +217,11 @@
             try {
                 const res = await fetch(GAS_URL + "?id=" + id);
                 const json = await res.json();
-                if(json.result === "success") {
-                    if(String(json.pass) === String(ps)) {
-                        localStorage.setItem('gID', id);
-                        localStorage.setItem('gName', json.name);
-                        localStorage.setItem('gPass', json.pass);
-                        localStorage.setItem('gCoins', json.iroCoin);
-                        if(json.avatar) localStorage.setItem('gAv', json.avatar);
-                        alert("復元成功！再起動します。"); location.reload();
-                    } else { alert("合言葉が違います。"); }
-                } else { alert("IDが見つかりません。"); }
+                if(json.result === "success" && String(json.pass) === String(ps)) {
+                    localStorage.setItem('gID', id); localStorage.setItem('gName', json.name); localStorage.setItem('gPass', json.pass); localStorage.setItem('gCoins', json.iroCoin);
+                    if(json.avatar) localStorage.setItem('gAv', json.avatar);
+                    alert("復元成功！"); location.reload();
+                } else { alert("IDまたは合言葉が違います。"); }
             } catch(e) { alert("エラー"); }
         }
 
