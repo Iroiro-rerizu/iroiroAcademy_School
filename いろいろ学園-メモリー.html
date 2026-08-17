@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>幻想クロニクル - THE FINAL PERFECT STAGE</title>
+    <title>幻想クロニクル - THE ULTIMATE FULL PACKAGE</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -12,7 +12,7 @@
         }
         body, html { margin: 0; padding: 0; overflow: hidden; background: #000; font-family: 'Noto Sans JP', sans-serif; color: #fff; height: 100vh; width: 100vw; touch-action: manipulation; }
         
-        /* 背景 */
+        /* 背景装飾 */
         .bg-sekai { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=2000') no-repeat center center/cover; z-index: -1; filter: brightness(0.6); }
         .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.6) 100%); z-index: -1; }
 
@@ -20,38 +20,45 @@
         .screen { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); z-index: 100; }
         .hidden { display: none !important; opacity: 0; pointer-events: none; }
 
-        /* ボタン */
+        /* ボタンデザイン */
         .btn-pro { background: #fff; color: #333; border: none; padding: 14px 45px; border-radius: 4px; font-weight: 900; cursor: pointer; transition: 0.2s; transform: skewX(-15deg); box-shadow: 6px 6px 0 var(--pro-teal); z-index: 500; font-family: inherit; margin: 10px; text-transform: uppercase; text-align: center; width: 240px; }
         .btn-pro span { display: inline-block; transform: skewX(15deg); }
         .btn-pro:hover { transform: skewX(-15deg) translate(2px, 2px); box-shadow: 0 0 0 var(--pro-teal); background: var(--pro-teal); color: #fff; }
         .btn-pro.pink { box-shadow: 6px 6px 0 var(--pro-pink); background: var(--pro-pink); color: #fff; }
         .btn-pro.gray { background: #444; color: #fff; box-shadow: 6px 6px 0 #222; }
 
-        /* 公式バッジ */
-        .badge-verify { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; background: var(--verify); color: #fff; border-radius: 50%; font-size: 10px; margin-left: 5px; vertical-align: middle; }
-
-        /* ヘッダー */
+        /* ヘッダー・公式バッジ */
         .header-minimal { position: absolute; top: 15px; left: 15px; display: flex; align-items: center; gap: 10px; padding: 5px 15px; background: rgba(0,0,0,0.6); border-left: 4px solid var(--pro-teal); backdrop-filter: blur(10px); z-index: 200; border-radius: 0 15px 15px 0; }
         .av-mini { width: 35px; height: 35px; border-radius: 50%; border: 2px solid #fff; overflow: hidden; background: #222; cursor: pointer; }
         .iro-coin-disp { margin-left: 20px; font-weight: 900; color: var(--pro-teal); text-shadow: 0 0 10px var(--pro-teal); font-size: 1.1rem; }
+        .badge-verify { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; background: var(--verify); color: #fff; border-radius: 50%; font-size: 10px; margin-left: 5px; vertical-align: middle; }
 
         /* ナビゲーション */
         .nav-container { position: absolute; bottom: 30px; display: flex; gap: 12px; width: 95%; max-width: 1000px; z-index: 300; pointer-events: auto; }
         .nav-card { flex: 1; background: var(--glass); border: 1px solid var(--border); padding: 18px 5px; border-radius: 12px; cursor: pointer; transition: 0.3s; text-align: center; backdrop-filter: blur(15px); font-weight: 900; font-size: 0.8rem; color: #fff; display: flex; align-items: center; justify-content: center; min-height: 60px; }
+
+        /* プレゼントボタン */
+        .present-btn { position: absolute; top: 80px; left: 20px; width: 55px; height: 55px; background: var(--glass); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 300; border: 1.5px solid var(--border); transition: 0.3s; }
+        .present-badge { position: absolute; top: 0; right: 0; width: 20px; height: 20px; background: red; border-radius: 50%; border: 2px solid #fff; font-size: 0.7rem; display: none; justify-content: center; align-items: center; font-weight: bold; }
 
         /* ボトムシート */
         .bottom-sheet { position: fixed; bottom: -100%; left: 0; width: 100%; height: 90%; background: #0a0b10; border-radius: 30px 30px 0 0; z-index: 50000; transition: 0.4s; overflow-y: auto; color: #fff; }
         .bottom-sheet.open { bottom: 0; }
         .sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 49999; display: none; backdrop-filter: blur(5px); }
 
-        /* リスト系 */
+        /* リスト・カード */
         .member-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; padding: 20px; }
         .member-card { width: 110px; text-align: center; background: rgba(255,255,255,0.1); border-radius: 10px; padding: 10px; border: 1px solid rgba(255,255,255,0.2); }
         .member-card img { width: 90px; height: 120px; object-fit: cover; border-radius: 5px; border: 1px solid #fff; margin-bottom: 5px; }
         .friend-box { background: #f0f0f5; color: #333; padding: 15px; border-radius: 15px; margin-bottom: 15px; }
         .friend-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; padding: 10px 0; }
         .history-item { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 10px; margin-bottom: 8px; display: grid; grid-template-columns: 1.2fr 2fr 0.8fr; align-items: center; font-size: 0.8rem; border-left: 4px solid #555; }
+        .history-date { font-size: 0.65rem; opacity: 0.5; font-family: Montserrat; }
         .present-item { background: rgba(255,255,255,0.1); margin: 10px; padding: 15px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; }
+
+        /* 学生証 */
+        .student-id-card { background: #fff; color: #333; border-radius: 10px; padding: 25px; border: 2px solid #555; position: relative; max-width: 350px; margin: 20px auto; text-align: left; box-shadow: 10px 10px 0 rgba(0,0,0,0.3); }
+        .student-input { background: none; border: none; border-bottom: 1px solid #333; width: 100%; font-size: 1rem; padding: 5px 0; margin-bottom: 15px; color:#000; font-family: inherit; }
 
         /* ゲーム表示レイヤー */
         #gameLayer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: none; z-index: 10000; background: #000; }
@@ -67,7 +74,7 @@
     <div id="sheetOverlay" class="sheet-overlay" onclick="closeAllSheets()"></div>
     <div id="mobilePauseBtn" onclick="showPauseMenu()">II</div>
 
-    <!-- ポーズ -->
+    <!-- ポーズメニュー -->
     <div id="pauseOverlay">
         <h1 style="font-family: Montserrat; font-size: 4rem; color: var(--pro-teal); margin-bottom: 30px;">PAUSE</h1>
         <button class="btn-pro" onclick="resumeGame()"><span>再開</span></button>
@@ -82,18 +89,21 @@
         <button class="btn-pro pink" onclick="document.getElementById('modalTransfer').showModal()"><span>データ復元</span></button>
     </div>
 
+    <!-- 2. ロード中 -->
     <div id="loadingScreen" class="screen hidden">
         <p style="color: var(--pro-teal); font-weight: bold; letter-spacing: 3px; animation: flash 1.5s infinite alternate;">同期中...</p>
     </div>
 
-    <!-- 3. ホーム -->
+    <!-- 3. ホーム画面 -->
     <div id="gameScreen" class="screen hidden">
         <div class="header-minimal">
             <div class="av-mini" onclick="openSheet('sheetConfig')"><img id="hAv" src="" style="width:100%; height:100%; object-fit:cover;"></div>
             <div style="font-size: 0.9rem; font-weight: 900;"><span id="hName">---</span><span id="hVerified"></span></div>
             <div class="iro-coin-disp">🪙 <span id="hIroCoin">---</span></div>
         </div>
-        <div style="position:absolute; top:80px; left:20px; width:55px; height:55px; background:var(--glass); border-radius:50%; display:flex; justify-content:center; align-items:center; cursor:pointer; z-index:300; border:1.5px solid var(--border);" onclick="openSheet('sheetPresent')">🎁<div id="pBadge" style="position:absolute; top:0; right:0; width:20px; height:20px; background:red; border-radius:50%; border:2px solid #fff; font-size:0.7rem; display:none; justify-content:center; align-items:center; font-weight:bold;">0</div></div>
+
+        <div class="present-btn" onclick="openSheet('sheetPresent')">🎁<div id="pBadge" class="present-badge">0</div></div>
+
         <h2 style="font-size: 3.5rem; font-weight: 300; letter-spacing: 10px; opacity: 0.8; font-family: Montserrat;">MAIN CONSOLE</h2>
         <nav class="nav-container">
             <div class="nav-card" onclick="openSheet('sheetFriend')">フレンド</div>
@@ -104,26 +114,15 @@
         </nav>
     </div>
 
-    <!-- シート：メンバー -->
+    <!-- ボトムシート：メンバー -->
     <div id="sheetMember" class="bottom-sheet">
         <div style="padding: 30px;">
             <h2 style="color:var(--pro-teal); font-family: Montserrat;">MY MEMBERS</h2>
-            <div id="memberListContainer" class="member-grid">同期中...</div>
+            <div id="memberListContainer" class="member-grid">メンバー同期中...</div>
         </div>
     </div>
 
-    <!-- シート：フレンド -->
-    <div id="sheetFriend" class="bottom-sheet">
-        <div style="padding: 30px;">
-            <h2 style="color:var(--pro-pink);">FRIENDS</h2>
-            <p style="font-size:0.7rem; opacity:0.6;">届いた申請</p><div id="reqList" class="friend-box">なし</div>
-            <p style="font-size:0.7rem; opacity:0.6;">送った申請</p><div id="sentList" class="friend-box">なし</div>
-            <p style="font-size:0.7rem; opacity:0.6;">フレンドリスト</p><div id="fList" class="friend-box" style="min-height:150px;">なし</div>
-            <input type="text" id="fIdIn" placeholder="10桁ID検索" style="width:60%; padding:12px; border-radius:10px; border:none; color:#000;"><button class="btn-pro pink" style="width:auto; padding:12px 25px;" onclick="sendReq()"><span>申請</span></button>
-        </div>
-    </div>
-
-    <!-- 各種シート -->
+    <!-- ボトムシート：プレゼント & 履歴 -->
     <div id="sheetPresent" class="bottom-sheet">
         <div style="padding: 30px;">
             <h2 style="color:var(--pro-teal); font-family: Montserrat;">PRESENTS</h2><div id="pListContainer"></div>
@@ -131,39 +130,209 @@
         </div>
     </div>
 
+    <!-- ボトムシート：設定・学生証 -->
     <div id="sheetConfig" class="bottom-sheet">
         <div style="padding: 30px; text-align: center;">
-            <div style="background:#fff; color:#333; border-radius:15px; padding:25px; max-width:350px; margin:0 auto; text-align:left;">
+            <div class="student-id-card">
                 <h3 style="margin-top:0">学生証設定</h3>
-                <img id="mAv" style="width:95px; height:120px; border:2px solid #333; object-fit:cover; background:#eee; cursor:pointer;" src="" onclick="document.getElementById('fileIn').click()">
-                <p style="font-size:0.6rem; color:#888;">ID: <span id="myIdDisplay">---</span></p>
-                <input type="text" id="nIn" placeholder="名前" style="width:100%; border:none; border-bottom:1px solid #333; padding:10px 0; margin-bottom:15px; color:#000;">
-                <input type="password" id="pIn" placeholder="合言葉" style="width:100%; border:none; border-bottom:1px solid #333; padding:10px 0; color:#000;">
+                <div style="display:flex; gap:15px; text-align:left;">
+                    <div style="text-align:center;">
+                        <img id="mAv" style="width:95px; height:120px; border:2px solid #333; object-fit:cover; background:#eee; cursor:pointer;" src="" onclick="document.getElementById('fileIn').click()">
+                        <p style="font-size:0.5rem; color:#555;">タップで画像変更</p>
+                    </div>
+                    <div style="flex-grow:1;">
+                        <p style="font-size:0.6rem; color:#888;">学籍番号(ID)</p><span id="myIdDisplay" style="font-weight:bold; color:#000; font-size:1.1rem;">---</span>
+                        <p style="font-size:0.6rem; color:#888; margin-top:10px;">名前</p><input type="text" id="nIn" class="student-input">
+                        <p style="font-size:0.6rem; color:#888;">合言葉</p><input type="password" id="pIn" class="student-input">
+                    </div>
+                </div>
                 <input type="file" id="fileIn" style="display:none" accept="image/*" onchange="uploadIcon(this)">
-            </div><br>
-            <button class="btn-pro" style="width:100%" onclick="saveSettings()"><span>保存</span></button>
+            </div>
+            <button class="btn-pro" style="width:100%" onclick="saveSettings()"><span>設定を保存して同期</span></button>
         </div>
     </div>
 
+    <!-- ボトムシート：フレンド（復元） -->
+    <div id="sheetFriend" class="bottom-sheet">
+        <div style="padding: 30px;">
+            <h2 style="color:var(--pro-pink);">FRIENDS</h2>
+            <p style="font-size:0.75rem; opacity:0.6; margin-bottom:5px;">届いた申請 (タップで承認)</p>
+            <div id="reqList" class="friend-box">読み込み中...</div>
+            <p style="font-size:0.75rem; opacity:0.6; margin-bottom:5px;">送った申請 (承認待ち)</p>
+            <div id="sentList" class="friend-box" style="height:50px;">読み込み中...</div>
+            <p style="font-size:0.75rem; opacity:0.6; margin-bottom:5px;">フレンドリスト</p>
+            <div id="fList" class="friend-box" style="min-height:150px;">読み込み中...</div>
+            <div style="margin-top:20px; display:flex; gap:10px;">
+                <input type="text" id="fIdIn" placeholder="友達のIDを入力" style="flex-grow:1; padding:12px; border-radius:10px; border:none; color:#000;">
+                <button class="btn-pro pink" style="width:auto; padding:0 30px; margin:0;" onclick="sendReq()"><span>申請</span></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 各種画面 -->
     <div id="questScreen" class="screen hidden">
+        <h2 style="font-size: 3rem; color: var(--pro-teal); font-family: Montserrat;">QUEST SELECT</h2>
         <div id="gameListContainer" style="display:flex; flex-wrap:wrap; justify-content:center; gap:20px; padding:20px; width:95%;"></div>
         <button class="btn-pro gray" onclick="transition('questScreen', 'gameScreen')">戻る</button>
     </div>
 
+    <!-- データ復元 -->
     <dialog id="modalTransfer" style="background:#111; color:#fff; border:none; border-radius:20px; padding:30px; width:300px; box-shadow: 0 0 30px rgba(255,51,153,0.5);">
-        <h3>データ復元</h3>
-        <input type="text" id="tIdIn" placeholder="ID"><input type="password" id="tPassIn" placeholder="合言葉"><br><br>
-        <button class="btn-pro pink" style="width:100%; margin:0;" onclick="executeTransfer()">復元実行</button>
+        <h3 style="margin-top:0">データ復元</h3>
+        <p style="font-size:0.7rem; opacity:0.7;">IDと合言葉（シートD列一番下）を入力してください。</p>
+        <input type="text" id="tIdIn" placeholder="ID (例:ABC1234567)" style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:none; box-sizing:border-box;"><br>
+        <input type="password" id="tPassIn" placeholder="合言葉" style="width:100%; padding:12px; margin-bottom:20px; border-radius:8px; border:none; box-sizing:border-box;"><br>
+        <button class="btn-pro pink" style="width:100%; margin:0;" onclick="executeTransfer()">復元を実行</button>
     </dialog>
 
     <div id="gameLayer"><iframe id="gameFrame" src="about:blank"></iframe></div>
 
     <script>
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbyYCFfQMivZal2Gjl3Fjx1RzgUr7u959dQtfLo6hO6Bnn0zopY-Q4_GjB1t5Ca0zOgX/exec';
+        // --- 1. 基本設定 ---
+        const GAS_URL = 'function doPost(e) {
+  try {
+    var params = JSON.parse(e.postData.contents);
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var type = params.type;
+
+    if (type === "sync") {
+      var sheet = getOrCreateSheet(ss, params.id);
+      var lastRow = sheet.getLastRow();
+      var lastData = (lastRow > 1) ? sheet.getRange(lastRow, 1, 1, 17).getValues()[0] : [];
+      var coinToSave = (params.iroCoin === 0 && lastData[5] > 0) ? lastData[5] : params.iroCoin;
+      sheet.appendRow([new Date(), params.id, params.name||lastData[2], params.pass||lastData[3], 1, coinToSave, "Home", params.avatar||lastData[7], lastData[8]||"", lastData[9]||"", lastData[10]||"", 0, 0, "", lastData[14]||"", lastData[15]||"", "同期"]);
+      return createRes({result: "success"});
+    }
+
+    if (type === "friendMemberGift") {
+      var sSheet = getOrCreateSheet(ss, params.fromId);
+      var rSheet = getOrCreateSheet(ss, params.toId);
+      var sLast = sSheet.getRange(sSheet.getLastRow(), 1, 1, 17).getValues()[0];
+      var rLast = rSheet.getRange(rSheet.getLastRow(), 1, 1, 17).getValues()[0];
+      var sChars = String(sLast[14]).split(',');
+      var idx = sChars.indexOf(params.charName); if(idx > -1) sChars.splice(idx, 1);
+      var rChars = rLast[14] ? String(rLast[14]).split(',') : []; rChars.push(params.charName);
+      sLast[0] = new Date(); sLast[14] = sChars.join(','); sLast[16] = "譲渡: " + params.charName;
+      rLast[0] = new Date(); rLast[14] = rChars.join(','); rLast[16] = "受領: " + params.charName;
+      sSheet.appendRow(sLast); rSheet.appendRow(rLast);
+      return createRes({result: "success"});
+    }
+
+    if (type === "gachaLog") {
+      var sheet = getOrCreateSheet(ss, params.userId);
+      var lastRow = sheet.getLastRow();
+      var lastData = sheet.getRange(lastRow, 1, 1, 17).getValues()[0];
+      var currentChars = lastData[14] ? String(lastData[14]).split(',') : [];
+      var updatedChars = currentChars.concat(params.newChars ? params.newChars.split(',') : []).join(',');
+      sheet.appendRow([new Date(), params.userId, lastData[2], lastData[3], 1, params.newCoins, "Gacha", lastData[7], lastData[8], lastData[9], lastData[10], 0, 0, "", updatedChars, lastData[15], params.pulls + "連ガチャ"]);
+      return createRes({result: "success"});
+    }
+
+    if (type === "removeFriend") {
+      updateList(getOrCreateSheet(ss, params.myId), 9, params.targetId, false);
+      updateList(getOrCreateSheet(ss, params.targetId), 9, params.myId, false);
+      return createRes({result: "success"});
+    }
+
+    if (type === "friendGift") {
+      var sSheet = getOrCreateSheet(ss, params.fromId);
+      var rSheet = getOrCreateSheet(ss, params.toId);
+      var sData = sSheet.getRange(sSheet.getLastRow(), 1, 1, 17).getValues()[0];
+      var rData = rSheet.getRange(rSheet.getLastRow(), 1, 1, 17).getValues()[0];
+      sData[0] = new Date(); sData[5] = Number(sData[5]) - Number(params.amount); sData[16] = "コイン送付: " + params.toId;
+      rData[0] = new Date(); rData[5] = Number(rData[5]) + Number(params.amount); rData[16] = "コイン受取: " + params.fromId;
+      sSheet.appendRow(sData); rSheet.appendRow(rData);
+      return createRes({result: "success"});
+    }
+
+    if (type === "request") {
+      updateList(getOrCreateSheet(ss, params.targetId), 10, params.myId, true);
+      updateList(getOrCreateSheet(ss, params.myId), 11, params.targetId, true);
+      return createRes({result: "requested"});
+    }
+    if (type === "accept") {
+      updateList(getOrCreateSheet(ss, params.myId), 10, params.targetId, false);
+      updateList(getOrCreateSheet(ss, params.myId), 9, params.targetId, true);
+      updateList(getOrCreateSheet(ss, params.targetId), 11, params.myId, false);
+      updateList(getOrCreateSheet(ss, params.targetId), 9, params.myId, true);
+      return createRes({result: "accepted"});
+    }
+    if (type === "claim") {
+      var sheet = getOrCreateSheet(ss, params.userId);
+      var data = sheet.getRange(sheet.getLastRow(), 1, 1, 17).getValues()[0];
+      data[0] = new Date(); data[5] = params.newCoins;
+      var claimed = data[15] ? String(data[15]).split(',') : [];
+      if (claimed.indexOf(params.presentId) === -1) claimed.push(params.presentId);
+      data[15] = claimed.join(','); data[16] = "受取: " + params.presentName;
+      sheet.appendRow(data); return createRes({result: "success"});
+    }
+  } catch(f) { return createRes({result: "error"}); }
+}
+
+function doGet(e) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var action = e.parameter.action;
+  var officialIds = (ss.getSheetByName("公式プレイヤー") ? ss.getSheetByName("公式プレイヤー").getDataRange().getValues().flat().map(String) : []);
+
+  if (action === "getCharaPools") {
+    var vals = ss.getSheetByName("キャラクター一覧データ").getRange("C2:H5000").getValues();
+    var pools = { star2: [], star3: [], star4: [] };
+    for(var i=0; i<vals.length; i++) {
+      if(vals[i][0]) pools.star2.push({name: vals[i][0], img: vals[i][1]});
+      if(vals[i][2]) pools.star3.push({name: vals[i][2], img: vals[i][3]});
+      if(vals[i][4]) pools.star4.push({name: vals[i][4], img: vals[i][5]});
+    }
+    return createRes(pools);
+  }
+  if (action === "getGachaSettings") {
+    var sheet = ss.getSheetByName("ガチャ設定");
+    return createRes(sheet ? sheet.getDataRange().getValues().slice(1).map(r=>({title:r[0],bg:r[1],thumbnail:r[2],date:r[3],chara:r[4],buttons:r[5]})) : []);
+  }
+  if (action === "getPresents") return createRes(ss.getSheetByName("プレゼント").getDataRange().getValues().slice(1).map(r => ({id:r[0], name:r[1], type:r[2], amount:r[3], desc:r[4]})));
+  if (action === "getList") return createRes(ss.getSheetByName("ゲーム選択").getDataRange().getValues().slice(1).map((r,i)=>({id:i+2, title:r[0]})));
+  if (action === "getCode") return createRes({code: ss.getSheetByName("ゲーム選択").getRange(e.parameter.row, 2).getValue()});
+
+  var id = e.parameter.id;
+  var sheet = ss.getSheetByName(id);
+  if (!sheet || sheet.getLastRow() <= 1) return createRes({result: "not_found"});
+  var allData = sheet.getRange(2, 1, sheet.getLastRow()-1, 17).getValues();
+  var last = allData[allData.length-1];
+  
+  var history = []; var prevCoin = 0;
+  for(var j=0; j<allData.length; j++){
+    var currentCoin = Number(allData[j][5]); var diff = currentCoin - prevCoin;
+    if(diff !== 0) { history.unshift({ date: Utilities.formatDate(new Date(allData[j][0]), "JST", "MM/dd HH:mm"), reason: allData[j][16] || "不明", coin: diff }); }
+    prevCoin = currentCoin;
+  }
+  var friendsData = (last[8] ? String(last[8]).split(',') : []).filter(fid=>fid.trim()!=="").map(function(fid) {
+     var fSheet = ss.getSheetByName(fid.trim());
+     return { id: fid.trim(), name: (fSheet && fSheet.getLastRow()>1 ? fSheet.getRange(fSheet.getLastRow(),3).getValue() : "不明"), isOfficial: officialIds.indexOf(String(fid.trim())) !== -1 };
+  });
+
+  return createRes({result: "success", iroCoin: last[5], avatar: last[7], claimed: last[15], history: history.slice(0, 15), name: last[2], pass: last[3], friends: last[8], pending: last[9], sentRequests: last[10], isOfficial: officialIds.indexOf(String(id)) !== -1, friendsData: friendsData, chars: last[14]});
+}
+
+function updateList(sheet, col, val, isAdd) {
+  var last = sheet.getLastRow();
+  var data = (last <= 1) ? [new Date(), sheet.getName(), "User", "", 1, 0, "Home", "", "", "", "", 0, 0, "", "", "", ""] : sheet.getRange(last, 1, 1, 17).getValues()[0];
+  var list = data[col-1] ? String(data[col-1]).split(',') : [];
+  if (isAdd) { if (list.indexOf(val) === -1) list.push(val); } else { list = list.filter(function(x){return x.trim() !== val.trim();}); }
+  data[0] = new Date(); data[col-1] = list.join(',');
+  sheet.appendRow(data);
+}
+
+function getOrCreateSheet(ss, id) {
+  var s = ss.getSheetByName(id);
+  if (!s) { s = ss.insertSheet(id); s.appendRow(["日時", "ID", "名前", "パス", "Lv", "コイン", "場所", "アイコン", "フレンド", "届申請", "送申請", "X", "Z", "部屋ID", "キャラ", "受取済", "理由"]); }
+  return s;
+}
+
+function createRes(obj) { return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON); }';
         let myId = localStorage.getItem('gID') || Math.random().toString(36).substring(2, 12).toUpperCase();
         let iroCoins = parseInt(localStorage.getItem('gCoins')) || 0;
-        let myChars = "", globalCharaPool = {}, friendsData = [], firstSyncDone = false;
+        let myChars = "", globalCharaPool = {}, friendsData = [], claimedPresents = [], firstSyncDone = false;
 
+        // --- 2. 起動制御 ---
         function startLoading() { transition('titleScreen', 'loadingScreen'); setTimeout(() => { transition('loadingScreen', 'gameScreen'); initPortal(); }, 1500); }
         function transition(h, s) {
             const cur = document.getElementById(h); const nxt = document.getElementById(s);
@@ -174,11 +343,13 @@
         async function initPortal() {
             localStorage.setItem('gID', myId);
             document.getElementById('myIdDisplay').innerText = myId;
+            document.getElementById('hIroCoin').innerText = iroCoins.toLocaleString();
             const cpRes = await fetch(GAS_URL + "?action=getCharaPools");
             globalCharaPool = await cpRes.json();
             fetchSync(); setInterval(fetchSync, 15000);
         }
 
+        // --- 3. データ同期・履歴・フレンド・メンバー管理 ---
         async function fetchSync() {
             if(!GAS_URL.includes('https')) return;
             try {
@@ -192,13 +363,23 @@
                     document.getElementById('hVerified').innerHTML = json.isOfficial ? '<span class="badge-verify">✔</span>' : "";
                     const avUrl = json.avatar || "https://api.dicebear.com/7.x/avataaars/svg?seed="+myId;
                     document.getElementById('hAv').src = avUrl; document.getElementById('mAv').src = avUrl;
+                    document.getElementById('pIn').value = json.pass || "";
                     friendsData = json.friendsData || [];
+                    claimedPresents = json.claimed ? json.claimed.split(',') : [];
+
+                    updatePresentUI(); updateHistoryUI(json.history); renderMembers();
                     
-                    updatePresentUI(json.claimed); updateHistoryUI(json.history); renderMembers();
-                    
-                    document.getElementById('reqList').innerHTML = json.pending ? json.pending.split(',').map(id => `<div>ID: ${id} <button onclick="acceptF('${id}')">承認</button></div>`).join('') : "なし";
-                    document.getElementById('sentList').innerHTML = json.sentRequests ? json.sentRequests.split(',').map(id => `<div>ID: ${id} (申請中)</div>`).join('') : "なし";
-                    document.getElementById('fList').innerHTML = friendsData.length ? friendsData.map(f => `<div class="friend-item"><span>${f.name}${f.isOfficial?'<span class="badge-verify">✔</span>':''}</span><div><button onclick="sendFriendGift('${f.id}')">🪙</button><button onclick="removeFriend('${f.id}')">×</button></div></div>`).join('') : "なし";
+                    // フレンドUI
+                    document.getElementById('reqList').innerHTML = json.pending ? json.pending.split(',').map(id => `<div class="friend-item"><span>ID: ${id}</span><button class="btn-pro" style="width:auto; padding:5px 15px; margin:0; box-shadow:none; font-size:0.7rem" onclick="acceptF('${id}')">承認</button></div>`).join('') : "なし";
+                    document.getElementById('sentList').innerHTML = json.sentRequests ? json.sentRequests.split(',').map(id => `<div>ID: ${id} <small>(申請中)</small></div>`).join('') : "なし";
+                    document.getElementById('fList').innerHTML = friendsData.length ? friendsData.map(f => `
+                        <div class="friend-item">
+                            <span>${f.name}${f.isOfficial?'<span class="badge-verify">✔</span>':''}</span>
+                            <div>
+                                <button class="btn-pro pink" style="width:auto; padding:5px 12px; margin:0; box-shadow:none; font-size:0.7rem;" onclick="sendFriendGift('${f.id}')">🎁</button>
+                                <button class="btn-pro gray" style="width:auto; padding:5px 12px; margin:0 0 0 5px; box-shadow:none; font-size:0.7rem; background:#ff4d4d;" onclick="removeFriend('${f.id}')">×</button>
+                            </div>
+                        </div>`).join('') : "なし";
                     firstSyncDone = true;
                 }
                 if(firstSyncDone) {
@@ -214,7 +395,7 @@
             const master = [...globalCharaPool.star2, ...globalCharaPool.star3, ...globalCharaPool.star4];
             container.innerHTML = uniqueChars.map(name => {
                 const char = master.find(m => m.name === name);
-                return char ? `<div class="member-card"><img src="${char.img}"><small>${char.name}</small><button style="font-size:0.5rem;width:100%;cursor:pointer;" onclick="presentMember('${char.name}')">🎁あげる</button></div>` : "";
+                return char ? `<div class="member-card"><img src="${char.img}"><small>${char.name}</small><button style="font-size:0.5rem;width:100%;margin-top:5px;cursor:pointer;" onclick="presentMember('${char.name}')">🎁あげる</button></div>` : "";
             }).join('');
         }
 
@@ -223,39 +404,64 @@
             const friendId = prompt("プレゼントするフレンドのIDを入力：\n" + friendsData.map(f=>f.name+"("+f.id+")").join("\n"));
             if(!friendId) return;
             const target = friendsData.find(f => f.id === friendId.trim());
-            if(!target || !confirm(`${target.name}さんに「${charName}」を譲渡しますか？`)) return;
+            if(!target || !confirm(`${target.name}さんに「${charName}」をあげますか？`)) return;
             await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "friendMemberGift", fromId: myId, toId: target.id, charName: charName }) });
-            alert("プレゼントしました！"); fetchSync();
+            fetchSync();
         }
 
+        // --- 4. 全画面リッチガチャ演出 & 動的ボタン & スキップ & リザルト統合 ---
         async function launchGachaUI() {
             document.getElementById('gameLayer').style.display='block'; document.getElementById('mobilePauseBtn').style.display='flex';
             const [gDataRes, charPoolRes] = await Promise.all([ fetch(GAS_URL + "?action=getGachaSettings"), fetch(GAS_URL + "?action=getCharaPools") ]);
             const gData = await gDataRes.json(); const pools = await charPoolRes.json();
-            document.getElementById('gameFrame').srcdoc = `<!DOCTYPE html><html><head><style>body{background:#000;color:#fff;font-family:sans-serif;margin:0;overflow:hidden;}#bg{position:fixed;width:100%;height:100%;background:url('${gData[0].bg}') center/cover;transition:0.5s;filter:brightness(1.1);} .ui{position:relative;z-index:10;height:100vh;padding:30px;display:flex;flex-direction:column;justify-content:space-between;box-sizing:border-box;background:linear-gradient(rgba(0,0,0,0.2),transparent,rgba(0,0,0,0.9));} .coin{background:rgba(0,0,0,0.6);padding:10px 25px;border-radius:30px;color:#33ffcc;border:1px solid #33ffcc;font-weight:bold;width:fit-content;} .sidebar{position:absolute;left:20px;top:100px;display:flex;flex-direction:column;gap:12px;} .tab{width:130px;height:65px;background-size:cover;border:2px solid transparent;border-radius:10px;opacity:0.6;cursor:pointer;} .tab.active{border-color:#ffcc00;opacity:1;transform:translateX(10px);box-shadow: 0 0 15px #ffcc00;} .controls{position:absolute;right:40px;bottom:50px;display:flex;flex-direction:column;gap:15px;align-items:flex-end;} .pull-btn{width:220px;padding:15px;border-radius:18px;border:none;color:#fff;font-weight:bold;cursor:pointer;font-size:1rem;box-shadow:0 5px 0 rgba(0,0,0,0.3);text-align:center;} .b-1{background:#555;} .b-10{background:linear-gradient(#ff88bb,#ff3399);} .b-100{background:linear-gradient(#ffcc00,#ff6600);} .b-custom{background:linear-gradient(#33ffcc,#00cc99);color:#000;} .custom-box{background:rgba(0,0,0,0.8);padding:10px;border-radius:15px;display:flex;align-items:center;gap:10px;margin-bottom:5px;} .num-btn{width:30px;height:30px;border-radius:50%;border:none;background:#fff;font-weight:bold;cursor:pointer;} #reveal{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:1000;display:none;flex-direction:column;justify-content:center;align-items:center;cursor:pointer;overflow:hidden;} .rev-img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:1;animation:zoomIn 10s linear infinite;} .rev-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(transparent 50%,rgba(0,0,0,0.9));z-index:2;} .rev-content{position:relative;z-index:10;text-align:center;margin-top:auto;padding-bottom:100px;} .star{font-size:4rem;color:#ffcc00;text-shadow:0 0 15px #000;animation:starPop 0.4s forwards;opacity:0;} @keyframes starPop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}} @keyframes zoomIn{from{transform:scale(1)}to{transform:scale(1.1)}} #summary{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:2000;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;} .summary-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;max-width:90%;overflow-y:auto;max-height:70vh;} .summary-card{width:80px;text-align:center;background:rgba(255,255,255,0.1);border-radius:10px;padding:5px;border:1px solid rgba(255,255,255,0.2);} .summary-card img{width:60px;height:80px;object-fit:cover;border-radius:4px;border:1px solid #fff;} .skip-btn{position:fixed;top:30px;right:30px;z-index:3000;padding:10px 30px;background:rgba(255,255,255,0.2);border:1px solid #fff;border-radius:30px;color:#fff;cursor:pointer;display:none;}</style></head>
-            <body><div id="bg"></div><div class="ui"><div class="coin">🪙 <span id="c">${iroCoins.toLocaleString()}</span></div><div class="sidebar" id="sb"></div><div style="margin-left:160px;margin-bottom:100px;"><h1>${gData[0].title}</h1></div><div class="controls" id="btn-container"></div></div>
-            <button id="skip" class="skip-btn" onclick="skipReveal()">SKIP</button>
+            
+            document.getElementById('gameFrame').srcdoc = `<!DOCTYPE html><html><head><style>
+                body{background:#000;color:#fff;font-family:sans-serif;margin:0;overflow:hidden;}
+                #bg{position:fixed;width:100%;height:100%;background:url('${gData[0].bg}') center/cover;transition:0.5s;filter:brightness(1.1);} 
+                .ui{position:relative;z-index:10;height:100vh;padding:30px;display:flex;flex-direction:column;justify-content:space-between;box-sizing:border-box;background:linear-gradient(rgba(0,0,0,0.2),transparent,rgba(0,0,0,0.9));} 
+                .coin{background:rgba(0,0,0,0.6);padding:10px 25px;border-radius:30px;color:#33ffcc;border:1px solid #33ffcc;font-weight:bold;width:fit-content;} 
+                .sidebar{position:absolute;left:20px;top:100px;display:flex;flex-direction:column;gap:12px;} 
+                .tab{width:130px;height:65px;background-size:cover;border:2px solid transparent;border-radius:10px;opacity:0.6;cursor:pointer;} 
+                .tab.active{border-color:#ffcc00;opacity:1;transform:translateX(10px);box-shadow: 0 0 15px #ffcc00;} 
+                .controls{position:absolute;right:40px;bottom:50px;display:flex;flex-direction:column;gap:15px;align-items:flex-end;} 
+                .pull-btn{width:220px;padding:15px;border-radius:18px;border:none;color:#fff;font-weight:bold;cursor:pointer;font-size:1rem;box-shadow:0 5px 0 rgba(0,0,0,0.3);text-align:center;} 
+                .b-1{background:#555;} .b-10{background:linear-gradient(#ff88bb,#ff3399);} .b-100{background:linear-gradient(#ffcc00,#ff6600);} .b-custom{background:linear-gradient(#33ffcc,#00cc99);color:#000;}
+                .custom-box{background:rgba(0,0,0,0.8);padding:10px;border-radius:15px;display:flex;align-items:center;gap:10px;margin-bottom:5px;}
+                .num-btn{width:30px;height:30px;border-radius:50%;border:none;background:#fff;font-weight:bold;cursor:pointer;}
+                .banner-info{margin-left:160px;margin-bottom:100px;}
+                #reveal{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:1000;display:none;flex-direction:column;justify-content:center;align-items:center;cursor:pointer;overflow:hidden;} 
+                .rev-img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:1;animation:zoomIn 10s linear infinite;} 
+                .rev-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(transparent 50%,rgba(0,0,0,0.9));z-index:2;} 
+                .rev-content{position:relative;z-index:10;text-align:center;margin-top:auto;padding-bottom:100px;} 
+                .star{font-size:4rem;color:#ffcc00;text-shadow:0 0 15px #000;animation:starPop 0.4s forwards;opacity:0;} 
+                @keyframes starPop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}} @keyframes zoomIn{from{transform:scale(1)}to{transform:scale(1.1)}}
+                #summary{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:2000;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;} .summary-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;max-width:90%;overflow-y:auto;max-height:70vh;} .summary-card{width:80px;text-align:center;background:rgba(255,255,255,0.1);border-radius:8px;padding:5px;border:1px solid rgba(255,255,255,0.2);} .summary-card img{width:60px;height:80px;object-fit:cover;border-radius:4px;border:1px solid #fff;}
+                .skip-btn{position:fixed;top:30px;right:30px;z-index:3000;padding:10px 30px;background:rgba(255,255,255,0.2);border:1px solid #fff;border-radius:30px;color:#fff;font-weight:bold;cursor:pointer;backdrop-filter:blur(5px);}
+            </style></head>
+            <body><div id="bg"></div><div class="ui"><div class="coin">🪙 <span id="c">${iroCoins.toLocaleString()}</span></div><div class="sidebar" id="sb"></div><div class="banner-info"><span style="background:rgba(0,0,0,0.7);padding:4px 12px;border-radius:5px;" id="tDate">${gData[0].date}</span><br><h1 id="tTitle" style="font-size:3.5rem;margin:10px 0;">${gData[0].title}</h1><span style="border-left:4px solid #ffcc00;padding-left:15px;" id="tChara">${gData[0].chara}</span></div><div class="controls" id="btn-container"></div></div>
+            <button id="skip" class="skip-btn" style="display:none;" onclick="skipReveal()">SKIP</button>
             <div id="reveal" onclick="nextReveal()"><img id="rev-img" class="rev-img"><div class="rev-overlay"></div><div class="rev-content"><div id="rev-stars" style="display:flex;justify-content:center;gap:15px;margin-bottom:15px;"></div><h1 style="font-size:4rem;margin:0;" id="rev-name"></h1><p>TAP TO NEXT</p></div></div>
-            <div id="summary"><h2 style="margin-bottom:20px;">RESULT</h2><div id="sum-grid" class="summary-grid"></div><button onclick="document.getElementById('summary').style.display='none'" style="margin-top:20px;padding:15px 60px;border-radius:30px;border:none;font-weight:bold;cursor:pointer;">とじる</button></div>
+            <div id="summary"><h2 style="margin-bottom:20px;">GACHA RESULT</h2><div id="sum-grid" class="summary-grid"></div><button onclick="document.getElementById('summary').style.display='none'" style="margin-top:20px;padding:15px 60px;border-radius:30px;border:none;font-weight:bold;cursor:pointer;">とじる</button></div>
             <script>let coins=${iroCoins};let pools=${JSON.stringify(pools)};let gData=${JSON.stringify(gData)};let res=[],cur=0,custCount=1;
             function chgNum(v){ custCount=Math.max(1, custCount+v); document.getElementById('customNum').innerText=custCount; document.getElementById('cCost').innerText='🪙 '+(custCount*300); }
             function renderButtons(idx){
                 const container = document.getElementById('btn-container'); container.innerHTML = '';
                 const btns = gData[idx].buttons.split(',');
                 btns.forEach(b => {
-                    if(b==='1回') container.innerHTML += '<button class="pull-btn b-1" onclick="startPull(1)">1回引く</button>';
-                    if(b==='10回') container.innerHTML += '<button class="pull-btn b-10" onclick="startPull(10)">10回引く</button>';
-                    if(b==='100回') container.innerHTML += '<button class="pull-btn b-100" onclick="startPull(100)">100回引く</button>';
-                    if(b==='カスタム') container.innerHTML += '<div class="custom-box"><button class="num-btn" onclick="chgNum(-1)">-</button><span id="customNum" style="font-weight:bold;width:30px;text-align:center">'+custCount+'</span><button class="num-btn" onclick="chgNum(1)">+</button><button class="pull-btn b-custom" onclick="startPull(custCount)" style="width:140px;margin:0">カスタム</button></div>';
+                    if(b==='1回') container.innerHTML += '<button class="pull-btn b-1" onclick="startPull(1)">1回引く<br><small>🪙 300</small></button>';
+                    if(b==='10回') container.innerHTML += '<button class="pull-btn b-10" onclick="startPull(10)">10回引く<br><small>🪙 3000 (★3確定)</small></button>';
+                    if(b==='100回') container.innerHTML += '<button class="pull-btn b-100" onclick="startPull(100)">100回引く<br><small>🪙 30000 (★4確定)</small></button>';
+                    if(b==='カスタム') container.innerHTML += '<div class="custom-box"><button class="num-btn" onclick="chgNum(-1)">-</button><span id="customNum" style="font-weight:bold;width:30px;text-align:center">'+custCount+'</span><button class="num-btn" onclick="chgNum(1)">+</button><button class="pull-btn b-custom" onclick="startPull(custCount)" style="width:140px;margin:0">カスタム<br><small id="cCost">🪙 '+(custCount*300)+'</small></button></div>';
                 });
             }
             function startPull(n){const cost=n*300;if(coins<cost){alert('不足');return;}
             coins-=cost;document.getElementById('c').innerText=coins.toLocaleString();
-            res=[]; let names=[];
+            res=[]; let names=[]; let hasS4=false, hasS3=false;
             for(let i=0; i<n; i++){
                 let s=2, r=Math.random()*100;
                 if(r<3) s=4; else if(r<15) s=3;
-                if(n>=100 && i===n-1 && s<4) s=4; else if(n>=10 && i===n-1 && s<3) s=3;
+                if(n>=100 && i===n-1 && !hasS4) s=4; else if(n>=10 && i===n-1 && !hasS3 && s<3) s=3;
+                if(s>=4) hasS4=true; if(s>=3) hasS3=true;
                 const pool = pools['star' + s]; const c=pool[Math.floor(Math.random()*pool.length)]; res.push({...c,rank:s}); names.push(c.name);
             }
             window.parent.postMessage({type:'gachaPull',value:coins,pulls:n,chars:names.join(',')},'*');
@@ -263,13 +469,13 @@
             function show(){const c=res[cur];document.getElementById('reveal').style.display='flex';document.getElementById('rev-img').src=c.img;document.getElementById('rev-name').innerText=c.name;const b=document.getElementById('rev-stars');b.innerHTML='';for(let i=0;i<c.rank;i++){const s=document.createElement('div');s.className='star';s.innerText='★';s.style.animationDelay=(i*0.12)+'s';b.appendChild(s);}}
             function nextReveal(){cur++; if(cur<res.length) show(); else skipReveal();}
             function skipReveal(){ document.getElementById('reveal').style.display='none'; document.getElementById('skip').style.display='none'; const g=document.getElementById('sum-grid');g.innerHTML='';res.forEach(c=>{const d=document.createElement('div');d.className='summary-card';d.innerHTML='<img src="'+c.img+'"><br><small>'+'★'.repeat(c.rank)+'</small>';g.appendChild(d);});document.getElementById('summary').style.display='flex';}
-            gData.forEach((g,i)=>{const d=document.createElement('div');d.className='tab'+(i===0?' active':'');d.style.backgroundImage='url('+g.thumbnail+')';d.onclick=()=>{document.getElementById('bg').style.backgroundImage='url('+g.bg+')';renderButtons(i);document.querySelectorAll('.tab').forEach((t,idx)=>t.classList.toggle('active',i===idx));};document.getElementById('sb').appendChild(d);});renderButtons(0);<\/script></body></html>`;
+            gData.forEach((g,i)=>{const d=document.createElement('div');d.className='tab'+(i===0?' active':'');d.style.backgroundImage='url('+g.thumbnail+')';d.onclick=()=>{document.getElementById('bg').style.backgroundImage='url('+g.bg+')';document.getElementById('tTitle').innerText=g.title;document.getElementById('tDate').innerText=g.date;document.getElementById('tChara').innerText=g.chara;renderButtons(i);document.querySelectorAll('.tab').forEach((t,idx)=>t.classList.toggle('active',i===idx));};document.getElementById('sb').appendChild(d);});renderButtons(0);<\/script></body></html>`;
         }
 
+        // --- 5. 補助機能（画像変更、履歴等） ---
         window.addEventListener('message', e => { if(e.data.type === 'gachaPull') { iroCoins = e.data.value; localStorage.setItem('gCoins', iroCoins); document.getElementById('hIroCoin').innerText = iroCoins.toLocaleString(); fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "gachaLog", userId: myId, newCoins: iroCoins, pulls: e.data.pulls, newChars: e.data.chars }) }); } });
-        function saveSettings() { localStorage.setItem('gName', document.getElementById('nIn').value); localStorage.setItem('gPass', document.getElementById('pIn').value); alert("保存完了。同期中..."); fetchSync(); closeAllSheets(); }
+        function saveSettings() { localStorage.setItem('gName', document.getElementById('nIn').value); localStorage.setItem('gPass', document.getElementById('pIn').value); alert("完了"); fetchSync(); closeAllSheets(); }
         function uploadIcon(input) { if (input.files && input.files[0]) { const r = new FileReader(); r.onload = e => { localStorage.setItem('gAv', e.target.result); document.getElementById('hAv').src = e.target.result; fetchSync(); }; r.readAsDataURL(input.files[0]); } }
-        async function executeTransfer() { const id = document.getElementById('tIdIn').value.toUpperCase(); const ps = document.getElementById('tPassIn').value; const res = await fetch(GAS_URL + "?id=" + id); const json = await res.json(); if(json.result === "success" && String(json.pass) === String(ps)) { localStorage.setItem('gID', id); location.reload(); } else { alert("失敗"); } }
         function openSheet(id) { document.getElementById('sheetOverlay').style.display = 'block'; document.getElementById(id).classList.add('open'); }
         function closeAllSheets() { document.getElementById('sheetOverlay').style.display = 'none'; document.querySelectorAll('.bottom-sheet').forEach(s => s.classList.remove('open')); }
         function showPauseMenu() { document.getElementById('pauseOverlay').style.display = 'flex'; }
@@ -277,13 +483,13 @@
         function exitGame() { location.reload(); }
         async function loadGameList() { const res = await fetch(GAS_URL + "?action=getList"); const games = await res.json(); const container = document.getElementById('gameListContainer'); container.innerHTML = ""; games.forEach(g => { const card = document.createElement('div'); card.className = "nav-card"; card.style.width="160px"; card.innerHTML = `<b>${g.title}</b>`; card.onclick = () => launchGame(g.id); container.appendChild(card); }); }
         async function launchGame(id) { document.getElementById('gameLayer').style.display='block'; document.getElementById('mobilePauseBtn').style.display='flex'; const res = await fetch(GAS_URL+"?action=getCode&row="+id); const data = await res.json(); document.getElementById('gameFrame').srcdoc = data.code; }
-        function updateHistoryUI(h) { document.getElementById('historyContainer').innerHTML = h ? h.map(x => `<div class="history-item"><span>${x.reason}</span><span style="font-weight:bold;">${x.coin>=0?'+':''}${x.coin}</span></div>`).join('') : "履歴なし"; }
+        function updateHistoryUI(h) { document.getElementById('historyContainer').innerHTML = h ? h.map(x => `<div class="history-item"><span class="history-date">${x.date}</span><span>${x.reason}</span><span style="text-align:right; font-weight:bold;">${x.coin>=0?'+':''}${x.coin}</span></div>`).join('') : "履歴なし"; }
         async function sendReq() { const tid = document.getElementById('fIdIn').value.toUpperCase(); if(tid===myId) return; await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "request", myId: myId, targetId: tid }) }); alert("送信完了"); fetchSync(); }
         async function acceptF(tid) { await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "accept", myId: myId, targetId: tid }) }); fetchSync(); }
         async function removeFriend(fid) { if(confirm("解除?")){ await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "removeFriend", myId: myId, targetId: fid }) }); fetchSync(); } }
-        async function sendFriendGift(fid) { const amount = prompt("枚数", "100"); if(!amount || iroCoins < amount) return; iroCoins -= parseInt(amount); await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "friendGift", fromId: myId, toId: fid, amount: amount }) }); fetchSync(); }
+        async function sendFriendGift(fid) { const amount = prompt("送る枚数", "100"); if(!amount || iroCoins < amount) return; iroCoins -= parseInt(amount); await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "friendGift", fromId: myId, toId: fid, amount: amount }) }); fetchSync(); }
         async function claim(id, type, amount, name) { if(type === 'iroCoin') iroCoins += amount; await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "claim", userId: myId, presentId: id, newCoins: iroCoins, presentName: name }) }); fetchSync(); }
-        function updatePresentUI(claimedStr) { fetch(GAS_URL + "?action=getPresents").then(r=>r.json()).then(all => { const claimed = claimedStr ? claimedStr.split(',') : []; const available = all.filter(p => !claimed.includes(p.id)); document.getElementById('pBadge').innerText = available.length; document.getElementById('pBadge').style.display = available.length ? 'flex' : 'none'; document.getElementById('pListContainer').innerHTML = available.map(p => `<div class="present-item"><b>${p.name}</b><button class="btn-pro" style="width:auto;padding:5px 10px;" onclick="claim('${p.id}','${p.type}',${p.amount},'${p.name}')">受取</button></div>`).join('') || "なし"; }); }
+        async function executeTransfer() { const id = document.getElementById('tIdIn').value.toUpperCase(); const ps = document.getElementById('tPassIn').value; const res = await fetch(GAS_URL + "?id=" + id); const json = await res.json(); if(json.result === "success" && String(json.pass) === String(ps)) { localStorage.setItem('gID', id); location.reload(); } else { alert("失敗"); } }
     </script>
 </body>
 </html>
