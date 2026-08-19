@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>幻想クロニクル - ULTIMATE INTEGRATION</title>
+    <title>幻想クロニクル - PRE-LOADED INTEGRATION</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -17,25 +17,26 @@
         .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, transparent 0%, #000 100%); z-index: -1; pointer-events: none; }
 
         /* キャラクター装飾（浮遊） */
-        .char-original { position: absolute; width: 90px; height: 90px; border-radius: 24px; border: 3px solid #fff; background: var(--glass); backdrop-filter: blur(10px); animation: float 4s infinite ease-in-out; z-index: 1; box-shadow: 0 0 25px var(--pro-teal); pointer-events: none; }
+        .char-original { position: absolute; width: 90px; height: 90px; border-radius: 24px; border: 3px solid #fff; background: var(--glass); backdrop-filter: blur(10px); animation: float 4s infinite ease-in-out; z-index: 1; box-shadow: 0 0 25px var(--pro-teal); opacity: 0.25; pointer-events: none; }
         @keyframes float { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-25px) rotate(8deg); } }
 
         /* スクリーン管理 */
         .screen { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); z-index: 100; box-sizing: border-box; padding: 20px; }
         .hidden { display: none !important; opacity: 0; pointer-events: none; }
 
-        /* プロセカ風ボタン */
+        /* ボタン */
         .btn-pro { position: relative; background: #fff; color: #111; border: none; padding: 16px 40px; border-radius: 4px; font-weight: 900; cursor: pointer; transition: 0.2s; transform: skewX(-15deg); box-shadow: 5px 5px 0 var(--pro-teal); z-index: 10000; font-family: 'Montserrat', sans-serif; margin: 12px; text-transform: uppercase; text-align: center; width: 85%; max-width: 300px; font-size: 1.1rem; }
         .btn-pro span { display: inline-block; transform: skewX(15deg); pointer-events: none; }
         .btn-pro:active { transform: skewX(-15deg) translate(2px, 2px); box-shadow: 0 0 0 var(--pro-teal); }
         .btn-pro.pink { box-shadow: 5px 5px 0 var(--pro-pink); background: var(--pro-pink); color: #fff; }
+        .btn-pro:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
 
         /* UI要素 */
         .header-minimal { position: absolute; top: 15px; left: 15px; display: flex; align-items: center; gap: 10px; z-index: 200; }
-        .av-mini { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff; overflow: hidden; background: #222; cursor: pointer; }
+        .av-mini { width: 40px; height: 40px; border-radius: 50%; border: 2.5px solid #fff; overflow: hidden; background: #222; cursor: pointer; }
         .iro-coin-disp { margin-left: 10px; font-weight: 900; color: var(--pro-teal); text-shadow: 0 0 15px var(--pro-teal); font-size: 1.2rem; }
-        
-        .main-console-text { font-family: 'Montserrat', sans-serif; font-size: clamp(2rem, 10vw, 5.5rem); font-weight: 900; letter-spacing: 12px; color: #fff; opacity: 0.7; pointer-events: none; text-align: center; }
+        .badge-verify { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; background: linear-gradient(135deg, #1da1f2, #0e71c8); color: #fff; border-radius: 50%; font-size: 10px; margin-left: 6px; border: 1.5px solid #fff; font-weight: bold; }
+        .badge-verify::after { content: '✔'; }
 
         .nav-container { position: absolute; bottom: 25px; display: flex; gap: 10px; width: 95%; max-width: 900px; z-index: 300; justify-content: center; }
         .nav-card { flex: 1; background: rgba(0,0,0,0.7); border: 1.5px solid #444; padding: 20px 5px; border-radius: 14px; cursor: pointer; text-align: center; font-weight: 900; font-size: 0.8rem; color: #fff; transition: 0.2s; white-space: nowrap; }
@@ -56,6 +57,9 @@
 
         #gameLayer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: none; z-index: 10000; background: #000; }
         #gameFrame { width: 100%; height: 100%; border: none; }
+
+        /* プリロード状態表示 */
+        #preloadStatus { position: fixed; bottom: 10px; right: 15px; font-size: 0.6rem; color: #555; z-index: 1000; }
     </style>
 </head>
 <body>
@@ -63,49 +67,48 @@
     <div class="bg-sekai"></div>
     <div class="bg-overlay"></div>
     <div id="floatChars"></div>
+    <div id="preloadStatus">System: Initializing...</div>
 
-    <!-- 共通オーバーレイ -->
     <div id="sheetOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:49000;display:none;backdrop-filter:blur(5px);" onclick="closeAllSheets()"></div>
     <div id="mobilePauseBtn" style="position:fixed;top:15px;right:15px;width:45px;height:45px;background:var(--glass);border:1.5px solid #fff;border-radius:50%;display:none;z-index:15000;justify-content:center;align-items:center;font-weight:900;cursor:pointer;color:#fff;" onclick="showPauseMenu()">II</div>
 
-    <!-- ポーズメニュー -->
     <div id="pauseOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:60000;display:none;flex-direction:column;justify-content:center;align-items:center;">
         <h1 style="font-family: Montserrat; font-size: 3.5rem; color: var(--pro-teal);">PAUSE</h1>
         <button class="btn-pro" onclick="resumeGame()"><span>再開</span></button>
-        <button class="btn-pro pink" onclick="exitGame()"><span>タイトルに戻る</span></button>
+        <button class="btn-pro pink" onclick="exitGame()"><span>終了</span></button>
     </div>
 
-    <!-- タイトル画面 -->
+    <!-- 1. タイトル -->
     <div id="titleScreen" class="screen">
-        <h1 style="font-family: Montserrat; font-size: clamp(3rem, 15vw, 8rem); margin: 0; text-shadow: 0 0 40px var(--pro-teal);">GENSOU</h1>
-        <p style="letter-spacing: 14px; font-weight: 900; color: var(--pro-pink); margin-bottom: 60px; font-size: 1.3rem;">COLORFUL STAGE</p>
-        <button class="btn-pro" onclick="handleLoginClick()"><span>ログイン</span></button>
+        <h1 style="font-family: Montserrat; font-size: clamp(3.5rem, 15vw, 8.5rem); margin: 0; text-shadow: 0 0 40px var(--pro-teal); text-align: center;">GENSOU</h1>
+        <p style="letter-spacing: 14px; font-weight: 900; color: var(--pro-pink); margin-bottom: 60px; text-align: center; font-size: 1.3rem;">COLORFUL STAGE</p>
+        <button class="btn-pro" id="loginBtn" onclick="handleLoginClick()" disabled><span>接続中...</span></button>
         <button class="btn-pro pink" onclick="document.getElementById('modalTransfer').showModal()"><span>データ復元</span></button>
     </div>
 
-    <!-- 新規登録 -->
+    <!-- 2. 新規登録 -->
     <div id="registrationScreen" class="screen hidden">
         <h2 style="font-family: Montserrat; color: var(--pro-teal);">NEW REGISTRATION</h2>
         <div class="student-id-card">
-            <input type="text" id="regName" class="student-input" placeholder="なまえ（公開）">
-            <input type="password" id="regPass" class="student-input" placeholder="合言葉（復元用）">
+            <input type="text" id="regName" class="student-input" placeholder="なまえ">
+            <input type="password" id="regPass" class="student-input" placeholder="合言葉">
         </div>
         <button class="btn-pro" onclick="saveRegistration()"><span>作成して開始！</span></button>
     </div>
 
     <div id="loadingScreen" class="screen hidden"><p style="color: var(--pro-teal); font-weight: 900; letter-spacing: 5px; font-size: 1.8rem;">同期中...</p></div>
 
-    <!-- ホーム画面 -->
+    <!-- 3. ホーム画面 -->
     <div id="gameScreen" class="screen hidden">
         <div class="header-minimal">
             <div class="av-mini" onclick="openSheet('sheetConfig')"><img id="hAv" src="" style="width:100%; height:100%; object-fit:cover;"></div>
-            <div style="font-size: 1rem; font-weight: 900;"><span id="hName">---</span></div>
+            <div style="font-size: 1rem; font-weight: 900;"><span id="hName">---</span><span id="hVerified"></span></div>
             <div class="iro-coin-disp">🪙 <span id="hIroCoin">---</span></div>
         </div>
         
         <div style="position: absolute; top: 75px; left: 15px; width: 48px; height: 48px; background: rgba(255,255,255,0.1); border: 2px solid #555; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 300; font-size: 1.5rem;" onclick="openSheet('sheetPresent')">🎁<div id="pBadge" style="position: absolute; top: -4px; right: -4px; width: 20px; height: 20px; background: #ff3366; border-radius: 50%; border: 2px solid #fff; font-size: 0.7rem; display: none; justify-content: center; align-items: center; font-weight: 900;">0</div></div>
 
-        <h1 class="main-console-text">MAIN CONSOLE</h1>
+        <h1 style="font-family: Montserrat; font-size: clamp(2rem, 10vw, 5.5rem); font-weight: 900; letter-spacing: 12px; color: #fff; opacity: 0.7; pointer-events: none;">MAIN CONSOLE</h1>
         
         <nav class="nav-container">
             <div class="nav-card" onclick="openSheet('sheetFriend')">フレンド</div>
@@ -116,10 +119,9 @@
         </nav>
     </div>
 
-    <!-- ボトムシート：メンバー -->
+    <!-- ボトムシート -->
     <div id="sheetMember" class="bottom-sheet"><div class="sheet-content"><h2 style="color:var(--pro-teal); font-family: Montserrat;">MY MEMBERS</h2><div id="memberListContainer" class="member-grid"></div></div></div>
     
-    <!-- ボトムシート：メンバー詳細/譲渡 -->
     <div id="sheetMemberDetail" class="bottom-sheet">
         <div class="sheet-content" style="text-align: center;">
             <div id="memberDetailContent"></div>
@@ -132,22 +134,16 @@
         </div>
     </div>
 
-    <!-- ボトムシート：プレゼント -->
     <div id="sheetPresent" class="bottom-sheet"><div class="sheet-content"><h2 style="color:var(--pro-teal); font-family: Montserrat;">PRESENTS</h2><div id="pListContainer"></div><h2 style="color:var(--pro-pink); font-family: Montserrat; margin-top:50px;">HISTORY</h2><div id="historyContainer"></div></div></div>
     
-    <!-- ボトムシート：設定 -->
     <div id="sheetConfig" class="bottom-sheet"><div class="sheet-content" style="text-align: center;"><div class="student-id-card"><img id="mAv" style="width:120px;height:120px;border:4px solid #333;object-fit:cover;border-radius:50%;" onclick="document.getElementById('fileIn').click()"><p>ID: <span id="myIdDisplay">---</span></p><input type="text" id="nIn" class="student-input" placeholder="なまえを更新"><input type="password" id="pIn" class="student-input" placeholder="合言葉を更新"><input type="file" id="fileIn" style="display:none" accept="image/*" onchange="uploadIcon(this)"></div><br><button class="btn-pro" style="width:100%" onclick="saveSettings()"><span>設定保存</span></button></div></div>
 
-    <!-- ボトムシート：フレンド -->
     <div id="sheetFriend" class="bottom-sheet"><div class="sheet-content"><h2 style="color:var(--pro-pink); font-family: Montserrat;">FRIENDS</h2><div id="reqList" style="margin-bottom: 25px;"></div><div id="fList"></div><div style="margin-top:40px; display:flex; gap:10px;"><input type="text" id="fIdIn" placeholder="10桁ID検索" style="flex:1; padding:16px; border-radius:12px; border:none; color:#000; font-weight:bold;"><button class="btn-pro pink" style="width:auto; padding:15px 30px; margin:0;" onclick="sendReq()"><span>申請</span></button></div></div></div>
 
-    <!-- クエスト画面 -->
     <div id="questScreen" class="screen hidden"><h2 style="font-size: 3rem; color: var(--pro-teal); font-family: Montserrat;">QUEST SELECT</h2><div id="gameListContainer" style="display:flex;flex-wrap:wrap;justify-content:center;gap:18px;width:100%;padding:20px;box-sizing:border-box;"></div><button class="btn-pro" onclick="transition('questScreen', 'gameScreen')"><span>戻る</span></button></div>
 
-    <!-- データ復元ダイアログ -->
     <dialog id="modalTransfer" style="background:#111;color:#fff;border:none;border-radius:24px;padding:35px;width:90%;max-width:340px;box-shadow: 0 0 50px rgba(255,51,153,0.4);"><input type="text" id="tIdIn" placeholder="ID" style="width:100%; padding:15px; margin-bottom:12px; border-radius:8px;"><input type="password" id="tPassIn" placeholder="合言葉" style="width:100%; padding:15px; border-radius:8px;"><br><br><button class="btn-pro pink" style="width:100%;margin:0;" onclick="executeTransfer()"><span>復元実行</span></button></dialog>
 
-    <!-- iframeレイヤー -->
     <div id="gameLayer"><iframe id="gameFrame" src="about:blank"></iframe></div>
 
     <script>
@@ -156,9 +152,29 @@
 
         let myId = localStorage.getItem('gID') || Math.random().toString(36).substring(2, 12).toUpperCase();
         let iroCoins = parseInt(localStorage.getItem('gCoins')) || 0;
-        let myChars = "", globalCharaPool = {}, friendsData = [], firstSyncDone = false;
+        let myChars = "", globalCharaPool = {}, friendsData = [], gachaSettings = [], gameList = [], preLoadCount = 0;
 
-        // 背景浮遊演出
+        // 【最優先】ページ読み込み開始直後にデータをプリロード
+        window.onload = async () => {
+            initFloating();
+            document.getElementById('preloadStatus').innerText = "System: Loading Global Data...";
+            
+            // バックグラウンドで非同期に共通データを取得
+            const tasks = [
+                fetch(GAS_URL + "?action=getCharaPools").then(r => r.json()).then(d => { globalCharaPool = d; preLoadCount++; }),
+                fetch(GAS_URL + "?action=getGachaSettings").then(r => r.json()).then(d => { gachaSettings = d; preLoadCount++; }),
+                fetch(GAS_URL + "?action=getList").then(r => r.json()).then(d => { gameList = d; preLoadCount++; })
+            ];
+
+            // タイムアウト5秒で強制的にボタンを有効化するか、読み込み完了を待つ
+            Promise.all(tasks).finally(() => {
+                const btn = document.getElementById('loginBtn');
+                btn.disabled = false;
+                btn.innerHTML = "<span>ログイン</span>";
+                document.getElementById('preloadStatus').innerText = "System: Ready (" + preLoadCount + "/3 assets)";
+            });
+        };
+
         function initFloating() {
             const container = document.getElementById('floatChars');
             for(let i=0; i<6; i++) {
@@ -167,37 +183,32 @@
                 div.style.left = (Math.random() * 85) + '%';
                 div.style.top = (Math.random() * 80) + '%';
                 div.style.animationDelay = (Math.random() * 6) + 's';
-                div.style.opacity = '0.25';
                 container.appendChild(div);
             }
         }
-        initFloating();
 
-        // ログイン・登録
         function handleLoginClick() {
             if(!localStorage.getItem('gName')) transition('titleScreen', 'registrationScreen');
             else beginPortalSync();
         }
+
         async function saveRegistration() {
             const name = document.getElementById('regName').value.trim();
             const pass = document.getElementById('regPass').value.trim();
-            if(!name || !pass) { alert("全て入力してください"); return; }
+            if(!name || !pass) return;
             localStorage.setItem('gID', myId);
             localStorage.setItem('gName', name); localStorage.setItem('gPass', pass);
             beginPortalSync();
         }
+
         async function beginPortalSync() {
             transition('registrationScreen', 'loadingScreen'); transition('titleScreen', 'loadingScreen');
-            try { 
-                globalCharaPool = await (await fetch(GAS_URL + "?action=getCharaPools")).json(); 
-            } catch(e) { console.warn("Pool fetch failed"); }
             if(await fetchSync()) {
                 transition('loadingScreen', 'gameScreen');
                 setInterval(fetchSync, 15000);
-            } else { alert("同期エラーが発生しました"); location.reload(); }
+            } else { alert("接続エラー。リロードしてください。"); location.reload(); }
         }
 
-        // 同期処理
         async function fetchSync() {
             try {
                 const res = await fetch(GAS_URL + "?id=" + myId);
@@ -207,15 +218,14 @@
                     document.getElementById('hIroCoin').innerText = iroCoins.toLocaleString();
                     myChars = json.chars || ""; friendsData = json.friendsData || [];
                     document.getElementById('hName').innerText = json.name || "USER";
+                    document.getElementById('hVerified').innerHTML = json.isOfficial ? '<span class="badge-verify"></span>' : "";
                     const avUrl = json.avatar || "https://api.dicebear.com/7.x/avataaars/svg?seed="+myId;
                     document.getElementById('hAv').src = avUrl; document.getElementById('mAv').src = avUrl;
                     document.getElementById('myIdDisplay').innerText = myId;
                     updatePresentUI(json.pendingGifts); updateHistoryUI(json.history); renderMembers();
                     
-                    if(!firstSyncDone) { document.getElementById('nIn').value = json.name; document.getElementById('pIn').value = json.pass; firstSyncDone = true; }
-                    
                     document.getElementById('reqList').innerHTML = json.pending ? json.pending.split(',').map(id => `<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:#fff;border-radius:12px;margin-bottom:8px;color:#333;"><span>ID: ${id}</span><button onclick="acceptF('${id}')">承認</button></div>`) : "なし";
-                    document.getElementById('fList').innerHTML = friendsData.length ? friendsData.map(f => `<div style="display:flex;justify-content:space-between;padding:15px 0;color:#fff;border-bottom:1px solid #333;"><span>${f.name}</span><div><button onclick="sendFriendGift('${f.id}')">🎁</button> <button onclick="removeFriend('${f.id}')">×</button></div></div>`).join('') : "なし";
+                    document.getElementById('fList').innerHTML = friendsData.length ? friendsData.map(f => `<div style="display:flex;justify-content:space-between;padding:15px 0;color:#fff;border-bottom:1px solid #333;"><span>${f.name}${f.isOfficial?'<span class="badge-verify"></span>':''}</span><div><button onclick="sendFriendGift('${f.id}')">🎁</button> <button onclick="removeFriend('${f.id}')">×</button></div></div>`).join('') : "なし";
                     
                     await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "sync", id: myId, name: localStorage.getItem('gName'), pass: localStorage.getItem('gPass'), iroCoin: iroCoins, chars: myChars, avatar: localStorage.getItem('gAv')||"" }) });
                     return true;
@@ -227,13 +237,10 @@
         // ガチャUI（確定ロジック入り）
         async function launchGachaUI() {
             document.getElementById('gameLayer').style.display='block'; document.getElementById('mobilePauseBtn').style.display='flex';
-            const [gDataRes, charPoolRes] = await Promise.all([ fetch(GAS_URL + "?action=getGachaSettings"), fetch(GAS_URL + "?action=getCharaPools") ]);
-            const gData = await gDataRes.json(); const pools = await charPoolRes.json();
-            
             document.getElementById('gameFrame').srcdoc = `
             <!DOCTYPE html><html><head><style>
                 body{background:#000;color:#fff;font-family:sans-serif;margin:0;overflow:hidden;}
-                #bg{position:fixed;width:100%;height:100%;background:url('${gData[0].bg}') center/cover;transition:0.6s;filter:brightness(1.1);}
+                #bg{position:fixed;width:100%;height:100%;background:url('${gachaSettings[0].bg}') center/cover;transition:0.6s;filter:brightness(1.1);}
                 .ui{position:relative;z-index:10;height:100vh;padding:30px;display:flex;flex-direction:column;justify-content:space-between;box-sizing:border-box;background:linear-gradient(rgba(0,0,0,0.3),transparent,rgba(0,0,0,0.95));}
                 .coin-tag{background:rgba(0,0,0,0.7);padding:10px 22px;border-radius:40px;color:#33ffcc;border:2px solid #33ffcc;font-weight:bold;width:fit-content;font-size:1.2rem;}
                 .sidebar{position:absolute;left:20px;top:100px;display:flex;flex-direction:column;gap:15px;}
@@ -256,7 +263,7 @@
                 <div class="btn-container">
                     <div id="standard-btns" style="display:flex; gap:10px;"></div>
                     <div class="custom-box">
-                        <button class="num-btn" onclick="chg(-1)">-</button><span id="custVal" style="font-size:1.8rem; font-weight:bold; min-width:60px; text-align:center;">10</span><button class="num-btn" onclick="chg(1)">+</button>
+                        <button class="num-btn" onclick="chg(-10)">-</button><span id="custVal" style="font-size:1.8rem; font-weight:bold; min-width:60px; text-align:center;">10</span><button class="num-btn" onclick="chg(10)">+</button>
                         <button class="pull-btn b-custom" onclick="pull(custValNum)">指定枚数引く</button>
                     </div>
                 </div>
@@ -264,7 +271,7 @@
             <div id="reveal" onclick="next()"><img id="ri" class="rev-img"><h1 id="rn" style="font-size:3.5rem;"></h1><div id="rs" style="color:#ffcc00;font-size:2.5rem;margin-bottom:20px;"></div><p>TAP TO NEXT</p></div>
             <div id="summary"><h2>RESULT</h2><div id="sg" class="summary-grid"></div><button onclick="location.reload()" style="margin-top:20px;padding:20px 80px;border-radius:40px;font-weight:900;">閉じる</button></div>
             <script>
-                let coins=${iroCoins}, ps=${JSON.stringify(pools)}, gd=${JSON.stringify(gData)}, res=[], cur=0, custValNum=10;
+                let coins=${iroCoins}, ps=${JSON.stringify(globalCharaPool)}, gd=${JSON.stringify(gachaSettings)}, res=[], cur=0, custValNum=10;
                 function chg(v){ custValNum=Math.max(1, custValNum+v); document.getElementById('custVal').innerText=custValNum; }
                 function build(idx){
                     document.getElementById('bg').style.backgroundImage='url('+gd[idx].bg+')'; document.getElementById('gn').innerText=gd[idx].title;
@@ -276,7 +283,7 @@
                     });
                 }
                 function pull(n){
-                    const cost=n*300; if(coins<cost){alert('コイン不足');return;}
+                    const cost=n*300; if(coins<cost){alert('コインが足りません');return;}
                     coins-=cost; document.getElementById('c').innerText=coins.toLocaleString();
                     res=[]; let names=[]; let hasS4=false, hasS3=false;
                     for(let i=0; i<n; i++){
@@ -306,8 +313,21 @@
         function showPauseMenu() { document.getElementById('pauseOverlay').style.display = 'flex'; }
         function resumeGame() { document.getElementById('pauseOverlay').style.display = 'none'; }
         function exitGame() { location.reload(); }
-        async function loadGameList() { const res = await (await fetch(GAS_URL + "?action=getList")).json(); const container = document.getElementById('gameListContainer'); container.innerHTML = ""; res.forEach(g => { const card = document.createElement('div'); card.className = "nav-card"; card.style.width="140px"; card.style.flex="none"; card.innerHTML = `<b>${g.title}</b>`; card.onclick = () => launchGame(g.id); container.appendChild(card); }); }
-        async function launchGame(id) { document.getElementById('gameLayer').style.display='block'; document.getElementById('mobilePauseBtn').style.display='flex'; const res = await (await fetch(GAS_URL+"?action=getCode&row="+id)).json(); document.getElementById('gameFrame').srcdoc = res.code; }
+        
+        function loadGameList() {
+            const container = document.getElementById('gameListContainer'); container.innerHTML = ""; 
+            gameList.forEach(g => { 
+                const card = document.createElement('div'); card.className = "nav-card"; card.style.width="140px"; card.style.flex="none";
+                card.innerHTML = `<b>${g.title}</b>`; card.onclick = () => launchGame(g.id); container.appendChild(card); 
+            }); 
+        }
+
+        async function launchGame(id) { 
+            document.getElementById('gameLayer').style.display='block'; document.getElementById('mobilePauseBtn').style.display='flex'; 
+            const res = await (await fetch(GAS_URL+"?action=getCode&row="+id)).json(); 
+            document.getElementById('gameFrame').srcdoc = res.code; 
+        }
+
         function updateHistoryUI(h) { const c = document.getElementById('historyContainer'); if(!h) { c.innerHTML = "なし"; return; } c.innerHTML = h.map(x => `<div style="padding:10px; border-bottom:1px solid #333;">${x.reason} : ${x.coin}</div>`).join(''); }
         function updatePresentUI(p) { const badge = document.getElementById('pBadge'); const list = document.getElementById('pListContainer'); if(!p || p.length === 0) { list.innerHTML = "なし"; badge.style.display = 'none'; return; } badge.innerText = p.length; badge.style.display = 'flex'; list.innerHTML = p.map(x => `<div style="display:flex;justify-content:space-between;padding:15px;background:rgba(255,255,255,0.1);margin-bottom:10px;"><div><b>${x.name}</b></div><button onclick="claim(${x.row},'${x.name}')">受取</button></div>`).join(''); }
         function renderMembers() {
