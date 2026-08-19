@@ -1,4 +1,3 @@
---- START OF FILE Paste August 19, 2026 - 10:44AM ---
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -17,32 +16,33 @@
         .bg-sekai { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=2000') no-repeat center center/cover; z-index: -1; filter: brightness(0.4); pointer-events: none; }
         .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, transparent 0%, #000 100%); z-index: -1; pointer-events: none; }
 
+        /* キャラクター装飾（浮遊） */
+        .char-original { position: absolute; width: 85px; height: 85px; border-radius: 20px; border: 3px solid #fff; background: var(--glass); backdrop-filter: blur(10px); animation: float 3s infinite ease-in-out; z-index: 1; box-shadow: 0 0 20px var(--pro-teal); pointer-events: none; }
+        @keyframes float { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-20px) rotate(5deg); } }
+
         /* スクリーン管理 */
         .screen { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1); z-index: 100; box-sizing: border-box; padding: 20px; }
         .hidden { display: none !important; opacity: 0; pointer-events: none; }
 
-        /* プロセカ風ボタン */
+        /* ボタン */
         .btn-pro { position: relative; background: #fff; color: #111; border: none; padding: 16px 40px; border-radius: 4px; font-weight: 900; cursor: pointer; transition: 0.2s; transform: skewX(-15deg); box-shadow: 5px 5px 0 var(--pro-teal); z-index: 10000; font-family: 'Montserrat', sans-serif; margin: 12px; text-transform: uppercase; text-align: center; width: 85%; max-width: 300px; pointer-events: auto !important; font-size: 1.1rem; }
-        .btn-pro span { display: inline-block; transform: skewX(15deg); pointer-events: none; }
+        .btn-pro span { display: inline-block; transform: skewX(15deg); }
         .btn-pro:active { transform: skewX(-15deg) translate(2px, 2px); box-shadow: 0 0 0 var(--pro-teal); }
         .btn-pro.pink { box-shadow: 5px 5px 0 var(--pro-pink); background: var(--pro-pink); color: #fff; }
+        .btn-pro.gray { box-shadow: 5px 5px 0 #555; background: #888; color: #fff; }
 
-        /* 認証済みバッジ */
+        /* 認証バッジ */
         .badge-verify { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; background: linear-gradient(135deg, #1da1f2, #0e71c8); color: #fff; border-radius: 50%; font-size: 10px; margin-left: 8px; vertical-align: middle; border: 1.5px solid #fff; box-shadow: 0 0 8px rgba(29, 161, 242, 0.6); font-weight: bold; }
         .badge-verify::after { content: '✔'; }
 
-        /* ヘッダー */
+        /* UI要素 */
         .header-minimal { position: absolute; top: 15px; left: 15px; display: flex; align-items: center; gap: 8px; z-index: 200; }
         .av-mini { width: 35px; height: 35px; border-radius: 50%; border: 2px solid #fff; overflow: hidden; background: #222; cursor: pointer; }
         .iro-coin-disp { margin-left: 10px; font-weight: 900; color: var(--pro-teal); text-shadow: 0 0 10px var(--pro-teal); font-size: 1.1rem; }
-
-        /* 中央メインテキスト */
         .main-console-text { font-family: 'Montserrat', sans-serif; font-size: clamp(2rem, 10vw, 5.5rem); font-weight: 900; letter-spacing: 12px; color: #fff; opacity: 0.8; user-select: none; pointer-events: none; text-align: center; }
-
-        /* 下部ナビゲーション */
-        .nav-container { position: absolute; bottom: 25px; display: flex; gap: 10px; width: 95%; max-width: 900px; z-index: 300; pointer-events: auto; justify-content: center; }
-        .nav-card { flex: 1; background: rgba(0,0,0,0.6); border: 1.5px solid #333; padding: 18px 5px; border-radius: 12px; cursor: pointer; text-align: center; font-weight: 900; font-size: 0.8rem; color: #fff; transition: 0.2s; white-space: nowrap; min-width: 0; }
-        .nav-card:active { transform: scale(0.95); background: rgba(255,255,255,0.1); }
+        
+        .nav-container { position: absolute; bottom: 25px; display: flex; gap: 10px; width: 95%; max-width: 900px; z-index: 300; justify-content: center; }
+        .nav-card { flex: 1; background: rgba(0,0,0,0.6); border: 1.5px solid #333; padding: 18px 5px; border-radius: 12px; cursor: pointer; text-align: center; font-weight: 900; font-size: 0.8rem; color: #fff; transition: 0.2s; white-space: nowrap; }
         .nav-card.main { background: var(--pro-pink); border: none; box-shadow: 0 0 20px rgba(255,102,204,0.4); }
 
         /* ボトムシート */
@@ -55,17 +55,21 @@
         .member-card img { width: 100%; height: 110px; object-fit: cover; border-radius: 6px; border: 1.5px solid #fff; }
         .count-badge { position: absolute; top: 5px; right: 5px; background: var(--pro-pink); color: #fff; font-size: 0.75rem; font-weight: bold; padding: 2px 8px; border-radius: 10px; border: 1.5px solid #fff; z-index: 10; }
         
+        .history-item { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 10px; margin-bottom: 8px; display: grid; grid-template-columns: 1.2fr 2fr 0.8fr; align-items: center; font-size: 0.8rem; border-left: 4px solid #555; }
         .student-id-card { background: #fff; color: #333; border-radius: 15px; padding: 25px; border: 3px solid #555; max-width: 350px; margin: 20px auto; text-align: left; }
         .student-input { background: none; border: none; border-bottom: 2px solid #333; width: 100%; font-size: 1.2rem; padding: 10px 0; margin-bottom: 15px; color:#000; font-family: inherit; font-weight: bold; }
 
         #gameLayer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: none; z-index: 10000; background: #000; }
-        #gameFrame { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
 
     <div class="bg-sekai"></div>
     <div class="bg-overlay"></div>
+    
+    <!-- 浮遊キャラクター背景用 -->
+    <div id="floatChars"></div>
+
     <div id="sheetOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:49000;display:none;backdrop-filter:blur(5px);" onclick="closeAllSheets()"></div>
     <div id="mobilePauseBtn" style="position:fixed;top:15px;right:15px;width:45px;height:45px;background:var(--glass);border:1.5px solid #fff;border-radius:50%;display:none;z-index:15000;justify-content:center;align-items:center;font-weight:900;cursor:pointer;color:#fff;" onclick="showPauseMenu()">II</div>
 
@@ -134,22 +138,57 @@
         </div>
     </div>
 
-    <div id="sheetPresent" class="bottom-sheet"><div class="sheet-content"><h2 style="color:var(--pro-teal); font-family: Montserrat;">PRESENTS</h2><div id="pListContainer"></div></div></div>
+    <div id="sheetPresent" class="bottom-sheet">
+        <div class="sheet-content">
+            <h2 style="color:var(--pro-teal); font-family: Montserrat;">PRESENTS</h2>
+            <div id="pListContainer"></div>
+            <h2 style="color:var(--pro-pink); font-family: Montserrat; margin-top:40px;">COIN HISTORY</h2>
+            <div id="historyContainer"></div>
+        </div>
+    </div>
+
     <div id="sheetConfig" class="bottom-sheet"><div class="sheet-content" style="text-align: center;"><div class="student-id-card"><h3>学生証設定</h3><img id="mAv" style="width:105px;height:140px;border:3px solid #333;object-fit:cover;background:#eee;cursor:pointer;border-radius:10px;" onclick="document.getElementById('fileIn').click()"><p style="font-size:0.6rem; color:#888;">ID: <span id="myIdDisplay">---</span></p><input type="text" id="nIn" placeholder="なまえ" class="student-input"><input type="password" id="pIn" placeholder="合言葉" class="student-input"><input type="file" id="fileIn" style="display:none" accept="image/*" onchange="uploadIcon(this)"></div><br><button class="btn-pro" style="width:100%" onclick="saveSettings()"><span>保存して同期</span></button></div></div>
-    <div id="sheetFriend" class="bottom-sheet"><div class="sheet-content"><h2 style="color:var(--pro-pink);">FRIENDS</h2><div id="reqList" style="color:#333;"></div><div id="fList" style="color:#333;"></div><input type="text" id="fIdIn" placeholder="10桁ID検索" style="width:60%; padding:14px; border-radius:10px; border:none; color:#000; box-sizing:border-box;"><button class="btn-pro pink" style="width:auto; padding:12px 25px;" onclick="sendReq()"><span>申請</span></button></div></div>
-    <div id="questScreen" class="screen hidden"><h2 style="font-size: 2.5rem; color: var(--pro-teal); font-family: Montserrat;">QUEST SELECT</h2><div id="gameListContainer" style="display:flex;flex-wrap:wrap;justify-content:center;gap:15px;width:100%;padding:20px;box-sizing:border-box;"></div><button class="btn-pro gray" onclick="transition('questScreen', 'gameScreen')">戻る</button></div>
+    
+    <div id="sheetFriend" class="bottom-sheet">
+        <div class="sheet-content">
+            <h2 style="color:var(--pro-pink);">FRIENDS</h2>
+            <p style="font-size:0.8rem; color:var(--pro-teal);">届いた申請</p>
+            <div id="reqList" style="margin-bottom:20px;"></div>
+            <p style="font-size:0.8rem; color:var(--pro-teal);">フレンド一覧</p>
+            <div id="fList"></div>
+            <hr style="border:0.5px solid #333; margin:20px 0;">
+            <input type="text" id="fIdIn" placeholder="10桁ID検索" style="width:60%; padding:14px; border-radius:10px; border:none; color:#000;"><button class="btn-pro pink" style="width:auto; padding:12px 25px;" onclick="sendReq()"><span>申請</span></button>
+        </div>
+    </div>
+
+    <div id="questScreen" class="screen hidden"><h2 style="font-size: 2.5rem; color: var(--pro-teal); font-family: Montserrat;">QUEST SELECT</h2><div id="gameListContainer" style="display:flex;flex-wrap:wrap;justify-content:center;gap:15px;width:100%;padding:20px;box-sizing:border-box;"></div><button class="btn-pro gray" onclick="transition('questScreen', 'gameScreen')"><span>戻る</span></button></div>
+    
     <dialog id="modalTransfer" style="background:#111;color:#fff;border:none;border-radius:20px;padding:30px;width:90%;max-width:320px;box-shadow: 0 0 30px rgba(255,51,153,0.5);"><h3>データ復元</h3><input type="text" id="tIdIn" placeholder="ID"><input type="password" id="tPassIn" placeholder="合言葉"><br><br><button class="btn-pro pink" style="width:100%;margin:0;" onclick="executeTransfer()">復元実行</button></dialog>
 
-    <div id="gameLayer"><iframe id="gameFrame" src="about:blank"></iframe></div>
+    <div id="gameLayer"><iframe id="gameFrame" src="about:blank" style="width:100%; height:100%; border:none;"></iframe></div>
 
     <script>
-        // --- 設定 ---
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbwwibHiHX5gRyqH4mrl1I0ugMuHaLqOjpcQuv_UP2Qp00Zqu4_SVU6fTACF36qfCLIp/exec';
         let myId = localStorage.getItem('gID') || Math.random().toString(36).substring(2, 12).toUpperCase();
         let iroCoins = parseInt(localStorage.getItem('gCoins')) || 0;
-        let myChars = "", globalCharaPool = {}, friendsData = [];
+        let myChars = "", globalCharaPool = {}, friendsData = [], firstSyncDone = false;
 
-        // --- ログイン/登録フロー ---
+        // 背景に浮遊するデコレーションを追加
+        function createFloatingChars() {
+            const container = document.getElementById('floatChars');
+            for(let i=0; i<5; i++) {
+                const div = document.createElement('div');
+                div.className = 'char-original';
+                div.style.left = Math.random() * 80 + '%';
+                div.style.top = Math.random() * 80 + '%';
+                div.style.animationDelay = (Math.random() * 5) + 's';
+                div.style.opacity = '0.3';
+                container.appendChild(div);
+            }
+        }
+        createFloatingChars();
+
+        // ログイン・登録処理
         function handleLoginClick() {
             if(!localStorage.getItem('gName')) transition('titleScreen', 'registrationScreen');
             else beginPortalSync();
@@ -172,6 +211,7 @@
         }
         function transition(h, s) { const cur = document.getElementById(h); const nxt = document.getElementById(s); if(cur) { cur.classList.add('hidden'); setTimeout(() => cur.style.display = 'none', 600); } if(nxt) { nxt.style.display = 'flex'; setTimeout(() => nxt.classList.remove('hidden'), 50); } }
 
+        // 同期処理
         async function fetchSync() {
             if(!GAS_URL.includes('https')) return true;
             try {
@@ -187,16 +227,27 @@
                     const avUrl = json.avatar || "https://api.dicebear.com/7.x/avataaars/svg?seed="+myId;
                     document.getElementById('hAv').src = avUrl; document.getElementById('mAv').src = avUrl;
                     document.getElementById('myIdDisplay').innerText = myId;
-                    updatePresentUI(json.pendingGifts); renderMembers();
-                    document.getElementById('reqList').innerHTML = json.pending ? json.pending.split(',').map(id => `<div style="display:flex;justify-content:space-between;padding:10px;background:#fff;border-radius:10px;margin-bottom:5px;color:#333;"><span>ID: ${id}</span><button onclick="acceptF('${id}')">承認</button></div>`) : "";
-                    document.getElementById('fList').innerHTML = friendsData.length ? friendsData.map(f => `<div style="display:flex;justify-content:space-between;border-bottom:1px solid #ddd;padding:8px 0;color:#333;"><span>${f.name}${f.isOfficial?'✔':''}</span><div><button onclick="sendFriendGift('${f.id}')">🎁</button><button onclick="removeFriend('${f.id}')">×</button></div></div>`).join('') : "フレンドなし";
                     
+                    updatePresentUI(json.pendingGifts); 
+                    updateHistoryUI(json.history);
+                    renderMembers();
+
+                    document.getElementById('reqList').innerHTML = json.pending ? json.pending.split(',').map(id => `<div style="display:flex;justify-content:space-between;padding:10px;background:#fff;border-radius:10px;margin-bottom:5px;color:#333;"><span>ID: ${id}</span><button onclick="acceptF('${id}')">承認</button></div>`) : "なし";
+                    document.getElementById('fList').innerHTML = friendsData.length ? friendsData.map(f => `<div style="display:flex;justify-content:space-between;border-bottom:1px solid #333;padding:12px 0;color:#fff;"><span>${f.name}${f.isOfficial?'<span class="badge-verify"></span>':''}</span><div><button style="background:none;border:1px solid #fff;color:#fff;border-radius:5px;padding:5px 10px;margin-right:5px;" onclick="sendFriendGift('${f.id}')">🎁</button><button style="background:none;border:1px solid var(--pro-pink);color:var(--pro-pink);border-radius:5px;padding:5px 10px;" onclick="removeFriend('${f.id}')">×</button></div></div>`).join('') : "フレンドなし";
+                    
+                    if(!firstSyncDone) {
+                        document.getElementById('nIn').value = json.name;
+                        document.getElementById('pIn').value = json.pass;
+                        firstSyncDone = true;
+                    }
+
                     await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "sync", id: myId, name: localStorage.getItem('gName'), pass: localStorage.getItem('gPass'), iroCoin: iroCoins, chars: myChars, avatar: localStorage.getItem('gAv')||"" }) });
                     return true;
                 }
             } catch(e) { return false; }
         }
 
+        // メンバー一覧表示
         function renderMembers() {
             const container = document.getElementById('memberListContainer');
             if(!myChars) { container.innerHTML = "なし"; return; }
@@ -211,16 +262,17 @@
             const master = [...(globalCharaPool.star2||[]), ...(globalCharaPool.star3||[]), ...(globalCharaPool.star4||[])];
             const char = master.find(m => m.name === name); if(!char) return;
             let stars = globalCharaPool.star4.some(c=>c.name===name) ? 4 : (globalCharaPool.star3.some(c=>c.name===name) ? 3 : 2);
-            document.getElementById('memberDetailContent').innerHTML = `<div class="detail-card"><img src="${char.img}" style="width:200px; height:260px; object-fit:cover; border-radius:15px; border:4px solid #fff;"><div style="color:#ffcc00;font-size:1.8rem;">${'★'.repeat(stars)}</div><h1>${char.name}</h1></div>`;
+            document.getElementById('memberDetailContent').innerHTML = `<div class="detail-card"><img src="${char.img}" style="width:200px; height:260px; object-fit:cover; border-radius:15px; border:4px solid #fff;"><div style="color:#ffcc00;font-size:1.8rem; margin-top:10px;">${'★'.repeat(stars)}</div><h1>${char.name}</h1></div>`;
             document.getElementById('giftSelectionArea').style.display = 'none';
             document.getElementById('startGiftBtn').onclick = () => {
-                document.getElementById('giftFriendList').innerHTML = friendsData.map(f => `<div onclick="executeMemberGift('${f.id}','${f.name}','${char.name}')" style="padding:10px;border-bottom:1px solid #ddd;color:#333;cursor:pointer;">${f.name} へ贈る</div>`).join('');
+                document.getElementById('giftFriendList').innerHTML = friendsData.map(f => `<div onclick="executeMemberGift('${f.id}','${f.name}','${char.name}')" style="padding:15px;border-bottom:1px solid #ddd;color:#333;cursor:pointer; font-weight:bold;">${f.name} にあげる ➔</div>`).join('');
                 document.getElementById('giftSelectionArea').style.display = 'block';
             };
             openSheet('sheetMemberDetail');
         }
         async function executeMemberGift(tid, tn, cn) { if(confirm(`${tn}さんに贈りますか？`)) { await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "friendMemberGift", fromId: myId, fromName: document.getElementById('hName').innerText, toId: tid, charName: cn }) }); alert("完了"); closeSheet('sheetMemberDetail'); fetchSync(); } }
 
+        // ガチャUI起動
         async function launchGachaUI() {
             document.getElementById('gameLayer').style.display='block'; document.getElementById('mobilePauseBtn').style.display='flex';
             const [gDataRes, charPoolRes] = await Promise.all([ fetch(GAS_URL + "?action=getGachaSettings"), fetch(GAS_URL + "?action=getCharaPools") ]);
@@ -244,13 +296,10 @@
             res=[]; let names=[]; let hasS4=false, hasS3=false;
             for(let i=0; i<n; i++){
                 let s=2, r=Math.random()*100;
-                // 通常確率: 星4=3.5%, 星3=12.5%, 星2=84%
                 if(r<3.5) s=4; else if(r<16) s=3;
                 
                 // 【確定枠ロジック】
-                // 100連の最後の一枚で星4が出ていなければ星4確定
-                if(n>=100 && i===n-1 && !hasS4) s=4;
-                // 10連（または100連）の最後の一枚で星3以上が出ていなければ星3確定
+                if(n>=100 && i===n-1 && !hasS4) s=4; 
                 else if(n>=10 && i===n-1 && !hasS3 && s<3) s=3;
                 
                 if(s>=4) hasS4=true; if(s>=3) hasS3=true;
@@ -264,25 +313,109 @@
             gData.forEach((g,i)=>{const d=document.createElement('div');d.className='tab'+(i===0?' active':'');d.style.backgroundImage='url('+g.thumbnail+')';d.onclick=()=>{document.getElementById('bg').style.backgroundImage='url('+g.bg+')';document.getElementById('tName').innerText=g.title;renderButtons(i);document.querySelectorAll('.tab').forEach((t,idx)=>t.classList.toggle('active',i===idx));};document.getElementById('sb').appendChild(d);});renderButtons(0);document.getElementById('tName').innerText=gData[0].title;<\/script></body></html>`;
         }
 
-        // --- 共通受信・補助 ---
+        // メッセージ受信
         window.addEventListener('message', e => { if(e.data.type === 'gachaPull') { iroCoins = e.data.value; localStorage.setItem('gCoins', iroCoins); document.getElementById('hIroCoin').innerText = iroCoins.toLocaleString(); fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "gachaLog", userId: myId, newCoins: iroCoins, pulls: e.data.pulls, newChars: e.data.chars }) }); } });
-        function saveSettings() { localStorage.setItem('gName', document.getElementById('nIn').value); localStorage.setItem('gPass', document.getElementById('pIn').value); alert("保存しました"); fetchSync(); closeAllSheets(); }
-        function uploadIcon(input) { if (input.files && input.files[0]) { const r = new FileReader(); r.onload = e => { localStorage.setItem('gAv', e.target.result); document.getElementById('hAv').src = e.target.result; fetchSync(); }; r.readAsDataURL(input.files[0]); } }
+
+        // 設定保存
+        function saveSettings() { 
+            localStorage.setItem('gName', document.getElementById('nIn').value); 
+            localStorage.setItem('gPass', document.getElementById('pIn').value); 
+            alert("保存しました"); 
+            fetchSync(); 
+            closeAllSheets(); 
+        }
+
+        // アイコンアップロード
+        function uploadIcon(input) { 
+            if (input.files && input.files[0]) { 
+                const r = new FileReader(); 
+                r.onload = e => { 
+                    localStorage.setItem('gAv', e.target.result); 
+                    document.getElementById('hAv').src = e.target.result; 
+                    fetchSync(); 
+                }; 
+                r.readAsDataURL(input.files[0]); 
+            } 
+        }
+
+        // UI制御
         function openSheet(id) { document.getElementById('sheetOverlay').style.display = 'block'; document.getElementById(id).classList.add('open'); }
         function closeSheet(id) { document.getElementById(id).classList.remove('open'); if(!document.querySelector('.bottom-sheet.open')) document.getElementById('sheetOverlay').style.display = 'none'; }
         function closeAllSheets() { document.getElementById('sheetOverlay').style.display = 'none'; document.querySelectorAll('.bottom-sheet').forEach(s => s.classList.remove('open')); }
         function showPauseMenu() { document.getElementById('pauseOverlay').style.display = 'flex'; }
         function resumeGame() { document.getElementById('pauseOverlay').style.display = 'none'; }
         function exitGame() { location.reload(); }
-        async function loadGameList() { const res = await (await fetch(GAS_URL + "?action=getList")).json(); const container = document.getElementById('gameListContainer'); container.innerHTML = ""; res.forEach(g => { const card = document.createElement('div'); card.className = "nav-card"; card.style.width="130px"; card.innerHTML = `<b>${g.title}</b>`; card.onclick = () => launchGame(g.id); container.appendChild(card); }); }
-        async function launchGame(id) { document.getElementById('gameLayer').style.display='block'; document.getElementById('mobilePauseBtn').style.display='flex'; const res = await (await fetch(GAS_URL+"?action=getCode&row="+id)).json(); document.getElementById('gameFrame').srcdoc = res.code; }
+
+        // クエスト・ゲームリスト
+        async function loadGameList() { 
+            const res = await (await fetch(GAS_URL + "?action=getList")).json(); 
+            const container = document.getElementById('gameListContainer'); 
+            container.innerHTML = ""; 
+            res.forEach(g => { 
+                const card = document.createElement('div'); 
+                card.className = "nav-card"; 
+                card.style.flex = "none";
+                card.style.width="130px"; 
+                card.innerHTML = `<b>${g.title}</b>`; 
+                card.onclick = () => launchGame(g.id); 
+                container.appendChild(card); 
+            }); 
+        }
+        async function launchGame(id) { 
+            document.getElementById('gameLayer').style.display='block'; 
+            document.getElementById('mobilePauseBtn').style.display='flex'; 
+            const res = await (await fetch(GAS_URL+"?action=getCode&row="+id)).json(); 
+            document.getElementById('gameFrame').srcdoc = res.code; 
+        }
+
+        // 歴史表示（コイン履歴など）
+        function updateHistoryUI(h) { 
+            const container = document.getElementById('historyContainer');
+            if(!h || h.length === 0) { container.innerHTML = "履歴なし"; return; }
+            container.innerHTML = h.map(x => `<div class="history-item"><span>${x.reason || '不明'}</span><span style="text-align:right; font-weight:bold;">${x.coin >= 0 ? '+' : ''}${x.coin}</span></div>`).join(''); 
+        }
+
+        // フレンド機能
         async function sendReq() { const tid = document.getElementById('fIdIn').value.toUpperCase(); if(tid===myId) return; await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "request", myId: myId, targetId: tid }) }); alert("申請しました"); fetchSync(); }
         async function acceptF(tid) { await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "accept", myId: myId, targetId: tid }) }); fetchSync(); }
         async function removeFriend(fid) { if(confirm("解除しますか？")){ await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "removeFriend", myId: myId, targetId: fid }) }); fetchSync(); } }
         async function sendFriendGift(fid) { const amount = prompt("枚数", "100"); if(!amount || iroCoins < amount) return; iroCoins -= parseInt(amount); await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "friendGift", fromId: myId, fromName: document.getElementById('hName').innerText, toId: fid, amount: amount }) }); fetchSync(); }
-        async function claim(rowId, name) { await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "claim", userId: myId, giftRow: rowId }) }); alert(`「${name}」受取完了`); fetchSync(); }
-        function updatePresentUI(p) { const c = document.getElementById('pListContainer'); if(!p || p.length === 0) { c.innerHTML = "なし"; document.getElementById('pBadge').style.display = 'none'; return; } document.getElementById('pBadge').innerText = p.length; document.getElementById('pBadge').style.display = 'flex'; c.innerHTML = p.map(x => `<div style="display:flex;justify-content:space-between;padding:15px;background:rgba(255,255,255,0.1);border-radius:10px;margin-bottom:10px;"><b>${x.from}から: ${x.name}</b><button class="btn-pro" style="width:auto;padding:5px 15px;margin:0;" onclick="claim(${x.row},'${x.name}')"><span>受取</span></button></div>`).join(''); }
-        async function executeTransfer() { const id = document.getElementById('tIdIn').value.toUpperCase(); const ps = document.getElementById('tPassIn').value; const res = await (await fetch(GAS_URL + "?id=" + id)).json(); if(res.result === "success" && String(res.pass) === String(ps)) { localStorage.setItem('gID', id); localStorage.setItem('gName', res.name); localStorage.setItem('gPass', res.pass); location.reload(); } else { alert("失敗"); } }
+        
+        // プレゼント受取
+        async function claim(rowId, name) { 
+            await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "claim", userId: myId, giftRow: rowId }) }); 
+            alert(`「${name}」受取完了`); 
+            fetchSync(); 
+        }
+        function updatePresentUI(p) { 
+            const badge = document.getElementById('pBadge');
+            const container = document.getElementById('pListContainer');
+            if(!p || p.length === 0) { 
+                container.innerHTML = "なし"; 
+                badge.style.display = 'none'; 
+                return; 
+            } 
+            badge.innerText = p.length; 
+            badge.style.display = 'flex'; 
+            container.innerHTML = p.map(x => `
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:15px;background:rgba(255,255,255,0.1);border-radius:10px;margin-bottom:10px;">
+                    <div><small>${x.from}から</small><br><b>${x.name}</b></div>
+                    <button class="btn-pro" style="width:auto;padding:5px 15px;margin:0; font-size:0.8rem;" onclick="claim(${x.row},'${x.name}')"><span>受取</span></button>
+                </div>`).join(''); 
+        }
+
+        // データ復元
+        async function executeTransfer() { 
+            const id = document.getElementById('tIdIn').value.toUpperCase(); 
+            const ps = document.getElementById('tPassIn').value; 
+            const res = await (await fetch(GAS_URL + "?id=" + id)).json(); 
+            if(res.result === "success" && String(res.pass) === String(ps)) { 
+                localStorage.setItem('gID', id); 
+                localStorage.setItem('gName', res.name);
+                localStorage.setItem('gPass', res.pass);
+                location.reload(); 
+            } else { alert("IDまたは合言葉が違います"); } 
+        }
     </script>
 </body>
 </html>
