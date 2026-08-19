@@ -29,13 +29,14 @@
         .btn-pro span { display: inline-block; transform: skewX(15deg); pointer-events: none; }
         .btn-pro:active { transform: skewX(-15deg) translate(2px, 2px); box-shadow: 0 0 0 var(--pro-teal); }
         .btn-pro.pink { box-shadow: 5px 5px 0 var(--pro-pink); background: var(--pro-pink); color: #fff; }
+        .btn-pro.gray { box-shadow: 5px 5px 0 #555; background: #888; color: #fff; }
 
         /* UI要素 */
         .header-minimal { position: absolute; top: 15px; left: 15px; display: flex; align-items: center; gap: 10px; z-index: 200; }
         .av-mini { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff; overflow: hidden; background: #222; cursor: pointer; }
         .iro-coin-disp { margin-left: 10px; font-weight: 900; color: var(--pro-teal); text-shadow: 0 0 15px var(--pro-teal); font-size: 1.2rem; }
-        
-        .main-console-text { font-family: 'Montserrat', sans-serif; font-size: clamp(2rem, 10vw, 5.5rem); font-weight: 900; letter-spacing: 12px; color: #fff; opacity: 0.7; pointer-events: none; text-align: center; }
+        .badge-verify { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; background: linear-gradient(135deg, #1da1f2, #0e71c8); color: #fff; border-radius: 50%; font-size: 10px; margin-left: 6px; border: 1.5px solid #fff; font-weight: bold; }
+        .badge-verify::after { content: '✔'; }
 
         .nav-container { position: absolute; bottom: 25px; display: flex; gap: 10px; width: 95%; max-width: 900px; z-index: 300; justify-content: center; }
         .nav-card { flex: 1; background: rgba(0,0,0,0.7); border: 1.5px solid #444; padding: 20px 5px; border-radius: 14px; cursor: pointer; text-align: center; font-weight: 900; font-size: 0.8rem; color: #fff; transition: 0.2s; white-space: nowrap; }
@@ -51,14 +52,12 @@
         .member-card img { width: 100%; height: 120px; object-fit: cover; border-radius: 10px; border: 2px solid #fff; }
         .count-badge { position: absolute; top: 6px; right: 6px; background: var(--pro-pink); color: #fff; font-size: 0.7rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; border: 1.5px solid #fff; z-index: 10; }
 
+        .history-item { background: rgba(255,255,255,0.05); padding: 14px; border-radius: 12px; margin-bottom: 10px; display: grid; grid-template-columns: 1fr 1fr; align-items: center; border-left: 5px solid #555; }
         .student-id-card { background: #fff; color: #333; border-radius: 20px; padding: 25px; border: 4px solid #444; max-width: 360px; margin: 20px auto; }
         .student-input { background: none; border: none; border-bottom: 2px solid #333; width: 100%; font-size: 1.2rem; padding: 12px 0; margin-bottom: 20px; font-weight: bold; outline: none; }
 
         #gameLayer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: none; z-index: 10000; background: #000; }
         #gameFrame { width: 100%; height: 100%; border: none; }
-
-        .loading-dot { animation: blink 1s infinite alternate; }
-        @keyframes blink { from { opacity: 0.2; } to { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -68,22 +67,20 @@
     <div id="floatChars"></div>
 
     <div id="sheetOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:49000;display:none;backdrop-filter:blur(5px);" onclick="closeAllSheets()"></div>
-
-    <!-- ポーズメニュー -->
     <div id="mobilePauseBtn" style="position:fixed;top:15px;right:15px;width:45px;height:45px;background:var(--glass);border:1.5px solid #fff;border-radius:50%;display:none;z-index:15000;justify-content:center;align-items:center;font-weight:900;cursor:pointer;color:#fff;" onclick="showPauseMenu()">II</div>
+
     <div id="pauseOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:60000;display:none;flex-direction:column;justify-content:center;align-items:center;">
         <h1 style="font-family: Montserrat; font-size: 3.5rem; color: var(--pro-teal);">PAUSE</h1>
         <button class="btn-pro" onclick="resumeGame()"><span>再開</span></button>
-        <button class="btn-pro pink" onclick="exitGame()"><span>タイトルに戻る</span></button>
+        <button class="btn-pro pink" onclick="exitGame()"><span>終了</span></button>
     </div>
 
     <!-- 1. タイトル画面 -->
     <div id="titleScreen" class="screen">
-        <h1 style="font-family: Montserrat; font-size: clamp(3rem, 15vw, 8rem); margin: 0; text-shadow: 0 0 40px var(--pro-teal);">GENSOU</h1>
-        <p style="letter-spacing: 14px; font-weight: 900; color: var(--pro-pink); margin-bottom: 60px; font-size: 1.3rem;">COLORFUL STAGE</p>
-        
-        <div id="bootStatus" style="font-size: 0.8rem; color: #888; margin-bottom: 10px; height: 1.2rem;">準備中...</div>
-        <button id="loginMainBtn" class="btn-pro" onclick="handleLoginClick()"><span>ログイン</span></button>
+        <h1 style="font-family: Montserrat; font-size: clamp(3.5rem, 15vw, 8.5rem); margin: 0; text-shadow: 0 0 40px var(--pro-teal); text-align: center;">GENSOU</h1>
+        <p style="letter-spacing: 14px; font-weight: 900; color: var(--pro-pink); margin-bottom: 60px; text-align: center; font-size: 1.3rem;">COLORFUL STAGE</p>
+        <div id="bootStatus" style="font-size: 0.8rem; color: #888; margin-bottom: 10px;">準備中...</div>
+        <button class="btn-pro" onclick="handleLoginClick()"><span>ログイン</span></button>
         <button class="btn-pro pink" onclick="document.getElementById('modalTransfer').showModal()"><span>データ復元</span></button>
     </div>
 
@@ -97,23 +94,19 @@
         <button class="btn-pro" onclick="saveRegistration()"><span>作成して開始！</span></button>
     </div>
 
-    <!-- ローディング -->
-    <div id="loadingScreen" class="screen hidden">
-        <p style="color: var(--pro-teal); font-weight: 900; letter-spacing: 5px; font-size: 1.8rem;">同期中<span class="loading-dot">...</span></p>
-        <p id="loadingMsg" style="font-size: 0.8rem; color: #888;"></p>
-    </div>
+    <div id="loadingScreen" class="screen hidden"><p style="color: var(--pro-teal); font-weight: 900; letter-spacing: 5px; font-size: 1.8rem;">同期中...</p></div>
 
     <!-- 3. ホーム画面 -->
     <div id="gameScreen" class="screen hidden">
         <div class="header-minimal">
             <div class="av-mini" onclick="openSheet('sheetConfig')"><img id="hAv" src="" style="width:100%; height:100%; object-fit:cover;"></div>
-            <div style="font-size: 1rem; font-weight: 900;"><span id="hName">---</span></div>
+            <div style="font-size: 1rem; font-weight: 900;"><span id="hName">---</span><span id="hVerified"></span></div>
             <div class="iro-coin-disp">🪙 <span id="hIroCoin">---</span></div>
         </div>
         
         <div style="position: absolute; top: 75px; left: 15px; width: 48px; height: 48px; background: rgba(255,255,255,0.1); border: 2px solid #555; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 300; font-size: 1.5rem;" onclick="openSheet('sheetPresent')">🎁<div id="pBadge" style="position: absolute; top: -4px; right: -4px; width: 20px; height: 20px; background: #ff3366; border-radius: 50%; border: 2px solid #fff; font-size: 0.7rem; display: none; justify-content: center; align-items: center; font-weight: 900;">0</div></div>
 
-        <h1 class="main-console-text">MAIN CONSOLE</h1>
+        <h1 style="font-family: Montserrat; font-size: clamp(2rem, 10vw, 5.5rem); font-weight: 900; letter-spacing: 12px; color: #fff; opacity: 0.7; pointer-events: none; text-align: center;">MAIN CONSOLE</h1>
         
         <nav class="nav-container">
             <div class="nav-card" onclick="openSheet('sheetFriend')">フレンド</div>
@@ -124,8 +117,9 @@
         </nav>
     </div>
 
-    <!-- 各種ボトムシート（内容はこれまでのものを維持） -->
+    <!-- ボトムシート -->
     <div id="sheetMember" class="bottom-sheet"><div class="sheet-content"><h2 style="color:var(--pro-teal); font-family: Montserrat;">MY MEMBERS</h2><div id="memberListContainer" class="member-grid"></div></div></div>
+    
     <div id="sheetMemberDetail" class="bottom-sheet">
         <div class="sheet-content" style="text-align: center;">
             <div id="memberDetailContent"></div>
@@ -134,14 +128,40 @@
                 <div id="giftFriendList" style="background:#f8f8f8; color:#333; padding:15px; border-radius:24px; max-height:350px; overflow-y:auto; border: 3px solid #ddd;"></div>
             </div>
             <button class="btn-pro pink" id="startGiftBtn"><span>フレンドに贈る</span></button><br>
-            <button class="btn-pro" onclick="closeSheet('sheetMemberDetail')"><span>戻る</span></button>
+            <button class="btn-pro gray" onclick="closeSheet('sheetMemberDetail')"><span>戻る</span></button>
         </div>
     </div>
-    <div id="sheetPresent" class="bottom-sheet"><div class="sheet-content"><h2 style="color:var(--pro-teal); font-family: Montserrat;">PRESENTS</h2><div id="pListContainer"></div><h2 style="color:var(--pro-pink); font-family: Montserrat; margin-top:50px;">HISTORY</h2><div id="historyContainer"></div></div></div>
-    <div id="sheetConfig" class="bottom-sheet"><div class="sheet-content" style="text-align: center;"><div class="student-id-card"><img id="mAv" style="width:120px;height:120px;border:4px solid #333;object-fit:cover;border-radius:50%;" onclick="document.getElementById('fileIn').click()"><p>ID: <span id="myIdDisplay">---</span></p><input type="text" id="nIn" class="student-input" placeholder="なまえを更新"><input type="password" id="pIn" class="student-input" placeholder="合言葉を更新"><input type="file" id="fileIn" style="display:none" accept="image/*" onchange="uploadIcon(this)"></div><br><button class="btn-pro" style="width:100%" onclick="saveSettings()"><span>設定保存</span></button></div></div>
-    <div id="sheetFriend" class="bottom-sheet"><div class="sheet-content"><h2 style="color:var(--pro-pink); font-family: Montserrat;">FRIENDS</h2><div id="reqList" style="margin-bottom: 25px;"></div><div id="fList"></div><div style="margin-top:40px; display:flex; gap:10px;"><input type="text" id="fIdIn" placeholder="10桁ID検索" style="flex:1; padding:16px; border-radius:12px; border:none; color:#000; font-weight:bold;"><button class="btn-pro pink" style="width:auto; padding:15px 30px; margin:0;" onclick="sendReq()"><span>申請</span></button></div></div></div>
-    <div id="questScreen" class="screen hidden"><h2 style="font-size: 3rem; color: var(--pro-teal); font-family: Montserrat;">QUEST SELECT</h2><div id="gameListContainer" style="display:flex;flex-wrap:wrap;justify-content:center;gap:18px;width:100%;padding:20px;box-sizing:border-box;"></div><button class="btn-pro" onclick="transition('questScreen', 'gameScreen')"><span>戻る</span></button></div>
-    <dialog id="modalTransfer" style="background:#111;color:#fff;border:none;border-radius:24px;padding:35px;width:90%;max-width:340px;box-shadow: 0 0 50px rgba(255,51,153,0.4);"><input type="text" id="tIdIn" placeholder="ID" style="width:100%; padding:15px; margin-bottom:12px; border-radius:8px;"><input type="password" id="tPassIn" placeholder="合言葉" style="width:100%; padding:15px; border-radius:8px;"><br><br><button class="btn-pro pink" style="width:100%;margin:0;" onclick="executeTransfer()"><span>復元実行</span></button></dialog>
+
+    <div id="sheetPresent" class="bottom-sheet"><div class="sheet-content"><h2 style="color:var(--pro-teal); font-family: Montserrat;">PRESENTS</h2><div id="pListContainer"></div><h2 style="color:var(--pro-pink); font-family: Montserrat; margin-top:50px;">COIN HISTORY</h2><div id="historyContainer"></div></div></div>
+    
+    <div id="sheetConfig" class="bottom-sheet">
+        <div class="sheet-content" style="text-align: center;">
+            <div class="student-id-card">
+                <img id="mAv" style="width:120px;height:120px;border:4px solid #333;object-fit:cover;background:#eee;cursor:pointer;border-radius:50%;" onclick="document.getElementById('fileIn').click()">
+                <p>ID: <span id="myIdDisplay">---</span></p>
+                <input type="text" id="nIn" placeholder="なまえを更新" class="student-input">
+                <input type="password" id="pIn" placeholder="合言葉を更新" class="student-input">
+                <input type="file" id="fileIn" style="display:none" accept="image/*" onchange="uploadIcon(this)">
+            </div>
+            <br><button class="btn-pro" style="width:100%" onclick="saveSettings()"><span>保存</span></button>
+        </div>
+    </div>
+
+    <div id="sheetFriend" class="bottom-sheet">
+        <div class="sheet-content">
+            <h2 style="color:var(--pro-pink); font-family: Montserrat;">FRIENDS</h2>
+            <div id="reqList" style="margin-bottom: 25px;"></div>
+            <div id="fList"></div>
+            <div style="margin-top:40px; display:flex; gap:10px;">
+                <input type="text" id="fIdIn" placeholder="10桁ID検索" style="flex:1; padding:16px; border-radius:12px; border:none; color:#000; font-weight:bold;">
+                <button class="btn-pro pink" style="width:auto; padding:15px 30px; margin:0;" onclick="sendReq()"><span>申請</span></button>
+            </div>
+        </div>
+    </div>
+
+    <div id="questScreen" class="screen hidden"><h2 style="font-size: 3rem; color: var(--pro-teal); font-family: Montserrat;">QUEST SELECT</h2><div id="gameListContainer" style="display:flex;flex-wrap:wrap;justify-content:center;gap:18px;width:100%;padding:20px;box-sizing:border-box;"></div><button class="btn-pro gray" onclick="transition('questScreen', 'gameScreen')">戻る</button></div>
+
+    <dialog id="modalTransfer" style="background:#111;color:#fff;border:none;border-radius:24px;padding:35px;width:90%;max-width:340px;box-shadow: 0 0 50px rgba(255,51,153,0.4);"><input type="text" id="tIdIn" placeholder="ID" style="width:100%; padding:15px; margin-bottom:12px; border-radius:8px;"><input type="password" id="tPassIn" placeholder="合言葉" style="width:100%; padding:15px; border-radius:8px;"><br><br><button class="btn-pro pink" style="width:100%;margin:0;" onclick="executeTransfer()"><span>復元</span></button></dialog>
 
     <div id="gameLayer"><iframe id="gameFrame" src="about:blank"></iframe></div>
 
@@ -152,25 +172,17 @@
         let myId = localStorage.getItem('gID') || Math.random().toString(36).substring(2, 12).toUpperCase();
         let iroCoins = parseInt(localStorage.getItem('gCoins')) || 0;
         let myChars = "", globalCharaPool = {}, friendsData = [], firstSyncDone = false;
-        let isGlobalReady = false;
 
-        // 【準備】ページ読み込み時に共通データを先読み
         window.addEventListener('load', async () => {
             initFloating();
-            document.getElementById('bootStatus').innerText = "通信準備中...";
             try {
                 const res = await fetch(GAS_URL + "?action=getCharaPools");
                 globalCharaPool = await res.json();
-                isGlobalReady = true;
-                document.getElementById('bootStatus').innerText = "READY";
+                document.getElementById('bootStatus').innerText = "通信準備完了";
                 document.getElementById('bootStatus').style.color = "#33ffcc";
-            } catch(e) {
-                document.getElementById('bootStatus').innerText = "オフラインモードで準備完了";
-                console.warn("Global pool fetch failed, check GAS URL.");
-            }
+            } catch(e) { document.getElementById('bootStatus').innerText = "オフライン"; }
         });
 
-        // 浮遊演出
         function initFloating() {
             const container = document.getElementById('floatChars');
             for(let i=0; i<6; i++) {
@@ -184,15 +196,11 @@
             }
         }
 
-        // 【同期】ログインボタン押下時
         async function handleLoginClick() {
-            if(!localStorage.getItem('gName')) {
-                transition('titleScreen', 'registrationScreen');
-            } else {
+            if(!localStorage.getItem('gName')) transition('titleScreen', 'registrationScreen');
+            else {
                 transition('titleScreen', 'loadingScreen');
-                document.getElementById('loadingMsg').innerText = "セカイを同期しています...";
-                
-                // 初回ログイン時のデータ作成（POST同期）
+                // POST登録（初回用）
                 await fetch(GAS_URL, {
                     method: "POST",
                     mode: "no-cors",
@@ -202,31 +210,25 @@
                         name: localStorage.getItem('gName'),
                         pass: localStorage.getItem('gPass'),
                         iroCoin: iroCoins || 5000,
-                        chars: myChars || ""
+                        chars: ""
                     })
                 });
-
-                const success = await fetchSync();
-                if(success) {
+                if(await fetchSync()) {
                     transition('loadingScreen', 'gameScreen');
                     setInterval(fetchSync, 15000);
-                } else {
-                    alert("同期に失敗しました。URLを確認してください。");
-                    location.reload();
-                }
+                } else { alert("同期エラー"); location.reload(); }
             }
         }
 
         async function saveRegistration() {
             const name = document.getElementById('regName').value.trim();
             const pass = document.getElementById('regPass').value.trim();
-            if(!name || !pass) { alert("全て入力してください"); return; }
+            if(!name || !pass) return;
             localStorage.setItem('gID', myId);
             localStorage.setItem('gName', name); localStorage.setItem('gPass', pass);
             handleLoginClick();
         }
 
-        // ユーザーデータ取得同期
         async function fetchSync() {
             try {
                 const res = await fetch(GAS_URL + "?id=" + myId);
@@ -236,29 +238,24 @@
                     document.getElementById('hIroCoin').innerText = iroCoins.toLocaleString();
                     myChars = json.chars || ""; friendsData = json.friendsData || [];
                     document.getElementById('hName').innerText = json.name || "USER";
+                    document.getElementById('hVerified').innerHTML = json.isOfficial ? '<span class="badge-verify"></span>' : "";
                     const avUrl = json.avatar || "https://api.dicebear.com/7.x/avataaars/svg?seed="+myId;
                     document.getElementById('hAv').src = avUrl; document.getElementById('mAv').src = avUrl;
                     document.getElementById('myIdDisplay').innerText = myId;
-                    
-                    updatePresentUI(json.pendingGifts); 
-                    renderMembers();
-                    
+                    updatePresentUI(json.pendingGifts); updateHistoryUI(json.history); renderMembers();
                     if(!firstSyncDone) { document.getElementById('nIn').value = json.name; document.getElementById('pIn').value = json.pass; firstSyncDone = true; }
-                    
                     document.getElementById('reqList').innerHTML = json.pending ? json.pending.split(',').map(id => `<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:#fff;border-radius:12px;margin-bottom:8px;color:#333;"><span>ID: ${id}</span><button onclick="acceptF('${id}')">承認</button></div>`) : "なし";
-                    document.getElementById('fList').innerHTML = friendsData.length ? friendsData.map(f => `<div style="display:flex;justify-content:space-between;padding:15px 0;color:#fff;border-bottom:1px solid #333;"><span>${f.name}</span><div><button onclick="sendFriendGift('${f.id}')">🎁</button> <button onclick="removeFriend('${f.id}')">×</button></div></div>`).join('') : "なし";
+                    document.getElementById('fList').innerHTML = friendsData.length ? friendsData.map(f => `<div style="display:flex;justify-content:space-between;padding:15px 0;color:#fff;border-bottom:1px solid #333;"><span>${f.name}${f.isOfficial?'<span class="badge-verify"></span>':''}</span><div><button onclick="sendFriendGift('${f.id}')">🎁</button> <button onclick="removeFriend('${f.id}')">×</button></div></div>`).join('') : "なし";
                     return true;
                 }
                 return false;
             } catch(e) { return false; }
         }
 
-        // ガチャUI
         async function launchGachaUI() {
             document.getElementById('gameLayer').style.display='block'; document.getElementById('mobilePauseBtn').style.display='flex';
             const [gDataRes, charPoolRes] = await Promise.all([ fetch(GAS_URL + "?action=getGachaSettings"), fetch(GAS_URL + "?action=getCharaPools") ]);
             const gData = await gDataRes.json(); const pools = await charPoolRes.json();
-            
             document.getElementById('gameFrame').srcdoc = `
             <!DOCTYPE html><html><head><style>
                 body{background:#000;color:#fff;font-family:sans-serif;margin:0;overflow:hidden;}
@@ -274,7 +271,7 @@
                 .b-custom{background:linear-gradient(#33ffcc,#00cc99); color:#000;}
                 .custom-box{background:rgba(0,0,0,0.85); padding:10px 20px; border-radius:15px; display:flex; align-items:center; gap:15px; border:1px solid #fff;}
                 .num-btn{width:40px;height:40px;border-radius:50%;border:none;background:#fff;font-weight:bold;cursor:pointer;font-size:1.5rem;}
-                #reveal{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;display:none;z-index:1000;flex-direction:column;justify-content:center;align-items:center;cursor:pointer;text-align:center;}
+                #reveal{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;display:none;z-index:1000;flex-direction:column;justify-content:center;align-items:center;cursor:pointer;}
                 .rev-img{max-height:70vh;border:5px solid #fff;border-radius:20px;margin-bottom:20px;}
                 #summary{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.98);display:none;z-index:2000;flex-direction:column;align-items:center;justify-content:center;padding:20px;}
                 .summary-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;overflow-y:auto;max-height:70vh;}
@@ -326,7 +323,7 @@
             <\/script></body></html>`;
         }
 
-        // --- 共通機能 ---
+        // --- その他UI制御 ---
         window.addEventListener('message', e => { if(e.data.type === 'gachaPull') { iroCoins = e.data.value; localStorage.setItem('gCoins', iroCoins); document.getElementById('hIroCoin').innerText = iroCoins.toLocaleString(); fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "gachaLog", userId: myId, newCoins: iroCoins, pulls: e.data.pulls, newChars: e.data.chars }) }); } });
         function transition(h, s) { const cur = document.getElementById(h); const nxt = document.getElementById(s); if(cur) { cur.classList.add('hidden'); setTimeout(() => cur.style.display = 'none', 600); } if(nxt) { nxt.style.display = 'flex'; setTimeout(() => nxt.classList.remove('hidden'), 50); } }
         function openSheet(id) { document.getElementById('sheetOverlay').style.display = 'block'; document.getElementById(id).classList.add('open'); }
@@ -368,6 +365,7 @@
         async function sendFriendGift(fid) { const amount = prompt("枚数", "100"); if(!amount || iroCoins < amount) return; iroCoins -= parseInt(amount); await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "friendGift", fromId: myId, fromName: document.getElementById('hName').innerText, toId: fid, amount: amount }) }); fetchSync(); }
         async function claim(rowId, name) { await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "claim", userId: myId, giftRow: rowId }) }); alert(name + " 受取完了"); fetchSync(); }
         function updatePresentUI(p) { const badge = document.getElementById('pBadge'); const list = document.getElementById('pListContainer'); if(!p || p.length === 0) { list.innerHTML = "なし"; badge.style.display = 'none'; return; } badge.innerText = p.length; badge.style.display = 'flex'; list.innerHTML = p.map(x => `<div style="display:flex;justify-content:space-between;padding:15px;background:rgba(255,255,255,0.1);margin-bottom:10px;"><div><b>${x.name}</b></div><button onclick="claim(${x.row},'${x.name}')">受取</button></div>`).join(''); }
+        function updateHistoryUI(h) { const c = document.getElementById('historyContainer'); if(!h) { c.innerHTML = "なし"; return; } c.innerHTML = h.map(x => `<div style="padding:10px; border-bottom:1px solid #333;">${x.reason} : ${x.coin}</div>`).join(''); }
         async function executeTransfer() { const id = document.getElementById('tIdIn').value.toUpperCase(); const ps = document.getElementById('tPassIn').value; const res = await (await fetch(GAS_URL + "?id=" + id)).json(); if(res.result === "success" && String(res.pass) === String(ps)) { localStorage.setItem('gID', id); localStorage.setItem('gName', res.name); localStorage.setItem('gPass', res.pass); location.reload(); } else { alert("失敗"); } }
     </script>
 </body>
