@@ -3,130 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>幻想クロニクル - THE ULTIMATE STAGE</title>
+    <title>幻想クロニクル - THE FINAL STAGE</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --pro-teal: #33ffcc; --pro-pink: #ff3399; --glass: rgba(0, 0, 0, 0.85);
-            --border: rgba(255, 255, 255, 0.4); --verify: #1da1f2;
+            --pro-teal: #33ffcc; --pro-pink: #ff66cc; --glass: rgba(0, 0, 0, 0.85);
+            --border: rgba(255, 255, 255, 0.2); --verify: #1da1f2;
         }
         body, html { margin: 0; padding: 0; overflow: hidden; background: #000; font-family: 'Noto Sans JP', sans-serif; color: #fff; height: 100vh; width: 100vw; touch-action: manipulation; }
-        .bg-sekai { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #1a1a2e 0%, #000 100%); z-index: -1; }
-        
-        .screen { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); z-index: 100; box-sizing: border-box; padding: 20px; }
+        .bg-sekai { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, rgba(30,30,30,1) 0%, #000 100%); z-index: -1; pointer-events: none; }
+        .screen { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; transition: 0.5s ease; z-index: 100; box-sizing: border-box; padding: 20px; }
         .hidden { display: none !important; opacity: 0; }
 
-        /* 究極の公式認証バッジ */
-        .badge-verify { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; background: linear-gradient(135deg, #1da1f2, #0e71c8); color: #fff; border-radius: 50%; font-size: 10px; margin-left: 6px; vertical-align: middle; border: 1.5px solid #fff; box-shadow: 0 0 10px rgba(29, 161, 242, 0.8); font-weight: bold; position: relative; }
-        .badge-verify::after { content: '✔'; }
-
-        /* プロセカ風ボタン */
-        .btn-wrap { z-index: 10000; position: relative; display: flex; flex-direction: column; align-items: center; width: 100%; pointer-events: none; }
-        .btn-pro { position: relative; background: #fff; color: #333; border: none; padding: 16px 40px; border-radius: 4px; font-weight: 900; cursor: pointer; transition: 0.2s; transform: skewX(-15deg); box-shadow: 5px 5px 0 var(--pro-teal); font-family: inherit; margin: 12px; text-transform: uppercase; text-align: center; width: 85%; max-width: 300px; pointer-events: auto !important; }
+        /* ボタン：確実にクリック可能にするため最前面へ */
+        .btn-pro { position: relative; background: #fff; color: #111; border: none; padding: 16px 40px; border-radius: 4px; font-weight: 900; cursor: pointer; transition: 0.2s; transform: skewX(-15deg); box-shadow: 5px 5px 0 var(--pro-teal); z-index: 99999 !important; font-family: inherit; margin: 12px; text-transform: uppercase; text-align: center; width: 85%; max-width: 300px; pointer-events: auto !important; }
         .btn-pro span { display: inline-block; transform: skewX(15deg); pointer-events: none; }
         .btn-pro:active { transform: skewX(-15deg) translate(2px, 2px); box-shadow: 0 0 0 var(--pro-teal); }
         .btn-pro.pink { box-shadow: 5px 5px 0 var(--pro-pink); background: var(--pro-pink); color: #fff; }
 
-        /* タイトル装飾 */
-        .char-original { position: absolute; width: 85px; height: 85px; border-radius: 20px; border: 3px solid #fff; background: var(--glass); backdrop-filter: blur(10px); animation: float 3s infinite ease-in-out; z-index: 1; pointer-events: none !important; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        /* 装飾 */
+        .char-original, h1, p { pointer-events: none !important; user-select: none; }
+        .badge-verify { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; background: linear-gradient(135deg, #1da1f2, #0e71c8); color: #fff; border-radius: 50%; font-size: 11px; margin-left: 6px; vertical-align: middle; border: 1.5px solid #fff; box-shadow: 0 0 8px rgba(29, 161, 242, 0.6); font-weight: bold; }
+        .badge-verify::after { content: '✔'; }
 
-        /* ヘッダー */
-        .header-minimal { position: absolute; top: 15px; left: 15px; display: flex; align-items: center; gap: 10px; padding: 5px 15px; background: rgba(0,0,0,0.6); border-left: 4px solid var(--pro-teal); backdrop-filter: blur(10px); z-index: 200; border-radius: 0 15px 15px 0; }
+        /* UI要素 */
+        .header-minimal { position: absolute; top: 15px; left: 15px; display: flex; align-items: center; gap: 8px; z-index: 200; }
         .av-mini { width: 35px; height: 35px; border-radius: 50%; border: 2px solid #fff; overflow: hidden; background: #222; }
-        .iro-coin-disp { margin-left: 10px; font-weight: 900; color: var(--pro-teal); text-shadow: 0 0 10px var(--pro-teal); font-size: 1.1rem; }
-
-        /* ナビゲーション */
         .nav-container { position: absolute; bottom: 25px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 92%; max-width: 900px; z-index: 300; pointer-events: auto; }
         @media (min-width: 768px) { .nav-container { grid-template-columns: repeat(5, 1fr); } }
-        .nav-card { background: var(--glass); border: 1px solid var(--border); padding: 15px 5px; border-radius: 12px; cursor: pointer; text-align: center; backdrop-filter: blur(15px); font-weight: 900; font-size: 0.85rem; color: #fff; display: flex; align-items: center; justify-content: center; min-height: 65px; }
-        .nav-card.main { background: var(--pro-pink); border: none; grid-column: span 2; }
-        @media (min-width: 768px) { .nav-card.main { grid-column: span 1; } }
+        .nav-card { background: var(--glass); border: 1px solid var(--border); padding: 15px 5px; border-radius: 12px; cursor: pointer; text-align: center; font-weight: 900; font-size: 0.8rem; color: #fff; display: flex; align-items: center; justify-content: center; min-height: 65px; }
 
-        /* ボトムシート */
         .bottom-sheet { position: fixed; bottom: -100%; left: 0; width: 100%; height: 94%; background: #0a0b12; border-radius: 25px 25px 0 0; z-index: 50000; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); overflow-y: auto; color: #fff; border-top: 1px solid var(--border); }
         .bottom-sheet.open { bottom: 0; }
         .sheet-content { padding: 25px; padding-bottom: 120px; max-width: 800px; margin: 0 auto; }
-
-        /* リスト・カード */
         .member-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; }
-        .member-card { position: relative; background: rgba(255,255,255,0.1); border-radius: 10px; padding: 10px; border: 1px solid rgba(255,255,255,0.2); text-align: center; cursor: pointer; }
-        .member-card img { width: 100%; height: 110px; object-fit: cover; border-radius: 5px; border: 1.5px solid #fff; }
-        .count-badge { position: absolute; top: 5px; right: 5px; background: var(--pro-pink); color: #fff; font-size: 0.7rem; font-weight: bold; padding: 2px 8px; border-radius: 10px; border: 1.5px solid #fff; z-index: 10; }
-        
-        .student-id-card { background: #fff; color: #333; border-radius: 15px; padding: 25px; border: 3px solid #555; max-width: 350px; margin: 20px auto; text-align: left; }
-        .student-input { background: none; border: none; border-bottom: 2px solid #333; width: 100%; font-size: 1.2rem; padding: 10px 0; margin-bottom: 15px; color:#000; font-family: inherit; font-weight: bold; }
+        .member-card { position: relative; background: rgba(255,255,255,0.1); border-radius: 12px; padding: 10px; text-align: center; cursor: pointer; border: 1px solid var(--border); }
+        .member-card img { width: 100%; height: 110px; object-fit: cover; border-radius: 6px; border: 1.5px solid #fff; }
+
         #gameLayer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: none; z-index: 10000; background: #000; }
     </style>
 </head>
 <body>
 
     <div class="bg-sekai"></div>
-    <div id="sheetOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:49000;display:none;backdrop-filter:blur(10px);" onclick="closeAllSheets()"></div>
+    <div id="sheetOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:49000;display:none;backdrop-filter:blur(5px);" onclick="closeAllSheets()"></div>
 
-    <!-- 1. タイトル -->
+    <!-- スクリーン1: タイトル -->
     <div id="titleScreen" class="screen">
-        <div class="char-original" style="left: 10%; top: 15%;"><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=A" style="width:100%"></div>
-        <div class="char-original" style="right: 10%; top: 20%;"><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=B" style="width:100%"></div>
-        <h1 style="font-family: Montserrat; font-size: clamp(3.5rem, 15vw, 6.5rem); margin: 0; text-shadow: 0 0 30px var(--pro-teal); text-align: center;">GENSOU</h1>
-        <p style="letter-spacing: 12px; font-weight: 900; color: var(--pro-pink); margin-bottom: 50px; text-align: center; font-size: 1.2rem;">COLORFUL STAGE</p>
-        
-        <div class="btn-wrap">
-            <button class="btn-pro" onclick="handleLoginClick()"><span>ログイン</span></button>
-            <button class="btn-pro pink" onclick="document.getElementById('modalTransfer').showModal()"><span>データ復元</span></button>
-        </div>
+        <h1 style="font-family: Montserrat; font-size: clamp(3.5rem, 15vw, 6.5rem); margin: 0; text-shadow: 0 0 30px var(--pro-teal);">GENSOU</h1>
+        <p style="letter-spacing: 12px; font-weight: 900; color: var(--pro-pink); margin-bottom: 50px;">COLORFUL STAGE</p>
+        <button class="btn-pro" id="loginStartBtn" onclick="handleLoginClick()"><span>ログイン</span></button>
+        <button class="btn-pro pink" onclick="document.getElementById('modalTransfer').showModal()"><span>データ復元</span></button>
     </div>
 
-    <!-- 2. 登録画面 -->
+    <!-- スクリーン2: 新規登録 -->
     <div id="registrationScreen" class="screen hidden">
-        <h2 style="font-family: Montserrat; color: var(--pro-teal);">NEW REGISTRATION</h2>
-        <div class="student-id-card">
-            <h3>学生証作成</h3>
-            <input type="text" id="regName" class="student-input" placeholder="なまえ（公開）">
-            <input type="password" id="regPass" class="student-input" placeholder="合言葉（復元用）">
-        </div>
-        <div class="btn-wrap">
-            <button class="btn-pro" onclick="saveRegistration()"><span>はじめる！</span></button>
-        </div>
+        <div style="background:#fff; color:#333; border-radius:15px; padding:30px; width:90%; max-width:350px;">
+            <h3 style="margin-top:0">学生証作成</h3>
+            <input type="text" id="regName" style="width:100%; border:none; border-bottom:2px solid #333; padding:10px 0; font-size:1.2rem; margin-bottom:20px; color:#000;" placeholder="ニックネーム">
+            <input type="password" id="regPass" style="width:100%; border:none; border-bottom:1px solid #333; padding:10px 0; font-size:1.2rem; color:#000;" placeholder="合言葉（復元用）">
+        </div><br>
+        <button class="btn-pro" onclick="saveRegistration()"><span>はじめる！</span></button>
     </div>
 
-    <div id="loadingScreen" class="screen hidden"><p style="color: var(--pro-teal); font-weight: bold; letter-spacing: 3px; animation: flash 1.5s infinite alternate; font-size: 1.5rem;">同期中...</p></div>
+    <!-- スクリーン3: 同期中 -->
+    <div id="loadingScreen" class="screen hidden">
+        <p style="color: var(--pro-teal); font-weight: bold; letter-spacing: 3px; animation: flash 1.5s infinite alternate; font-size: 1.5rem;">同期中...</p>
+    </div>
 
-    <!-- 3. ホーム -->
+    <!-- スクリーン4: ホーム画面 -->
     <div id="gameScreen" class="screen hidden">
         <div class="header-minimal">
             <div class="av-mini" onclick="openSheet('sheetConfig')"><img id="hAv" src="" style="width:100%; height:100%; object-fit:cover;"></div>
             <div style="font-size: 0.9rem; font-weight: 900;"><span id="hName">---</span><span id="hVerified"></span></div>
             <div class="iro-coin-disp">🪙 <span id="hIroCoin">---</span></div>
         </div>
-        
-        <h2 style="font-size: clamp(2rem, 12vw, 3.5rem); font-weight: 300; letter-spacing: 10px; opacity: 0.8; font-family: Montserrat; text-align: center;">MAIN CONSOLE</h2>
-        
+        <h1 style="font-family: Montserrat; font-size: clamp(2rem, 10vw, 4.5rem); font-weight: 900; letter-spacing: 12px; color: #888; opacity: 0.8;">MAIN CONSOLE</h1>
         <nav class="nav-container">
             <div class="nav-card" onclick="openSheet('sheetFriend')">フレンド</div>
-            <div class="nav-card" onclick="launchGachaUI()" style="border:2px solid var(--pro-teal);">ガチャ</div>
-            <div class="nav-card main" onclick="transition('gameScreen', 'questScreen'); loadGameList();">クエスト</div>
+            <div class="nav-card" onclick="launchGachaUI()" style="border:1.5px solid var(--pro-teal);">ガチャ</div>
+            <div class="nav-card" style="background:var(--pro-pink);border:none;" onclick="transition('gameScreen', 'questScreen'); loadGameList();">クエスト</div>
             <div class="nav-card" onclick="openSheet('sheetMember')">メンバー</div>
             <div class="nav-card" onclick="openSheet('sheetConfig')">設定</div>
         </nav>
     </div>
 
-    <!-- ボトムシート系 -->
-    <div id="sheetMember" class="bottom-sheet"><div class="sheet-content"><h2 style="color:var(--pro-teal); font-family: Montserrat;">MY MEMBERS</h2><div id="memberListContainer" class="member-grid"></div></div></div>
-    <div id="sheetPresent" class="bottom-sheet"><div class="sheet-content"><h2 style="color:var(--pro-teal); font-family: Montserrat;">PRESENTS</h2><div id="pListContainer"></div></div></div>
+    <!-- 各シート -->
+    <div id="sheetMember" class="bottom-sheet"><div class="sheet-content"><h2 style="color:var(--pro-teal);">MY MEMBERS</h2><div id="memberListContainer" class="member-grid"></div></div></div>
     <div id="sheetConfig" class="bottom-sheet"><div class="sheet-content" style="text-align: center;"><div style="background:#fff; color:#333; border-radius:15px; padding:20px; text-align:left; max-width:350px; margin:0 auto;"><h3>設定</h3><p>ID: <span id="myIdDisplay">---</span></p><input type="text" id="nIn" placeholder="名前" style="width:100%; padding:10px 0; border:none; border-bottom:1px solid #333;"><br><input type="password" id="pIn" placeholder="合言葉" style="width:100%; padding:10px 0; border:none; border-bottom:1px solid #333;"></div><br><button class="btn-pro" style="width:100%" onclick="saveSettings()"><span>保存</span></button></div></div>
-    <div id="sheetFriend" class="bottom-sheet"><div class="sheet-content"><h2 style="color:var(--pro-pink);">FRIENDS</h2><div id="reqList"></div><div id="fList"></div><input type="text" id="fIdIn" placeholder="10桁ID検索" style="width:60%; padding:14px; border-radius:10px; border:none; color:#000; box-sizing:border-box;"><button class="btn-pro pink" style="width:auto; padding:12px 25px;" onclick="sendReq()"><span>申請</span></button></div></div>
-    <div id="questScreen" class="screen hidden"><div id="gameListContainer" style="display:flex;flex-wrap:wrap;justify-content:center;gap:15px;width:100%;padding:20px;box-sizing:border-box;"></div><button class="btn-pro gray" onclick="transition('questScreen', 'gameScreen')">戻る</button></div>
-    <dialog id="modalTransfer" style="background:#111;color:#fff;border:none;border-radius:20px;padding:30px;width:90%;max-width:320px;box-shadow: 0 0 30px rgba(255,51,153,0.5);"><h3>データ復元</h3><input type="text" id="tIdIn" placeholder="ID"><input type="password" id="tPassIn" placeholder="合言葉"><br><br><button class="btn-pro pink" style="width:100%;margin:0;" onclick="executeTransfer()">復元実行</button></dialog>
+    <div id="sheetFriend" class="bottom-sheet"><div class="sheet-content"><h2>FRIENDS</h2><div id="reqList"></div><div id="fList"></div></div></div>
+    <div id="questScreen" class="screen hidden"><div id="gameListContainer" style="display:flex;flex-wrap:wrap;justify-content:center;gap:15px;width:100%;padding:20px;"></div><button class="btn-pro gray" onclick="transition('questScreen', 'gameScreen')">戻る</button></div>
+    <dialog id="modalTransfer" style="background:#111;color:#fff;border:none;border-radius:20px;padding:30px;width:90%;max-width:320px;box-shadow: 0 0 30px rgba(255,51,153,0.5);"><h3>データ復元</h3><input type="text" id="tIdIn" placeholder="ID"><input type="password" id="tPassIn" placeholder="合言葉"><br><br><button class="btn-pro pink" style="width:100%;margin:0;" onclick="executeTransfer()">復元</button></dialog>
 
     <div id="gameLayer"><iframe id="gameFrame" src="about:blank"></iframe></div>
 
     <script>
-        // --- 設定 ---
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbz4hjIek_zsaHODVJ4VYxcba1apHpKqniAVkuHwS4Q3wt3BDkLxlutGH4gdKTPwCBBH/exec';
-        let myId = localStorage.getItem('gID') || Math.random().toString(36).substring(2, 12).toUpperCase();
-        let iroCoins = parseInt(localStorage.getItem('gCoins')) || 10000;
-        let myChars = "", firstSyncDone = false;
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbxT2uL55fixSeCGhheC6jQf89C5TjTlhWThwGT4rsiWIIBP24RM02ENTd61uBjGzJl0/exec';
+        let myId = localStorage.getItem('gID') || "";
+        let iroCoins = parseInt(localStorage.getItem('gCoins')) || 0;
+        let myChars = "", globalCharaPool = {}, firstSyncDone = false;
 
         // --- ログイン不具合対策フロー ---
         async function handleLoginClick() {
@@ -142,9 +117,10 @@
             const name = document.getElementById('regName').value.trim();
             const pass = document.getElementById('regPass').value.trim();
             if(!name || !pass) { alert("全て入力してください"); return; }
+            myId = Math.random().toString(36).substring(2, 12).toUpperCase(); // ID自動生成
+            localStorage.setItem('gID', myId);
             localStorage.setItem('gName', name);
             localStorage.setItem('gPass', pass);
-            localStorage.setItem('gID', myId);
             beginPortalSync();
         }
 
@@ -152,28 +128,40 @@
             transition('registrationScreen', 'loadingScreen');
             transition('titleScreen', 'loadingScreen');
             
+            // タイムアウト設定：3秒経っても同期が終わらなければ強制的に次へ（フリーズ対策）
+            const timeout = setTimeout(() => {
+                if(!firstSyncDone) {
+                    console.warn("Sync timeout - forcing entry");
+                    completeLogin();
+                }
+            }, 3500);
+
+            try { 
+                const res = await fetch(GAS_URL + "?action=getCharaPools");
+                globalCharaPool = await res.json(); 
+            } catch(e) {}
+            
             const success = await fetchSync();
-            // 通信エラーでも、とりあえずホームへ進める（デモ用）
-            if(success || !GAS_URL.includes('https')) {
-                transition('loadingScreen', 'gameScreen');
-                setInterval(fetchSync, 15000);
-            } else {
-                alert("通信エラー：GASの設定を確認してください。");
-                transition('loadingScreen', 'titleScreen');
-            }
+            if(success) completeLogin();
+        }
+
+        function completeLogin() {
+            transition('loadingScreen', 'gameScreen');
+            document.getElementById('myIdDisplay').innerText = myId;
+            setInterval(fetchSync, 15000); // 以降定期同期
         }
 
         function transition(h, s) { 
             const cur = document.getElementById(h); const nxt = document.getElementById(s); 
-            if(cur) { cur.classList.add('hidden'); setTimeout(() => cur.style.display = 'none', 600); } 
-            if(nxt) { nxt.style.display = 'flex'; setTimeout(() => nxt.classList.remove('hidden'), 50); } 
+            if(cur) { cur.classList.add('hidden'); } 
+            if(nxt) { nxt.classList.remove('hidden'); } 
         }
 
         // --- 同期システム ---
         async function fetchSync() {
             if(!GAS_URL.includes('https')) return true;
             try {
-                // 1. GETで読み込みを優先
+                // 1. GETでサーバーから読み込み
                 const res = await fetch(GAS_URL + "?id=" + myId);
                 const json = await res.json();
                 if(json.result === "success") {
@@ -182,40 +170,30 @@
                     myChars = json.chars || "";
                     document.getElementById('hName').innerText = json.name || "USER";
                     document.getElementById('hVerified').innerHTML = json.isOfficial ? '<span class="badge-verify"></span>' : "";
-                    const avUrl = json.avatar || "https://api.dicebear.com/7.x/avataaars/svg?seed="+myId;
-                    document.getElementById('hAv').src = avUrl; document.getElementById('mAv').src = avUrl;
-                    document.getElementById('myIdDisplay').innerText = myId;
-                    
-                    renderMembers();
+                    document.getElementById('hAv').src = "https://api.dicebear.com/7.x/avataaars/svg?seed="+myId;
                     firstSyncDone = true;
 
-                    // 2. POSTで最新状態をバックアップ (no-corsでエラー落ち防止)
+                    // 2. POSTでサーバーへ保存 (バックグラウンド)
                     fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ 
                         type: "sync", id: myId, name: localStorage.getItem('gName'), 
                         pass: localStorage.getItem('gPass'), iroCoin: iroCoins, chars: myChars 
                     }) });
                     return true;
                 }
-            } catch(e) { console.warn("GAS Connection failed"); return false; }
+            } catch(e) { return false; }
+            return false;
         }
 
-        // --- ガチャ・その他 ---
         function renderMembers() {
             const container = document.getElementById('memberListContainer');
             if(!myChars) { container.innerHTML = "なし"; return; }
             const counts = {}; myChars.split(',').filter(n=>n!=="").forEach(n => { counts[n] = (counts[n] || 0) + 1; });
-            container.innerHTML = Object.keys(counts).map(name => `
-                <div class="member-card"><div class="count-badge">x${counts[name]}</div><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=${name}"><small>${name}</small></div>
-            `).join('');
+            container.innerHTML = Object.keys(counts).map(name => `<div class="member-card"><div class="count-badge">x${counts[name]}</div><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=${name}"><small>${name}</small></div>`).join('');
         }
 
-        async function launchGachaUI() {
-            alert("ガチャ画面を起動します。");
-            // 今までのガチャ演出コードをここに結合
-        }
-
+        async function launchGachaUI() { alert("ガチャ準備中..."); }
         function saveSettings() { localStorage.setItem('gName', document.getElementById('nIn').value); fetchSync(); closeAllSheets(); }
-        function openSheet(id) { document.getElementById('sheetOverlay').style.display = 'block'; document.getElementById(id).classList.add('open'); }
+        function openSheet(id) { document.getElementById('sheetOverlay').style.display = 'block'; document.getElementById(id).classList.add('open'); if(id==='sheetMember') renderMembers(); }
         function closeAllSheets() { document.getElementById('sheetOverlay').style.display = 'none'; document.querySelectorAll('.bottom-sheet').forEach(s => s.classList.remove('open')); }
     </script>
 </body>
