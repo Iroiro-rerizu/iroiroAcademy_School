@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proseka Story with Voice</title>
+    <title>Proseka Story - Google Drive Support</title>
     <style>
+        /* デザイン部分は前回のものを継承 */
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #000; font-family: sans-serif; }
         #game-container { position: relative; width: 100vw; height: 56.25vw; max-height: 100vh; max-width: 177.78vh; margin: auto; top: 50%; transform: translateY(-50%); background-color: #111; overflow: hidden; }
         #background { position: absolute; width: 100%; height: 100%; background-size: cover; background-position: center; transition: 0.8s; filter: brightness(0.7); }
@@ -46,6 +47,7 @@
     </div>
 
     <script>
+        // ★ここに自分のGASウェブアプリURLを貼り付け
         const gasUrl = "https://script.google.com/macros/s/AKfycbzbFZ8cVc9iDvHNdWkXo076COqOpZQ2nwdPOKyrg96ZmIyaVt2kc8hTESgYlQaobBJ6/exec";
 
         let scenario = [];
@@ -53,7 +55,7 @@
         let isTyping = false;
         let typingTimer;
         let currentText = "";
-        let currentAudio = null; // 現在再生中の音声
+        let currentAudio = null;
 
         const sheetSelect = document.getElementById("sheet-select");
         const startBtn = document.getElementById("start-btn");
@@ -61,7 +63,21 @@
         const loadingScreen = document.getElementById("loading");
         const messageBox = document.getElementById("message-box");
 
-        // シート一覧取得
+        /**
+         * Googleドライブの共有リンクを「直リンク」に変換する関数
+         */
+        function convertDriveUrl(url) {
+            if (!url) return "";
+            // drive.google.com/file/d/FILE_ID/view... の形式を変換
+            if (url.includes("drive.google.com")) {
+                const match = url.match(/\/d\/(.+?)\//);
+                if (match && match[1]) {
+                    return `https://drive.google.com/uc?export=download&id=${match[1]}`;
+                }
+            }
+            return url;
+        }
+
         async function fetchSheetList() {
             try {
                 const response = await fetch(gasUrl);
@@ -75,15 +91,13 @@
                     });
                     startBtn.disabled = false;
                 }
-            } catch (e) { alert("通信エラー"); }
+            } catch (e) { console.error(e); }
         }
 
-        // ストーリー開始
         startBtn.onclick = async () => {
             const selectedTitle = sheetSelect.value;
             selectorScreen.style.display = "none";
             loadingScreen.style.display = "flex";
-
             try {
                 const response = await fetch(`${gasUrl}?sheet=${encodeURIComponent(selectedTitle)}`);
                 const result = await response.json();
@@ -91,34 +105,41 @@
                 loadingScreen.style.display = "none";
                 messageBox.style.display = "block";
                 updateScene();
-            } catch (e) { alert("読み込みエラー"); }
+            } catch (e) { alert("Error"); }
         };
 
         function updateScene() {
             if (currentIndex >= scenario.length) {
-                document.getElementById("text-area").innerText = "ストーリーは終了しました。";
+                document.getElementById("text-area").innerText = "ストーリー終了";
                 return;
             }
             const data = scenario[currentIndex];
 
-            // 1. 音声の再生
-            if (currentAudio) { currentAudio.pause(); currentAudio = null; } // 前の音声を止める
-            if (data.audio && data.audio.trim() !== "") {
-                currentAudio = new Audio(data.audio);
-                currentAudio.play().catch(e => console.log("Audio play error:", e));
+            // 音声再生（Drive対応）
+            if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+            if (data.audio) {
+                const voiceUrl = convertDriveUrl(data.audio);
+                currentAudio = new Audio(voiceUrl);
+                currentAudio.play().catch(e => console.log("Audio error:", e));
             }
 
-            // 2. 背景
-            if (data.background) document.getElementById("background").style.backgroundImage = `url('${data.background}')`;
+            // 背景（Drive対応）
+            if (data.background) {
+                const bgUrl = convertDriveUrl(data.background);
+                document.getElementById("background").style.backgroundImage = `url('${bgUrl}')`;
+            }
 
-            // 3. キャラ
+            // キャラ（Drive対応）
             const charImg = document.getElementById("character-img");
             charImg.classList.remove("active");
             if (data.character) {
-                setTimeout(() => { charImg.src = data.character; charImg.classList.add("active"); }, 50);
+                const charUrl = convertDriveUrl(data.character);
+                setTimeout(() => { 
+                    charImg.src = charUrl; 
+                    charImg.classList.add("active"); 
+                }, 50);
             }
 
-            // 4. 名前
             const nameTag = document.getElementById("name-tag");
             if (data.name) { nameTag.innerText = data.name; nameTag.style.display = "block"; }
             else { nameTag.style.display = "none"; }
