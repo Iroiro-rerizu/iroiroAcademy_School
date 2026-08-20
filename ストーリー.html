@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proseka Story - GAS Link</title>
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #000; font-family: sans-serif; }
+        #game-container { position: relative; width: 100vw; height: 56.25vw; max-height: 100vh; max-width: 177.78vh; margin: auto; top: 50%; transform: translateY(-50%); background-color: #222; overflow: hidden; }
+        #background { position: absolute; width: 100%; height: 100%; background-size: cover; background-position: center; transition: background-image 0.8s ease; filter: brightness(0.7); }
+        #character-container { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 80%; height: 90%; display: flex; justify-content: center; align-items: flex-end; pointer-events: none; }
+        #character-img { height: 100%; object-fit: contain; transition: opacity 0.4s ease, transform 0.4s ease; opacity: 0; transform: translateY(20px); }
+        #character-img.active { opacity: 1; transform: translateY(0); }
+        #ui-container { position: absolute; bottom: 30px; width: 100%; display: flex; justify-content: center; z-index: 10; }
+        #message-box { width: 92%; height: 140px; background: rgba(10, 20, 30, 0.85); border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 15px; padding: 25px 40px; color: white; position: relative; cursor: pointer; box-sizing: border-box; backdrop-filter: blur(5px); }
+        #name-tag { position: absolute; top: -22px; left: 40px; background: linear-gradient(90deg, #00d2ff 0%, #3a7bd5 100%); padding: 6px 30px; border-radius: 20px; font-weight: bold; font-size: 1.2em; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        #text-area { font-size: 1.3em; line-height: 1.5; margin-top: 10px; }
+        #next-indicator { position: absolute; right: 25px; bottom: 15px; animation: bounce 1s infinite; color: #00d2ff; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        #loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; color: white; display: flex; justify-content: center; align-items: center; z-index: 100; }
+    </style>
+</head>
+<body>
+
+    <div id="loading">シナリオをロード中...</div>
+
+    <div id="game-container">
+        <div id="background"></div>
+        <div id="character-container"><img id="character-img" src=""></div>
+        <div id="ui-container">
+            <div id="message-box">
+                <div id="name-tag"></div>
+                <div id="text-area"></div>
+                <div id="next-indicator">▼</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ★GASで発行したウェブアプリのURLをここに貼り付けてください
+        const gasUrl = "https://script.google.com/macros/s/AKfycbzqHNqjxkCioKUch8n-prtDJT1LCK-VZtJJ2X9pnbKW-UQYtbL48qLdnhu5kgSDtvjIXg/exec";
+
+        let scenario = [];
+        let currentIndex = 0;
+        let isTyping = false;
+        let typingTimer;
+        let currentText = "";
+
+        const nameTag = document.getElementById("name-tag");
+        const textArea = document.getElementById("text-area");
+        const bgLayer = document.getElementById("background");
+        const charImg = document.getElementById("character-img");
+        const messageBox = document.getElementById("message-box");
+        const loadingScreen = document.getElementById("loading");
+
+        // GASからデータを取得
+        async function loadScenario() {
+            try {
+                const response = await fetch(gasUrl);
+                scenario = await response.json(); // JSONとして直接解析
+                loadingScreen.style.display = "none";
+                updateScene();
+            } catch (error) {
+                console.error("Error:", error);
+                loadingScreen.innerText = "データの取得に失敗しました。URLや権限を確認してください。";
+            }
+        }
+
+        function updateScene() {
+            if (currentIndex >= scenario.length) {
+                textArea.innerText = "ストーリーはすべて終了しました。";
+                nameTag.innerText = "End";
+                charImg.classList.remove("active");
+                return;
+            }
+
+            const data = scenario[currentIndex];
+            if (data.background) bgLayer.style.backgroundImage = `url('${data.background}')`;
+            
+            charImg.classList.remove("active");
+            setTimeout(() => {
+                if (data.character) {
+                    charImg.src = data.character;
+                    charImg.classList.add("active");
+                }
+            }, 100);
+
+            nameTag.innerText = data.name;
+            startTyping(data.text);
+        }
+
+        function startTyping(text) {
+            clearInterval(typingTimer);
+            isTyping = true;
+            let charIndex = 0;
+            currentText = text;
+            textArea.innerText = "";
+            typingTimer = setInterval(() => {
+                if (charIndex < currentText.length) {
+                    textArea.innerText += currentText.charAt(charIndex);
+                    charIndex++;
+                } else {
+                    clearInterval(typingTimer);
+                    isTyping = false;
+                }
+            }, 40);
+        }
+
+        function nextScene() {
+            if (isTyping) {
+                clearInterval(typingTimer);
+                textArea.innerText = currentText;
+                isTyping = false;
+            } else {
+                currentIndex++;
+                updateScene();
+            }
+        }
+
+        messageBox.addEventListener("click", nextScene);
+        window.addEventListener("keydown", (e) => { if (e.code === "Space" || e.code === "Enter") nextScene(); });
+
+        loadScenario();
+    </script>
+</body>
+</html>
