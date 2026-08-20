@@ -3,74 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proseka Story Player</title>
+    <title>Proseka Story with Voice</title>
     <style>
-        /* デザイン設定 */
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #000; font-family: "Helvetica Neue", Arial, sans-serif; }
-        
-        #game-container {
-            position: relative; width: 100vw; height: 56.25vw;
-            max-height: 100vh; max-width: 177.78vh;
-            margin: auto; top: 50%; transform: translateY(-50%);
-            background-color: #111; overflow: hidden;
-        }
-
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #000; font-family: sans-serif; }
+        #game-container { position: relative; width: 100vw; height: 56.25vw; max-height: 100vh; max-width: 177.78vh; margin: auto; top: 50%; transform: translateY(-50%); background-color: #111; overflow: hidden; }
         #background { position: absolute; width: 100%; height: 100%; background-size: cover; background-position: center; transition: 0.8s; filter: brightness(0.7); }
         #character-container { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 80%; height: 95%; display: flex; justify-content: center; align-items: flex-end; pointer-events: none; }
         #character-img { height: 100%; object-fit: contain; transition: 0.4s; opacity: 0; transform: translateY(30px); }
         #character-img.active { opacity: 1; transform: translateY(0); }
-
-        /* メッセージボックス */
-        #message-box {
-            position: absolute; bottom: 30px; left: 4%; width: 92%; height: 150px;
-            background: rgba(15, 25, 35, 0.9); border: 2px solid rgba(255,255,255,0.2);
-            border-radius: 18px; padding: 30px 45px; color: #fff; cursor: pointer;
-            box-sizing: border-box; backdrop-filter: blur(8px); z-index: 10; display: none;
-        }
+        #message-box { position: absolute; bottom: 30px; left: 4%; width: 92%; height: 150px; background: rgba(15, 25, 35, 0.9); border: 2px solid rgba(255,255,255,0.2); border-radius: 18px; padding: 30px 45px; color: #fff; cursor: pointer; box-sizing: border-box; backdrop-filter: blur(8px); z-index: 10; display: none; }
         #name-tag { position: absolute; top: -20px; left: 40px; background: linear-gradient(90deg, #00d2ff, #3a7bd5); padding: 6px 35px; border-radius: 25px; font-weight: bold; }
         #text-area { font-size: 1.4em; line-height: 1.6; margin-top: 10px; }
         #next-indicator { position: absolute; right: 30px; bottom: 20px; animation: bounce 1s infinite; color: #00d2ff; }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-
-        /* タイトル選択画面 */
-        #selector-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100;
-        }
-        .menu-card {
-            background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 30px; border-radius: 20px; text-align: center; width: 400px;
-        }
-        h2 { margin-bottom: 20px; font-weight: lighter; letter-spacing: 2px; }
-        #sheet-select {
-            width: 100%; padding: 12px; font-size: 1em; background: #222; color: white;
-            border: 1px solid #444; border-radius: 10px; margin-bottom: 20px; cursor: pointer;
-        }
-        #start-btn {
-            width: 100%; padding: 15px; font-size: 1.1em; background: #00d2ff; color: white;
-            border: none; border-radius: 30px; cursor: pointer; font-weight: bold; transition: 0.3s;
-        }
-        #start-btn:hover { background: #3a7bd5; transform: scale(1.05); }
-        #start-btn:disabled { background: #555; cursor: not-allowed; }
-
-        #loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; color: #fff; display: none; justify-content: center; align-items: center; z-index: 200; font-size: 1.5em; }
+        #selector-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1a1a2e; color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; }
+        .menu-card { background: rgba(255,255,255,0.1); padding: 30px; border-radius: 20px; text-align: center; width: 350px; }
+        #sheet-select { width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 10px; background: #222; color: white; }
+        #start-btn { width: 100%; padding: 15px; background: #00d2ff; color: white; border: none; border-radius: 30px; cursor: pointer; font-weight: bold; }
+        #loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; color: #fff; display: none; justify-content: center; align-items: center; z-index: 200; }
     </style>
 </head>
 <body>
 
-    <!-- ストーリータイトル選択画面 -->
     <div id="selector-screen">
         <div class="menu-card">
             <h2>STORY SELECT</h2>
-            <select id="sheet-select">
-                <option value="">タイトルを読み込み中...</option>
-            </select>
+            <select id="sheet-select"><option>読み込み中...</option></select>
             <button id="start-btn" disabled>再生を開始する</button>
         </div>
     </div>
 
-    <!-- ローディング画面 -->
     <div id="loading">Now Loading...</div>
 
     <div id="game-container">
@@ -84,14 +46,14 @@
     </div>
 
     <script>
-        // ★ここにGASのURLを貼り付け
-        const gasUrl = "https://script.google.com/macros/s/AKfycbw9VKaKi2971y2wNcaAdySuYj4cW0TRacGGsvGZx1oTldrrs1FXNcFiODga_wkCKCl4hw/exec";
+        const gasUrl = "https://script.google.com/macros/s/AKfycbzbFZ8cVc9iDvHNdWkXo076COqOpZQ2nwdPOKyrg96ZmIyaVt2kc8hTESgYlQaobBJ6/exec";
 
         let scenario = [];
         let currentIndex = 0;
         let isTyping = false;
         let typingTimer;
         let currentText = "";
+        let currentAudio = null; // 現在再生中の音声
 
         const sheetSelect = document.getElementById("sheet-select");
         const startBtn = document.getElementById("start-btn");
@@ -99,7 +61,7 @@
         const loadingScreen = document.getElementById("loading");
         const messageBox = document.getElementById("message-box");
 
-        // 1. 最初にスプレッドシートの「シート名リスト」を取得
+        // シート一覧取得
         async function fetchSheetList() {
             try {
                 const response = await fetch(gasUrl);
@@ -108,18 +70,15 @@
                     sheetSelect.innerHTML = "";
                     result.data.forEach(title => {
                         const opt = document.createElement("option");
-                        opt.value = title;
-                        opt.innerText = title; // シート名がそのまま表示される
+                        opt.value = opt.innerText = title;
                         sheetSelect.appendChild(opt);
                     });
                     startBtn.disabled = false;
                 }
-            } catch (e) {
-                alert("データの取得に失敗しました。URLや共有設定を確認してください。");
-            }
+            } catch (e) { alert("通信エラー"); }
         }
 
-        // 2. 選択されたシート（ストーリー内容）を読み込む
+        // ストーリー開始
         startBtn.onclick = async () => {
             const selectedTitle = sheetSelect.value;
             selectorScreen.style.display = "none";
@@ -128,52 +87,42 @@
             try {
                 const response = await fetch(`${gasUrl}?sheet=${encodeURIComponent(selectedTitle)}`);
                 const result = await response.json();
-                if (result.type === "story") {
-                    scenario = result.data;
-                    loadingScreen.style.display = "none";
-                    messageBox.style.display = "block";
-                    updateScene();
-                }
-            } catch (e) {
-                alert("ストーリーの読み込みに失敗しました。");
-                selectorScreen.style.display = "flex";
+                scenario = result.data;
                 loadingScreen.style.display = "none";
-            }
+                messageBox.style.display = "block";
+                updateScene();
+            } catch (e) { alert("読み込みエラー"); }
         };
 
         function updateScene() {
             if (currentIndex >= scenario.length) {
-                document.getElementById("text-area").innerText = "（ストーリーは終了しました）";
-                document.getElementById("name-tag").style.display = "none";
+                document.getElementById("text-area").innerText = "ストーリーは終了しました。";
                 return;
             }
             const data = scenario[currentIndex];
-            
-            // 背景
-            if (data.background) {
-                document.getElementById("background").style.backgroundImage = `url('${data.background}')`;
+
+            // 1. 音声の再生
+            if (currentAudio) { currentAudio.pause(); currentAudio = null; } // 前の音声を止める
+            if (data.audio && data.audio.trim() !== "") {
+                currentAudio = new Audio(data.audio);
+                currentAudio.play().catch(e => console.log("Audio play error:", e));
             }
 
-            // キャラクター
+            // 2. 背景
+            if (data.background) document.getElementById("background").style.backgroundImage = `url('${data.background}')`;
+
+            // 3. キャラ
             const charImg = document.getElementById("character-img");
             charImg.classList.remove("active");
-            if (data.character && data.character.trim() !== "") {
-                setTimeout(() => { 
-                    charImg.src = data.character; 
-                    charImg.classList.add("active"); 
-                }, 50);
+            if (data.character) {
+                setTimeout(() => { charImg.src = data.character; charImg.classList.add("active"); }, 50);
             }
 
-            // 名前
+            // 4. 名前
             const nameTag = document.getElementById("name-tag");
-            if (data.name && data.name.trim() !== "") { 
-                nameTag.innerText = data.name; 
-                nameTag.style.display = "block"; 
-            } else { 
-                nameTag.style.display = "none"; 
-            }
+            if (data.name) { nameTag.innerText = data.name; nameTag.style.display = "block"; }
+            else { nameTag.style.display = "none"; }
 
-            // タイピング開始
             startTyping(data.text || "");
         }
 
@@ -204,7 +153,6 @@
         messageBox.onclick = next;
         window.onkeydown = (e) => { if(e.code === "Space" || e.code === "Enter") next(); };
 
-        // 起動
         fetchSheetList();
     </script>
 </body>
