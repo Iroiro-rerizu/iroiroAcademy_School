@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
 
 <meta charset="UTF-8">
 
 <meta
   name="viewport"
-  content="width=device-width, initial-scale=1.0,
-  maximum-scale=1.0,user-scalable=no"
+  content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"
 >
 
-<title>幻想クロニクル - ULTIMATE INTEGRATION</title>
+<title>幻想クロニクル</title>
 
 <link
   href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Noto+Sans+JP:wght@400;700;900&display=swap"
@@ -20,442 +20,766 @@
 <style>
 
 :root{
-  --pro-teal:#33ffcc;
-  --pro-pink:#ff3399;
+  --teal:#33ffcc;
+  --pink:#ff3399;
   --glass:rgba(0,0,0,.8);
   --border:rgba(255,255,255,.4);
-  --verify:#1da1f2;
+}
+
+*{
+  box-sizing:border-box;
 }
 
 html,
 body{
+
   margin:0;
   padding:0;
+
+  width:100%;
+  height:100%;
+
   overflow:hidden;
+
   background:#000;
-  font-family:'Noto Sans JP',sans-serif;
+
   color:#fff;
-  height:100vh;
-  width:100vw;
+
+  font-family:
+    "Noto Sans JP",
+    sans-serif;
+
   touch-action:manipulation;
+
 }
 
-.bg-sekai{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=2000')
-    no-repeat center center/cover;
-  z-index:-1;
-  filter:brightness(.4);
-  pointer-events:none;
-}
+button,
+input{
 
-.bg-overlay{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:radial-gradient(
-    circle at center,
-    transparent 0%,
-    #000 100%
-  );
-  z-index:-1;
-  pointer-events:none;
-}
+  font-family:inherit;
 
-.screen{
-  position:absolute;
-  width:100%;
-  height:100%;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  flex-direction:column;
-  transition:.5s cubic-bezier(.16,1,.3,1);
-  z-index:100;
-  box-sizing:border-box;
-  padding:20px;
 }
 
 .hidden{
-  display:none!important;
-  opacity:0;
+
+  display:none !important;
+
+}
+
+
+/* =========================================================
+   背景
+========================================================= */
+
+.bg-sekai{
+
+  position:fixed;
+
+  inset:0;
+
+  width:100%;
+  height:100%;
+
+  background:
+
+    url(
+      "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=2000"
+    )
+
+    center/cover no-repeat;
+
+  filter:brightness(.4);
+
+  z-index:-2;
+
   pointer-events:none;
+
 }
 
-.char-original{
+.bg-overlay{
+
+  position:fixed;
+
+  inset:0;
+
+  background:
+    radial-gradient(
+      circle at center,
+      transparent 0%,
+      #000 100%
+    );
+
+  z-index:-1;
+
+  pointer-events:none;
+
+}
+
+
+/* =========================================================
+   画面
+========================================================= */
+
+.screen{
+
   position:absolute;
-  width:85px;
-  height:85px;
-  border-radius:20px;
-  border:3px solid #fff;
-  background:var(--glass);
-  backdrop-filter:blur(10px);
-  animation:float 3s infinite ease-in-out;
-  z-index:1;
-  box-shadow:0 0 20px var(--pro-teal);
-  pointer-events:none!important;
+
+  inset:0;
+
+  width:100%;
+  height:100%;
+
+  display:flex;
+
+  justify-content:center;
+
+  align-items:center;
+
+  flex-direction:column;
+
+  padding:20px;
+
+  z-index:100;
+
 }
 
-@keyframes float{
-  0%,100%{
-    transform:translateY(0);
-  }
-  50%{
-    transform:translateY(-15px);
-  }
-}
+
+/* =========================================================
+   ボタン
+========================================================= */
 
 .btn-pro{
-  position:relative;
-  background:#fff;
-  color:#111;
+
   border:none;
+
+  background:#fff;
+
+  color:#111;
+
   padding:16px 40px;
-  border-radius:4px;
-  font-weight:900;
-  cursor:pointer;
-  transition:.2s;
-  transform:skewX(-15deg);
-  box-shadow:5px 5px 0 var(--pro-teal);
-  z-index:10000;
-  font-family:'Montserrat',sans-serif;
+
   margin:12px;
-  text-transform:uppercase;
-  text-align:center;
+
   width:85%;
-  max-width:300px;
-  pointer-events:auto!important;
-  font-size:1.1rem;
+
+  max-width:320px;
+
+  border-radius:4px;
+
+  font-weight:900;
+
+  cursor:pointer;
+
+  transform:skewX(-15deg);
+
+  box-shadow:
+    5px 5px 0 var(--teal);
+
 }
 
 .btn-pro span{
-  display:inline-block;
-  transform:skewX(15deg);
-  pointer-events:none;
-}
 
-.btn-pro:active{
-  transform:skewX(-15deg) translate(2px,2px);
-  box-shadow:0 0 0 var(--pro-teal);
+  display:inline-block;
+
+  transform:skewX(15deg);
+
 }
 
 .btn-pro.pink{
-  box-shadow:5px 5px 0 var(--pro-pink);
-  background:var(--pro-pink);
+
+  background:var(--pink);
+
   color:#fff;
+
+  box-shadow:
+    5px 5px 0 var(--pink);
+
 }
 
 .btn-pro.gray{
-  background:#555;
+
+  background:#777;
+
   color:#fff;
-  box-shadow:5px 5px 0 #999;
+
 }
 
-.badge-verify{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  width:18px;
-  height:18px;
-  background:linear-gradient(
-    135deg,
-    #1da1f2,
-    #0e71c8
-  );
-  color:#fff;
-  border-radius:50%;
-  font-size:10px;
-  margin-left:8px;
-  vertical-align:middle;
-  border:1.5px solid #fff;
-  box-shadow:0 0 8px rgba(29,161,242,.6);
-  font-weight:bold;
-}
 
-.badge-verify::after{
-  content:'✔';
-}
+/* =========================================================
+   ヘッダー
+========================================================= */
 
 .header-minimal{
+
   position:absolute;
+
   top:15px;
+
   left:15px;
+
   display:flex;
+
   align-items:center;
+
   gap:8px;
-  z-index:200;
+
+  z-index:300;
+
 }
 
 .av-mini{
-  width:35px;
-  height:35px;
+
+  width:38px;
+  height:38px;
+
   border-radius:50%;
-  border:2px solid #fff;
+
   overflow:hidden;
-  background:#222;
+
+  border:2px solid #fff;
+
   cursor:pointer;
+
+}
+
+.av-mini img{
+
+  width:100%;
+  height:100%;
+
+  object-fit:cover;
+
 }
 
 .iro-coin-disp{
-  margin-left:10px;
+
+  color:var(--teal);
+
   font-weight:900;
-  color:var(--pro-teal);
-  text-shadow:0 0 10px var(--pro-teal);
-  font-size:1.1rem;
+
+  margin-left:10px;
+
 }
 
+
+/* =========================================================
+   ホーム
+========================================================= */
+
 .main-console-text{
-  font-family:'Montserrat',sans-serif;
-  font-size:clamp(2rem,10vw,5.5rem);
-  font-weight:900;
+
+  font-family:Montserrat,sans-serif;
+
+  font-size:
+    clamp(
+      2rem,
+      10vw,
+      5.5rem
+    );
+
   letter-spacing:12px;
-  color:#fff;
-  opacity:.8;
-  user-select:none;
-  pointer-events:none;
+
   text-align:center;
+
+  pointer-events:none;
+
 }
 
 .nav-container{
+
   position:absolute;
+
   bottom:25px;
-  display:flex;
-  gap:10px;
+
+  left:2.5%;
+
   width:95%;
-  max-width:900px;
-  z-index:300;
-  pointer-events:auto;
-  justify-content:center;
+
+  display:flex;
+
+  gap:10px;
+
+  z-index:400;
+
 }
 
 .nav-card{
-  flex:1;
-  background:rgba(0,0,0,.6);
-  border:1.5px solid #333;
-  padding:18px 5px;
-  border-radius:12px;
-  cursor:pointer;
-  text-align:center;
-  font-weight:900;
-  font-size:.8rem;
-  color:#fff;
-  transition:.2s;
-  white-space:nowrap;
-  min-width:0;
-}
 
-.nav-card:active{
-  transform:scale(.95);
-  background:rgba(255,255,255,.1);
+  flex:1;
+
+  padding:18px 5px;
+
+  background:rgba(0,0,0,.65);
+
+  border:
+    1px solid
+    rgba(255,255,255,.2);
+
+  border-radius:12px;
+
+  text-align:center;
+
+  font-weight:900;
+
+  cursor:pointer;
+
 }
 
 .nav-card.main{
-  background:var(--pro-pink);
-  border:none;
-  box-shadow:0 0 20px rgba(255,102,204,.4);
+
+  background:var(--pink);
+
 }
 
+
+/* =========================================================
+   プレゼント
+========================================================= */
+
 .present-btn{
+
   position:absolute;
+
   top:75px;
+
   left:15px;
-  width:45px;
-  height:45px;
-  background:rgba(255,255,255,.05);
-  border:1.5px solid #333;
+
+  width:48px;
+  height:48px;
+
   border-radius:50%;
+
   display:flex;
-  justify-content:center;
+
   align-items:center;
+
+  justify-content:center;
+
+  background:rgba(255,255,255,.08);
+
+  border:1px solid #555;
+
   cursor:pointer;
+
   z-index:300;
-  font-size:1.3rem;
+
 }
 
 .present-badge{
+
   position:absolute;
-  top:-2px;
-  right:-2px;
-  width:18px;
-  height:18px;
-  background:red;
-  border-radius:50%;
-  border:1.5px solid #fff;
-  font-size:.6rem;
+
+  right:-3px;
+
+  top:-3px;
+
+  width:19px;
+  height:19px;
+
   display:none;
-  justify-content:center;
+
   align-items:center;
+
+  justify-content:center;
+
+  border-radius:50%;
+
+  background:red;
+
+  font-size:.65rem;
+
   font-weight:bold;
+
+}
+
+
+/* =========================================================
+   シート
+========================================================= */
+
+#sheetOverlay{
+
+  position:fixed;
+
+  inset:0;
+
+  background:rgba(0,0,0,.8);
+
+  backdrop-filter:blur(5px);
+
+  z-index:49000;
+
+  display:none;
+
 }
 
 .bottom-sheet{
+
   position:fixed;
-  bottom:-100%;
+
   left:0;
+
+  bottom:-100%;
+
   width:100%;
+
   height:94%;
-  background:#0a0b12;
-  border-radius:30px 30px 0 0;
-  z-index:50000;
-  transition:.4s cubic-bezier(.16,1,.3,1);
+
   overflow-y:auto;
-  color:#fff;
-  border-top:1px solid var(--border);
+
+  background:#0a0b12;
+
+  border-radius:
+    30px 30px 0 0;
+
+  border-top:
+    1px solid var(--border);
+
+  z-index:50000;
+
+  transition:
+    .4s ease;
+
 }
 
 .bottom-sheet.open{
+
   bottom:0;
+
 }
 
 .sheet-content{
-  padding:25px;
-  padding-bottom:120px;
+
   max-width:800px;
-  margin:0 auto;
+
+  margin:auto;
+
+  padding:25px;
+
+  padding-bottom:120px;
+
 }
 
+
+/* =========================================================
+   メンバー
+========================================================= */
+
 .member-grid{
+
   display:grid;
+
   grid-template-columns:
-    repeat(auto-fill,minmax(100px,1fr));
+    repeat(
+      auto-fill,
+      minmax(100px,1fr)
+    );
+
   gap:12px;
+
 }
 
 .member-card{
+
   position:relative;
-  background:rgba(255,255,255,.1);
-  border-radius:12px;
+
   padding:10px;
-  border:1px solid rgba(255,255,255,.2);
+
+  background:
+    rgba(255,255,255,.08);
+
+  border-radius:12px;
+
   text-align:center;
+
   cursor:pointer;
+
 }
 
 .member-card img{
+
   width:100%;
   height:110px;
+
   object-fit:cover;
+
   border-radius:6px;
-  border:1.5px solid #fff;
+
 }
 
 .count-badge{
+
   position:absolute;
-  top:5px;
+
   right:5px;
-  background:var(--pro-pink);
-  color:#fff;
-  font-size:.75rem;
-  font-weight:bold;
-  padding:2px 8px;
+  top:5px;
+
+  background:var(--pink);
+
+  padding:2px 7px;
+
   border-radius:10px;
-  border:1.5px solid #fff;
-  z-index:10;
+
 }
 
-.history-item{
-  background:rgba(255,255,255,.05);
-  padding:12px;
-  border-radius:10px;
-  margin-bottom:8px;
-  display:grid;
-  grid-template-columns:
-    1.2fr 2fr .8fr;
-  align-items:center;
-  font-size:.8rem;
-  border-left:4px solid #555;
-}
+
+/* =========================================================
+   設定
+========================================================= */
 
 .student-id-card{
+
   background:#fff;
+
   color:#333;
+
   border-radius:15px;
+
   padding:25px;
-  border:3px solid #555;
+
   max-width:350px;
-  margin:20px auto;
-  text-align:left;
+
+  margin:auto;
+
 }
 
 .student-input{
-  background:none;
-  border:none;
-  border-bottom:2px solid #333;
+
   width:100%;
-  font-size:1.2rem;
+
+  border:none;
+
+  border-bottom:
+    2px solid #333;
+
   padding:10px 0;
+
   margin-bottom:15px;
+
+  font-size:1.1rem;
+
   color:#000;
-  font-family:inherit;
-  font-weight:bold;
+
+  background:transparent;
+
 }
 
-.friend-box{
-  margin-bottom:15px;
-  padding:10px;
-  border-radius:10px;
+
+/* =========================================================
+   クエスト
+========================================================= */
+
+#questScreen{
+
+  overflow-y:auto;
+
 }
 
-.detail-card{
-  text-align:center;
+#gameListContainer{
+
+  display:flex;
+
+  flex-wrap:wrap;
+
+  justify-content:center;
+
+  gap:15px;
+
+  width:100%;
+
 }
 
-.detail-img{
-  width:220px;
-  max-width:90%;
-  max-height:50vh;
-  object-fit:contain;
-  border-radius:20px;
-  border:2px solid #fff;
-}
+
+/* =========================================================
+   ゲーム
+========================================================= */
 
 #gameLayer{
+
   position:fixed;
-  top:0;
-  left:0;
-  width:100vw;
-  height:100vh;
+
+  inset:0;
+
   display:none;
+
   z-index:10000;
+
   background:#000;
+
 }
 
 #gameFrame{
+
   width:100%;
   height:100%;
+
   border:none;
+
+}
+
+
+/* =========================================================
+   ポーズ
+========================================================= */
+
+#pauseOverlay{
+
+  position:fixed;
+
+  inset:0;
+
+  display:none;
+
+  flex-direction:column;
+
+  align-items:center;
+
+  justify-content:center;
+
+  background:rgba(0,0,0,.96);
+
+  z-index:60000;
+
+}
+
+
+/* =========================================================
+   履歴
+========================================================= */
+
+.history-item{
+
+  background:
+    rgba(255,255,255,.06);
+
+  padding:12px;
+
+  margin-bottom:8px;
+
+  border-radius:10px;
+
+  display:flex;
+
+  justify-content:space-between;
+
+}
+
+
+/* =========================================================
+   プレゼント
+========================================================= */
+
+.present-item{
+
+  background:#fff;
+
+  color:#333;
+
+  border-radius:12px;
+
+  padding:15px;
+
+  margin-bottom:10px;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:space-between;
+
+}
+
+
+/* =========================================================
+   モーダル
+========================================================= */
+
+dialog{
+
+  background:#111;
+
+  color:#fff;
+
+  border:none;
+
+  border-radius:20px;
+
+  padding:30px;
+
+  width:90%;
+
+  max-width:350px;
+
+}
+
+dialog input{
+
+  width:100%;
+
+  padding:12px;
+
+  margin:8px 0;
+
+}
+
+
+/* =========================================================
+   スマホ
+========================================================= */
+
+@media(max-width:600px){
+
+  .nav-container{
+
+    gap:5px;
+
+  }
+
+  .nav-card{
+
+    font-size:.7rem;
+
+    padding:15px 3px;
+
+  }
+
+  .main-console-text{
+
+    letter-spacing:5px;
+
+  }
+
 }
 
 </style>
+
 </head>
 
+
 <body>
+
+
+<!-- ========================================================
+     背景
+========================================================= -->
 
 <div class="bg-sekai"></div>
 <div class="bg-overlay"></div>
 
+
+<!-- ========================================================
+     シートオーバーレイ
+========================================================= -->
+
 <div
   id="sheetOverlay"
-  style="
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,.8);
-    z-index:49000;
-    display:none;
-    backdrop-filter:blur(5px);
-  "
   onclick="closeAllSheets()"
 ></div>
 
+
+<!-- ========================================================
+     ポーズ
+========================================================= -->
 
 <div
   id="mobilePauseBtn"
@@ -465,16 +789,14 @@ body{
     right:15px;
     width:45px;
     height:45px;
-    background:var(--glass);
-    border:1.5px solid #fff;
     border-radius:50%;
+    background:#111;
+    border:1px solid #fff;
     display:none;
-    z-index:15000;
-    justify-content:center;
     align-items:center;
-    font-weight:900;
+    justify-content:center;
+    z-index:15000;
     cursor:pointer;
-    color:#fff;
   "
   onclick="showPauseMenu()"
 >
@@ -482,31 +804,12 @@ body{
 </div>
 
 
-<!-- PAUSE -->
-
-<div
-  id="pauseOverlay"
-  style="
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,.95);
-    z-index:60000;
-    display:none;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-  "
->
+<div id="pauseOverlay">
 
   <h1
     style="
+      color:var(--teal);
       font-family:Montserrat;
-      font-size:3rem;
-      color:var(--pro-teal);
-      margin-bottom:30px;
     "
   >
     PAUSE
@@ -529,7 +832,9 @@ body{
 </div>
 
 
-<!-- TITLE -->
+<!-- ========================================================
+     タイトル
+========================================================= -->
 
 <div
   id="titleScreen"
@@ -541,8 +846,7 @@ body{
       font-family:Montserrat;
       font-size:clamp(3.5rem,15vw,8rem);
       margin:0;
-      text-shadow:0 0 30px var(--pro-teal);
-      text-align:center;
+      text-shadow:0 0 30px var(--teal);
     "
   >
     GENSOU
@@ -550,12 +854,9 @@ body{
 
   <p
     style="
-      letter-spacing:12px;
+      letter-spacing:8px;
+      color:var(--pink);
       font-weight:900;
-      color:var(--pro-pink);
-      margin-bottom:50px;
-      text-align:center;
-      font-size:1.2rem;
     "
   >
     COLORFUL STAGE
@@ -570,7 +871,7 @@ body{
 
   <button
     class="btn-pro pink"
-    onclick="document.getElementById('modalTransfer').showModal()"
+    onclick="openTransfer()"
   >
     <span>データ復元</span>
   </button>
@@ -578,7 +879,9 @@ body{
 </div>
 
 
-<!-- REGISTRATION -->
+<!-- ========================================================
+     登録
+========================================================= -->
 
 <div
   id="registrationScreen"
@@ -587,8 +890,8 @@ body{
 
   <h2
     style="
+      color:var(--teal);
       font-family:Montserrat;
-      color:var(--pro-teal);
     "
   >
     NEW REGISTRATION
@@ -596,26 +899,19 @@ body{
 
   <div class="student-id-card">
 
-    <h3
-      style="
-        margin:0 0 15px 0;
-        color:#111;
-      "
-    >
-      学生証作成
-    </h3>
+    <h3>学生証作成</h3>
 
     <input
-      type="text"
       id="regName"
       class="student-input"
+      type="text"
       placeholder="なまえ（公開）"
     >
 
     <input
-      type="password"
       id="regPass"
       class="student-input"
+      type="password"
       placeholder="合言葉（復元用）"
     >
 
@@ -626,7 +922,7 @@ body{
         font-weight:bold;
       "
     >
-      ※このIDと合言葉でデータ復元ができます。
+      ※IDと合言葉でデータ復元できます。
     </p>
 
   </div>
@@ -641,7 +937,9 @@ body{
 </div>
 
 
-<!-- LOADING -->
+<!-- ========================================================
+     ローディング
+========================================================= -->
 
 <div
   id="loadingScreen"
@@ -650,10 +948,8 @@ body{
 
   <p
     style="
-      color:var(--pro-teal);
-      font-weight:bold;
-      letter-spacing:3px;
-      font-size:1.5rem;
+      color:var(--teal);
+      font-size:1.4rem;
     "
   >
     同期中...
@@ -662,7 +958,9 @@ body{
 </div>
 
 
-<!-- HOME -->
+<!-- ========================================================
+     ホーム
+========================================================= -->
 
 <div
   id="gameScreen"
@@ -675,41 +973,18 @@ body{
       class="av-mini"
       onclick="openSheet('sheetConfig')"
     >
-
-      <img
-        id="hAv"
-        src=""
-        style="
-          width:100%;
-          height:100%;
-          object-fit:cover;
-        "
-      >
-
+      <img id="hAv">
     </div>
 
-    <div
-      style="
-        font-size:.9rem;
-        font-weight:900;
-      "
-    >
-
-      <span id="hName">
-        ---
-      </span>
-
+    <div>
+      <span id="hName">---</span>
       <span id="hVerified"></span>
-
     </div>
 
     <div class="iro-coin-disp">
 
       🪙
-
-      <span id="hIroCoin">
-        ---
-      </span>
+      <span id="hIroCoin">0</span>
 
     </div>
 
@@ -757,7 +1032,10 @@ body{
     <div
       class="nav-card main"
       onclick="
-        transition('gameScreen','questScreen');
+        transition(
+          'gameScreen',
+          'questScreen'
+        );
         loadGameList();
       "
     >
@@ -783,7 +1061,9 @@ body{
 </div>
 
 
-<!-- MEMBER -->
+<!-- ========================================================
+     メンバー
+========================================================= -->
 
 <div
   id="sheetMember"
@@ -792,26 +1072,24 @@ body{
 
   <div class="sheet-content">
 
-    <h2
-      style="
-        color:var(--pro-teal);
-        font-family:Montserrat;
-      "
-    >
+    <h2 style="color:var(--teal)">
       MY MEMBERS
     </h2>
 
     <div
       id="memberListContainer"
       class="member-grid"
-    ></div>
+    >
+    </div>
 
   </div>
 
 </div>
 
 
-<!-- MEMBER DETAIL -->
+<!-- ========================================================
+     メンバー詳細
+========================================================= -->
 
 <div
   id="sheetMemberDetail"
@@ -820,25 +1098,21 @@ body{
 
   <div
     class="sheet-content"
-    style="text-align:center;"
+    style="text-align:center"
   >
 
     <div
       id="memberDetailContent"
-    ></div>
+    >
+    </div>
 
     <div
       id="giftSelectionArea"
-      style="
-        display:none;
-        margin-top:20px;
-      "
+      style="display:none"
     >
 
       <h3
-        style="
-          color:var(--pro-pink);
-        "
+        style="color:var(--pink)"
       >
         贈るフレンドを選択
       </h3>
@@ -846,31 +1120,29 @@ body{
       <div
         id="giftFriendList"
         style="
-          background:#f0f0f5;
+          background:#fff;
           color:#333;
+          border-radius:15px;
           padding:15px;
-          border-radius:20px;
-          max-height:300px;
-          overflow-y:auto;
-          border:2px solid #ddd;
         "
-      ></div>
+      >
+      </div>
 
     </div>
 
     <button
-      class="btn-pro pink"
       id="startGiftBtn"
+      class="btn-pro pink"
     >
       <span>フレンドにあげる</span>
     </button>
 
-    <br>
-
     <button
       class="btn-pro gray"
       onclick="
-        closeSheet('sheetMemberDetail')
+        closeSheet(
+          'sheetMemberDetail'
+        )
       "
     >
       <span>戻る</span>
@@ -881,7 +1153,9 @@ body{
 </div>
 
 
-<!-- PRESENT -->
+<!-- ========================================================
+     プレゼント
+========================================================= -->
 
 <div
   id="sheetPresent"
@@ -890,37 +1164,28 @@ body{
 
   <div class="sheet-content">
 
-    <h2
-      style="
-        color:var(--pro-teal);
-        font-family:Montserrat;
-      "
-    >
+    <h2 style="color:var(--teal)">
       PRESENTS
     </h2>
 
-    <div id="pListContainer"></div>
+    <div id="pListContainer">
+    </div>
 
-    <h2
-      style="
-        color:var(--pro-pink);
-        font-family:Montserrat;
-        margin-top:40px;
-      "
-    >
+    <h2 style="color:var(--pink)">
       COIN HISTORY
     </h2>
 
-    <div
-      id="historyContainer"
-    ></div>
+    <div id="historyContainer">
+    </div>
 
   </div>
 
 </div>
 
 
-<!-- SETTINGS -->
+<!-- ========================================================
+     設定
+========================================================= -->
 
 <div
   id="sheetConfig"
@@ -929,7 +1194,7 @@ body{
 
   <div
     class="sheet-content"
-    style="text-align:center;"
+    style="text-align:center"
   >
 
     <div class="student-id-card">
@@ -943,23 +1208,19 @@ body{
         style="
           width:105px;
           height:140px;
-          border:3px solid #333;
           object-fit:cover;
-          background:#eee;
-          cursor:pointer;
+          border:3px solid #333;
           border-radius:10px;
+          cursor:pointer;
         "
         onclick="
-          document.getElementById('fileIn').click()
+          document
+            .getElementById('fileIn')
+            .click()
         "
       >
 
-      <p
-        style="
-          font-size:.6rem;
-          color:#888;
-        "
-      >
+      <p>
         ID:
         <span id="myIdDisplay">
           ---
@@ -967,34 +1228,30 @@ body{
       </p>
 
       <input
-        type="text"
         id="nIn"
+        class="student-input"
         placeholder="なまえ"
-        class="student-input"
       >
 
       <input
-        type="password"
         id="pIn"
-        placeholder="合言葉"
         class="student-input"
+        type="password"
+        placeholder="合言葉"
       >
 
       <input
-        type="file"
         id="fileIn"
-        style="display:none"
+        type="file"
         accept="image/*"
+        style="display:none"
         onchange="uploadIcon(this)"
       >
 
     </div>
 
-    <br>
-
     <button
       class="btn-pro"
-      style="width:100%"
       onclick="saveSettings()"
     >
       <span>保存して同期</span>
@@ -1005,7 +1262,9 @@ body{
 </div>
 
 
-<!-- FRIEND -->
+<!-- ========================================================
+     フレンド
+========================================================= -->
 
 <div
   id="sheetFriend"
@@ -1014,55 +1273,43 @@ body{
 
   <div class="sheet-content">
 
-    <h2
-      style="
-        color:var(--pro-pink);
-      "
-    >
+    <h2 style="color:var(--pink)">
       FRIENDS
     </h2>
 
-    <div
-      id="reqList"
-      class="friend-box"
-      style="color:#333;"
-    ></div>
+    <h3>
+      承認待ち
+    </h3>
 
     <div
-      id="sentList"
-      class="friend-box"
-      style="
-        color:#333;
-        font-size:.75rem;
-      "
-    ></div>
+      id="reqList"
+      style="color:#333"
+    >
+    </div>
+
+    <h3>
+      フレンド
+    </h3>
 
     <div
       id="fList"
-      class="friend-box"
-      style="color:#333;"
-    ></div>
+      style="color:#333"
+    >
+    </div>
 
     <input
-      type="text"
       id="fIdIn"
-      placeholder="10桁ID検索"
+      placeholder="10桁ID"
       style="
         width:60%;
         padding:14px;
-        border-radius:10px;
-        border:none;
         color:#000;
-        box-sizing:border-box;
       "
     >
 
     <button
       class="btn-pro pink"
-      style="
-        width:auto;
-        padding:12px 25px;
-      "
+      style="width:auto"
       onclick="sendReq()"
     >
       <span>申請</span>
@@ -1073,7 +1320,9 @@ body{
 </div>
 
 
-<!-- QUEST -->
+<!-- ========================================================
+     クエスト
+========================================================= -->
 
 <div
   id="questScreen"
@@ -1082,8 +1331,7 @@ body{
 
   <h2
     style="
-      font-size:2.5rem;
-      color:var(--pro-teal);
+      color:var(--teal);
       font-family:Montserrat;
     "
   >
@@ -1092,130 +1340,140 @@ body{
 
   <div
     id="gameListContainer"
-    style="
-      display:flex;
-      flex-wrap:wrap;
-      justify-content:center;
-      gap:15px;
-      width:100%;
-      padding:20px;
-      box-sizing:border-box;
-    "
-  ></div>
+  >
+  </div>
 
   <button
     class="btn-pro gray"
     onclick="
-      transition('questScreen','gameScreen')
+      transition(
+        'questScreen',
+        'gameScreen'
+      )
     "
   >
-    戻る
+    <span>戻る</span>
   </button>
 
 </div>
 
 
-<!-- TRANSFER -->
+<!-- ========================================================
+     データ復元
+========================================================= -->
 
-<dialog
-  id="modalTransfer"
-  style="
-    background:#111;
-    color:#fff;
-    border:none;
-    border-radius:20px;
-    padding:30px;
-    width:90%;
-    max-width:320px;
-    box-shadow:
-      0 0 30px rgba(255,51,153,.5);
-  "
->
+<dialog id="modalTransfer">
 
   <h3>
     データ復元
   </h3>
 
   <input
-    type="text"
     id="tIdIn"
     placeholder="ID"
   >
 
   <input
-    type="password"
     id="tPassIn"
+    type="password"
     placeholder="合言葉"
   >
 
-  <br>
-  <br>
-
   <button
     class="btn-pro pink"
-    style="
-      width:100%;
-      margin:0;
-    "
     onclick="executeTransfer()"
   >
-    復元実行
+    <span>復元実行</span>
+  </button>
+
+  <button
+    class="btn-pro gray"
+    onclick="
+      document
+        .getElementById(
+          'modalTransfer'
+        )
+        .close()
+    "
+  >
+    <span>閉じる</span>
   </button>
 
 </dialog>
 
 
-<!-- GAME -->
+<!-- ========================================================
+     ゲーム
+========================================================= -->
 
 <div id="gameLayer">
 
   <iframe
     id="gameFrame"
     src="about:blank"
-  ></iframe>
+  >
+  </iframe>
 
 </div>
 
 
+<!-- ========================================================
+     JavaScript
+========================================================= -->
+
 <script>
 
 /* =========================================================
-   GAS URL
+   GAS
 ========================================================= */
 
 const GAS_URL =
-  "https://script.google.com/macros/s/AKfycbxVxLMmtMc8L6sdMdeqYhGDcRxjAdR_W33z1jmYexNLfVstCOyoUnsUnwARHBEw62Hj/exec";
+  "https://script.google.com/macros/s/AKfycbyqBwH22VNdgum1X1QTF5DDIDGjRJLoW0_kZUIBo6sOhr_AFHjjEJ9i4EpN18MIqqeG/exec";
 
 
 /* =========================================================
-   データ
+   グローバル
 ========================================================= */
 
 let myId =
   localStorage.getItem("gID") ||
-  Math.random()
-    .toString(36)
-    .substring(2,12)
-    .toUpperCase();
+  generateId();
 
 let iroCoins =
-  parseInt(
-    localStorage.getItem("gCoins")
-  ) || 0;
+  Number(
+    localStorage.getItem("gCoins") || 0
+  );
 
 let myChars = "";
 
 let globalCharaPool = {
-  star2:[],
-  star3:[],
-  star4:[]
+
+  star2: [],
+  star3: [],
+  star4: []
+
 };
 
 let friendsData = [];
 
 let claimedPresents = [];
 
-let firstSyncDone = false;
+let syncTimer = null;
+
+
+/* =========================================================
+   ID生成
+========================================================= */
+
+function generateId(){
+
+  return Math
+    .random()
+    .toString(36)
+    .substring(2,12)
+    .toUpperCase();
+
+}
 
 
 /* =========================================================
@@ -1225,11 +1483,11 @@ let firstSyncDone = false;
 function escapeHTML(value){
 
   return String(value ?? "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 
 }
 
@@ -1239,22 +1497,45 @@ function escapeHTML(value){
 ========================================================= */
 
 async function getGAS(
-  action,
-  params={}
+  action = "",
+  params = {}
 ){
 
   const query =
-    new URLSearchParams({
-      action,
-      ...params
-    });
+    new URLSearchParams();
+
+  if(action){
+
+    query.set(
+      "action",
+      action
+    );
+
+  }
+
+  Object
+    .entries(params)
+    .forEach(
+      ([key,value]) => {
+
+        query.set(
+          key,
+          value
+        );
+
+      }
+    );
+
+
+  const url =
+    GAS_URL +
+    "?" +
+    query.toString();
+
 
   const response =
-    await fetch(
-      GAS_URL +
-      "?" +
-      query.toString()
-    );
+    await fetch(url);
+
 
   return await response.json();
 
@@ -1267,39 +1548,90 @@ async function getGAS(
 
 async function postGAS(data){
 
-  const response =
-    await fetch(
-      GAS_URL,
-      {
-        method:"POST",
-        headers:{
-          "Content-Type":
-            "text/plain;charset=utf-8"
-        },
-        body:JSON.stringify(data)
-      }
+  try{
+
+    const response =
+      await fetch(
+        GAS_URL,
+        {
+
+          method:"POST",
+
+          headers:{
+            "Content-Type":
+              "text/plain;charset=utf-8"
+          },
+
+          body:
+            JSON.stringify(data)
+
+        }
+      );
+
+
+    return await response.json();
+
+  }catch(error){
+
+    console.error(
+      "POST ERROR",
+      error
     );
 
-  return await response.json();
+
+    return {
+
+      result:"error",
+
+      message:
+        error.message
+
+    };
+
+  }
 
 }
 
 
 /* =========================================================
-   操作記録
+   Web操作記録
 ========================================================= */
 
-function logWebAction(
+async function logWebAction(
   action,
-  detail={}
+  detail = "",
+  value = ""
 ){
 
-  postGAS({
-    type:"screen",
-    id:myId,
-    screen:action,
-    detail:detail
-  }).catch(()=>{});
+  try{
+
+    await postGAS({
+
+      type:
+        "webAction",
+
+      id:
+        myId,
+
+      action:
+        action,
+
+      detail:
+        detail,
+
+      value:
+        value
+
+    });
+
+  }catch(error){
+
+    console.warn(
+      "操作履歴保存失敗",
+      error
+    );
+
+  }
 
 }
 
@@ -1314,8 +1646,11 @@ function handleLoginClick(){
     "ログインボタン"
   );
 
+
   if(
-    !localStorage.getItem("gName")
+    !localStorage.getItem(
+      "gName"
+    )
   ){
 
     transition(
@@ -1333,31 +1668,35 @@ function handleLoginClick(){
 
 
 /* =========================================================
-   新規登録
+   登録
 ========================================================= */
 
 async function saveRegistration(){
 
   const name =
     document
-      .getElementById("regName")
+      .getElementById(
+        "regName"
+      )
       .value
       .trim();
 
   const pass =
     document
-      .getElementById("regPass")
-      .value
-      .trim();
+      .getElementById(
+        "regPass"
+      )
+      .value;
 
 
   if(!name || !pass){
 
     alert(
-      "全て入力してください"
+      "名前と合言葉を入力してください"
     );
 
     return;
+
   }
 
 
@@ -1371,78 +1710,119 @@ async function saveRegistration(){
     pass
   );
 
-
-  /*
-   * このIDを保存
-   */
-
   localStorage.setItem(
     "gID",
     myId
   );
 
 
-  const result =
-    await postGAS({
-      type:"register",
-      id:myId,
-      name:name,
-      pass:pass
-    });
+  await postGAS({
+
+    type:"sync",
+
+    id:myId,
+
+    name:name,
+
+    pass:pass,
+
+    iroCoin:iroCoins,
+
+    chars:myChars,
+
+    avatar:
+      localStorage.getItem(
+        "gAv"
+      ) || ""
+
+  });
 
 
-  if(
-    result.result !== "success"
-  ){
-
-    alert(
-      result.message ||
-      "登録に失敗しました"
-    );
-
-    return;
-  }
+  logWebAction(
+    "新規登録"
+  );
 
 
-  beginPortalSync();
+  await beginPortalSync();
 
 }
 
 
 /* =========================================================
-   同期開始
+   ポータル同期
 ========================================================= */
 
 async function beginPortalSync(){
-
-  transition(
-    "registrationScreen",
-    "loadingScreen"
-  );
 
   transition(
     "titleScreen",
     "loadingScreen"
   );
 
+  transition(
+    "registrationScreen",
+    "loadingScreen"
+  );
+
 
   try{
 
-    const result =
+    const charResult =
       await getGAS(
         "getCharaPools"
       );
 
+
     if(
-      result.result === "success"
+      charResult.result ===
+      "success"
     ){
 
       globalCharaPool =
-        result.data || {
+        charResult.data || {
+
           star2:[],
           star3:[],
           star4:[]
+
         };
+
+    }
+
+
+    const ok =
+      await fetchSync();
+
+
+    if(!ok){
+
+      alert(
+        "サーバーとの同期に失敗しました"
+      );
+
+      transition(
+        "loadingScreen",
+        "titleScreen"
+      );
+
+      return;
+
+    }
+
+
+    transition(
+      "loadingScreen",
+      "gameScreen"
+    );
+
+
+    if(!syncTimer){
+
+      syncTimer =
+        setInterval(
+          fetchSync,
+          15000
+        );
 
     }
 
@@ -1450,31 +1830,8 @@ async function beginPortalSync(){
 
     console.error(error);
 
-  }
-
-
-  const success =
-    await fetchSync();
-
-
-  if(
-    success
-  ){
-
-    transition(
-      "loadingScreen",
-      "gameScreen"
-    );
-
-    setInterval(
-      fetchSync,
-      15000
-    );
-
-  }else{
-
     alert(
-      "同期失敗"
+      "初期化に失敗しました"
     );
 
     transition(
@@ -1488,88 +1845,25 @@ async function beginPortalSync(){
 
 
 /* =========================================================
-   画面切替
-========================================================= */
-
-function transition(
-  from,
-  to
-){
-
-  const cur =
-    document.getElementById(from);
-
-  const nxt =
-    document.getElementById(to);
-
-
-  if(cur){
-
-    cur.classList.add(
-      "hidden"
-    );
-
-    setTimeout(
-      ()=>{
-        cur.style.display =
-          "none";
-      },
-      600
-    );
-
-  }
-
-
-  if(nxt){
-
-    nxt.style.display =
-      "flex";
-
-    setTimeout(
-      ()=>{
-        nxt.classList.remove(
-          "hidden"
-        );
-      },
-      50
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   ユーザー同期
+   同期
 ========================================================= */
 
 async function fetchSync(){
 
-  if(
-    !GAS_URL.includes("https")
-  ){
-
-    return true;
-
-  }
-
-
   try{
 
-    const response =
-      await fetch(
-        GAS_URL +
-        "?id=" +
-        encodeURIComponent(myId)
+    const json =
+      await getGAS(
+        "",
+        {
+          id:myId
+        }
       );
 
 
-    const json =
-      await response.json();
-
-
     if(
-      json.result !== "success"
+      json.result !==
+      "success"
     ){
 
       return false;
@@ -1589,22 +1883,8 @@ async function fetchSync(){
     );
 
 
-    document
-      .getElementById(
-        "hIroCoin"
-      )
-      .innerText =
-        iroCoins.toLocaleString();
-
-
     myChars =
       json.chars || "";
-
-
-    claimedPresents =
-      json.claimed
-        ? json.claimed.split(",")
-        : [];
 
 
     friendsData =
@@ -1613,12 +1893,26 @@ async function fetchSync(){
 
     document
       .getElementById(
+        "hIroCoin"
+      )
+      .innerText =
+        iroCoins.toLocaleString();
+
+
+    document
+      .getElementById(
         "hName"
       )
       .innerText =
-        json.name ||
-        localStorage.getItem("gName") ||
-        "USER";
+        json.name || "USER";
+
+
+    document
+      .getElementById(
+        "myIdDisplay"
+      )
+      .innerText =
+        myId;
 
 
     document
@@ -1627,7 +1921,7 @@ async function fetchSync(){
       )
       .innerHTML =
         json.isOfficial
-          ? '<span class="badge-verify"></span>'
+          ? '<span class="badge-verify">✔</span>'
           : "";
 
 
@@ -1638,77 +1932,54 @@ async function fetchSync(){
 
 
     document
-      .getElementById("hAv")
-      .src = avatar;
+      .getElementById(
+        "hAv"
+      )
+      .src =
+        avatar;
 
 
     document
-      .getElementById("mAv")
-      .src = avatar;
+      .getElementById(
+        "mAv"
+      )
+      .src =
+        avatar;
 
 
     document
-      .getElementById("myIdDisplay")
-      .innerText =
-        myId;
-
-
-    document
-      .getElementById("nIn")
+      .getElementById(
+        "nIn"
+      )
       .value =
-        json.name ||
-        localStorage.getItem("gName") ||
-        "";
+        json.name || "";
 
 
     document
-      .getElementById("pIn")
+      .getElementById(
+        "pIn"
+      )
       .value =
-        localStorage.getItem("gPass") ||
-        "";
+        localStorage.getItem(
+          "gPass"
+        ) || "";
 
 
     updatePresentUI(
-      json.pendingGifts
+      json.pendingGifts || []
     );
 
 
     updateHistoryUI(
-      json.history
+      json.history || []
     );
 
 
     renderMembers();
 
-
-    renderFriendUI(
-      json
+    renderFriends(
+      json.pending || ""
     );
-
-
-    firstSyncDone = true;
-
-
-    /*
-     * 現在の状態をGASへ保存
-     */
-
-    await postGAS({
-      type:"sync",
-      id:myId,
-      name:
-        document.getElementById("nIn").value ||
-        localStorage.getItem("gName") ||
-        "",
-      pass:
-        localStorage.getItem("gPass") ||
-        "",
-      iroCoin:iroCoins,
-      chars:myChars,
-      avatar:
-        localStorage.getItem("gAv") ||
-        ""
-    });
 
 
     return true;
@@ -1716,7 +1987,7 @@ async function fetchSync(){
   }catch(error){
 
     console.error(
-      "同期エラー:",
+      "同期エラー",
       error
     );
 
@@ -1728,132 +1999,44 @@ async function fetchSync(){
 
 
 /* =========================================================
-   フレンドUI
+   画面切替
 ========================================================= */
 
-function renderFriendUI(json){
+function transition(
+  from,
+  to
+){
 
-  const req =
+  const a =
     document.getElementById(
-      "reqList"
+      from
     );
 
-  const sent =
+  const b =
     document.getElementById(
-      "sentList"
-    );
-
-  const list =
-    document.getElementById(
-      "fList"
+      to
     );
 
 
-  const pending =
-    String(
-      json.pending || ""
-    )
-    .split(",")
-    .filter(Boolean);
+  if(a){
+
+    a.classList.add(
+      "hidden"
+    );
+
+  }
 
 
-  const sentIds =
-    String(
-      json.sent || ""
-    )
-    .split(",")
-    .filter(Boolean);
+  if(b){
 
+    b.style.display =
+      "flex";
 
-  req.innerHTML =
-    pending.length
-      ? pending.map(
-          id => `
-            <div
-              style="
-                display:flex;
-                justify-content:space-between;
-                padding:10px;
-                background:#fff;
-                border-radius:10px;
-                margin-bottom:5px;
-              "
-            >
-              <span>ID:
-                ${escapeHTML(id)}
-              </span>
+    b.classList.remove(
+      "hidden"
+    );
 
-              <button
-                onclick="
-                  acceptF('${escapeHTML(id)}')
-                "
-              >
-                承認
-              </button>
-            </div>
-          `
-        ).join("")
-      : "なし";
-
-
-  sent.innerHTML =
-    sentIds.length
-      ? "送信済み: " +
-        sentIds
-          .map(
-            escapeHTML
-          )
-          .join(", ")
-      : "";
-
-
-  list.innerHTML =
-    friendsData.length
-      ? friendsData.map(
-          f => `
-            <div
-              style="
-                display:flex;
-                justify-content:space-between;
-                border-bottom:1px solid #ddd;
-                padding:8px 0;
-                color:#333;
-              "
-            >
-
-              <span>
-                ${escapeHTML(f.name)}
-                ${f.isOfficial ? "✔" : ""}
-              </span>
-
-              <div>
-
-                <button
-                  onclick="
-                    sendFriendGift(
-                      '${escapeHTML(f.id)}'
-                    )
-                  "
-                >
-                  🎁
-                </button>
-
-                <button
-                  onclick="
-                    removeFriend(
-                      '${escapeHTML(f.id)}'
-                    )
-                  "
-                >
-                  ×
-                </button>
-
-              </div>
-
-            </div>
-          `
-        ).join("")
-      : "なし";
+  }
 
 }
 
@@ -1873,7 +2056,7 @@ function renderMembers(){
   if(!myChars){
 
     container.innerHTML =
-      "なし";
+      "キャラクターなし";
 
     return;
 
@@ -1888,8 +2071,12 @@ function renderMembers(){
     .filter(Boolean)
     .forEach(
       name => {
+
         counts[name] =
-          (counts[name] || 0) + 1;
+          (
+            counts[name] || 0
+          ) + 1;
+
       }
     );
 
@@ -1897,44 +2084,42 @@ function renderMembers(){
   const master = [
 
     ...(globalCharaPool.star2 || []),
-
     ...(globalCharaPool.star3 || []),
-
     ...(globalCharaPool.star4 || [])
 
   ];
 
 
   container.innerHTML =
-    Object.keys(counts)
+    Object
+      .keys(counts)
       .map(
         name => {
 
           const char =
             master.find(
-              m =>
-                m.name === name
+              c =>
+                c.name === name
             );
 
 
           if(!char){
+
             return "";
+
           }
 
 
           return `
+
             <div
               class="member-card"
-              onclick="
-                showMemberDetail(
-                  '${escapeHTML(char.name)}'
-                )
-              "
+              onclick="showMemberDetail(
+                '${escapeHTML(name)}'
+              )"
             >
 
-              <div
-                class="count-badge"
-              >
+              <div class="count-badge">
                 x${counts[name]}
               </div>
 
@@ -1947,6 +2132,7 @@ function renderMembers(){
               </small>
 
             </div>
+
           `;
 
         }
@@ -1967,9 +2153,7 @@ function showMemberDetail(
   const master = [
 
     ...(globalCharaPool.star2 || []),
-
     ...(globalCharaPool.star3 || []),
-
     ...(globalCharaPool.star4 || [])
 
   ];
@@ -1977,26 +2161,40 @@ function showMemberDetail(
 
   const char =
     master.find(
-      c => c.name === name
+      c =>
+        c.name === name
     );
 
 
   if(!char){
+
     return;
+
   }
 
 
-  const stars =
-    globalCharaPool.star4.some(
-      c => c.name === name
-    )
-      ? 4
-      :
-    globalCharaPool.star3.some(
-      c => c.name === name
-    )
-      ? 3
-      : 2;
+  let stars = 2;
+
+
+  if(
+    globalCharaPool.star4
+      .some(
+        c => c.name === name
+      )
+  ){
+
+    stars = 4;
+
+  }else if(
+    globalCharaPool.star3
+      .some(
+        c => c.name === name
+      )
+  ){
+
+    stars = 3;
+
+  }
 
 
   document
@@ -2005,27 +2203,27 @@ function showMemberDetail(
     )
     .innerHTML = `
 
-      <div class="detail-card">
+      <img
+        src="${escapeHTML(char.img)}"
+        style="
+          width:220px;
+          max-width:80%;
+          border-radius:20px;
+        "
+      >
 
-        <img
-          src="${escapeHTML(char.img)}"
-          class="detail-img"
-        >
-
-        <div
-          style="
-            color:#ffcc00;
-            font-size:1.8rem;
-          "
-        >
-          ${"★".repeat(stars)}
-        </div>
-
-        <h1>
-          ${escapeHTML(char.name)}
-        </h1>
-
+      <div
+        style="
+          color:#ffcc00;
+          font-size:2rem;
+        "
+      >
+        ${"★".repeat(stars)}
       </div>
+
+      <h2>
+        ${escapeHTML(char.name)}
+      </h2>
 
     `;
 
@@ -2052,24 +2250,27 @@ function showMemberDetail(
           .innerHTML =
             friendsData
               .map(
-                f => `
+                friend => `
+
                   <div
+                    style="
+                      padding:12px;
+                      border-bottom:
+                        1px solid #ddd;
+                      cursor:pointer;
+                    "
                     onclick="
                       executeMemberGift(
-                        '${escapeHTML(f.id)}',
-                        '${escapeHTML(f.name)}',
+                        '${escapeHTML(friend.id)}',
+                        '${escapeHTML(friend.name)}',
                         '${escapeHTML(char.name)}'
                       )
                     "
-                    style="
-                      padding:10px;
-                      border-bottom:1px solid #ddd;
-                      color:#333;
-                    "
                   >
-                    ${escapeHTML(f.name)}
-                    ➔ 贈る
+                    ${escapeHTML(friend.name)}
+                    ➜ 贈る
                   </div>
+
                 `
               )
               .join("");
@@ -2097,14 +2298,17 @@ function showMemberDetail(
 ========================================================= */
 
 async function executeMemberGift(
-  tid,
-  tn,
-  cn
+  targetId,
+  targetName,
+  charName
 ){
 
   if(
     !confirm(
-      `${tn}さんに贈りますか？`
+      targetName +
+      "さんに" +
+      charName +
+      "を贈りますか？"
     )
   ){
 
@@ -2130,16 +2334,17 @@ async function executeMemberGift(
           .innerText,
 
       toId:
-        tid,
+        targetId,
 
       charName:
-        cn
+        charName
 
     });
 
 
   if(
-    result.result !== "success"
+    result.result !==
+    "success"
   ){
 
     alert(
@@ -2148,11 +2353,12 @@ async function executeMemberGift(
     );
 
     return;
+
   }
 
 
   alert(
-    "完了"
+    "送信しました"
   );
 
 
@@ -2173,7 +2379,7 @@ async function executeMemberGift(
 async function launchGachaUI(){
 
   logWebAction(
-    "ガチャ画面"
+    "ガチャ開始"
   );
 
 
@@ -2195,7 +2401,10 @@ async function launchGachaUI(){
 
   try{
 
-    const results =
+    const [
+      settingsRes,
+      charsRes
+    ] =
       await Promise.all([
 
         getGAS(
@@ -2210,13 +2419,15 @@ async function launchGachaUI(){
 
 
     const gData =
-      results[0].data || [];
+      settingsRes.data || [];
 
     const pools =
-      results[1].data || {
+      charsRes.data || {
+
         star2:[],
         star3:[],
         star4:[]
+
       };
 
 
@@ -2229,280 +2440,317 @@ async function launchGachaUI(){
       closeGame();
 
       return;
+
     }
 
 
-    document
-      .getElementById(
-        "gameFrame"
+    const safeData =
+      JSON.stringify(
+        gData
       )
-      .srcdoc =
-        createGachaHTML(
-          gData,
-          pools
-        );
-
-  }catch(error){
-
-    console.error(error);
-
-    alert(
-      "ガチャの読み込みに失敗しました"
-    );
-
-    closeGame();
-
-  }
-
-}
+      .replaceAll(
+        "</",
+        "<\\/"
+      );
 
 
-/* =========================================================
-   ガチャHTML
-========================================================= */
+    const safePools =
+      JSON.stringify(
+        pools
+      )
+      .replaceAll(
+        "</",
+        "<\\/"
+      );
 
-function createGachaHTML(
-  gData,
-  pools
-){
 
-  return `
+    const first =
+      gData[0];
+
+
+    const html = `
 
 <!DOCTYPE html>
 
-<html>
+<html lang="ja">
 
 <head>
 
 <meta charset="UTF-8">
 
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1.0"
+>
+
 <style>
 
+html,
 body{
-  background:#000;
-  color:#fff;
-  font-family:sans-serif;
+
   margin:0;
+  width:100%;
+  height:100%;
+
   overflow:hidden;
+
+  background:#000;
+
+  color:#fff;
+
+  font-family:sans-serif;
+
 }
 
 #bg{
+
   position:fixed;
-  width:100%;
-  height:100%;
-  background:url('${escapeHTML(gData[0].bg)}')
-    center/cover;
-  transition:.5s;
-  filter:brightness(1.1);
+
+  inset:0;
+
+  background:
+    url("${escapeAttribute(first.bg)}")
+    center/cover no-repeat;
+
+  filter:brightness(.75);
+
 }
 
 .ui{
+
   position:relative;
-  z-index:10;
-  height:100vh;
-  padding:30px;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
+
+  z-index:5;
+
+  width:100%;
+  height:100%;
+
+  padding:25px;
+
   box-sizing:border-box;
-  background:
-    linear-gradient(
-      rgba(0,0,0,.2),
-      transparent,
-      rgba(0,0,0,.9)
-    );
+
 }
 
 .coin{
-  background:rgba(0,0,0,.6);
+
+  display:inline-block;
+
   padding:10px 20px;
+
   border-radius:30px;
+
+  background:rgba(0,0,0,.7);
+
   color:#33ffcc;
+
   border:1px solid #33ffcc;
-  font-weight:bold;
-  width:fit-content;
+
 }
 
 .sidebar{
+
   position:absolute;
+
   left:20px;
-  top:100px;
+
+  top:90px;
+
   display:flex;
+
   flex-direction:column;
-  gap:12px;
+
+  gap:10px;
+
 }
 
 .tab{
-  width:130px;
-  height:65px;
+
+  width:120px;
+
+  height:60px;
+
   background-size:cover;
+
+  background-position:center;
+
   border:2px solid transparent;
+
   border-radius:10px;
+
   opacity:.6;
+
   cursor:pointer;
+
 }
 
 .tab.active{
+
   border-color:#ffcc00;
+
   opacity:1;
-  transform:translateX(10px);
-  box-shadow:0 0 15px #ffcc00;
+
 }
 
 .controls{
+
   position:absolute;
-  right:40px;
-  bottom:50px;
+
+  right:30px;
+
+  bottom:30px;
+
   display:flex;
-  gap:20px;
+
   flex-direction:column;
-  align-items:flex-end;
+
+  gap:10px;
+
 }
 
 .pull-btn{
+
   width:180px;
-  padding:20px;
-  border-radius:15px;
+
+  padding:18px;
+
   border:none;
+
+  border-radius:15px;
+
   color:#fff;
+
   font-weight:bold;
+
   cursor:pointer;
-  font-size:1.1rem;
-  box-shadow:0 5px 0 rgba(0,0,0,.3);
-  text-align:center;
+
 }
 
 .b-1{
+
   background:#555;
+
 }
 
 .b-10{
-  background:
-    linear-gradient(
-      #ff88bb,
-      #ff3399
-    );
+
+  background:#ff3399;
+
 }
 
 .b-100{
-  background:
-    linear-gradient(
-      #ffcc00,
-      #ff6600
-    );
+
+  background:#ff6600;
+
 }
 
 #reveal{
+
   position:fixed;
-  top:0;
-  left:0;
-  width:100vw;
-  height:100vh;
-  z-index:1000;
+
+  inset:0;
+
   display:none;
+
   flex-direction:column;
-  justify-content:center;
+
   align-items:center;
-  cursor:pointer;
-  overflow:hidden;
+
+  justify-content:flex-end;
+
   background:#000;
+
+  z-index:100;
+
+  cursor:pointer;
+
 }
 
-.rev-img{
+#rev-img{
+
   position:absolute;
-  top:0;
-  left:0;
+
+  inset:0;
+
   width:100%;
+
   height:100%;
+
   object-fit:contain;
-  z-index:1;
-  animation:zIn 15s linear infinite;
-}
 
-.rev-overlay{
-  position:absolute;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:
-    linear-gradient(
-      transparent 50%,
-      rgba(0,0,0,.9)
-    );
-  z-index:2;
 }
 
 .rev-content{
+
   position:relative;
-  z-index:10;
+
+  z-index:5;
+
   text-align:center;
-  margin-top:auto;
-  padding-bottom:120px;
+
+  padding-bottom:80px;
+
 }
 
 #summary{
+
   position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,.95);
-  z-index:2000;
+
+  inset:0;
+
   display:none;
+
   flex-direction:column;
+
   align-items:center;
+
   justify-content:center;
-  padding:15px;
+
+  background:rgba(0,0,0,.95);
+
+  z-index:200;
+
 }
 
 .summary-grid{
+
   display:flex;
+
   flex-wrap:wrap;
+
   justify-content:center;
-  gap:10px;
+
+  gap:8px;
+
   max-width:90%;
-  overflow-y:auto;
-  max-height:75vh;
+
+  max-height:70%;
+
+  overflow:auto;
+
 }
 
 .summary-card{
-  width:80px;
-  text-align:center;
-  background:rgba(255,255,255,.1);
-  border-radius:8px;
+
+  width:75px;
+
   padding:5px;
+
+  background:#222;
+
+  text-align:center;
+
+  border-radius:8px;
+
 }
 
 .summary-card img{
+
   width:60px;
+
   height:80px;
+
   object-fit:cover;
-  border-radius:4px;
-  border:1px solid #fff;
-}
 
-.skip-btn{
-  position:fixed;
-  top:30px;
-  right:30px;
-  z-index:3000;
-  padding:10px 30px;
-  background:rgba(255,255,255,.2);
-  border:1px solid #fff;
-  border-radius:30px;
-  color:#fff;
-  cursor:pointer;
-  display:none;
-}
-
-@keyframes zIn{
-  from{
-    transform:scale(1);
-  }
-  to{
-    transform:scale(1.15);
-  }
 }
 
 </style>
@@ -2523,36 +2771,20 @@ body{
   </div>
 
   <div
-    class="sidebar"
     id="sb"
+    class="sidebar"
   ></div>
 
-  <div
-    style="
-      margin-left:160px;
-      margin-bottom:100px;
-    "
-  >
-    <h1 id="tName">
-      ${escapeHTML(gData[0].title)}
-    </h1>
-  </div>
+  <h1>
+    ${escapeHTML(first.title)}
+  </h1>
 
   <div
-    class="controls"
     id="btn-container"
+    class="controls"
   ></div>
 
 </div>
-
-
-<button
-  id="skip"
-  class="skip-btn"
-  onclick="skipReveal()"
->
-  SKIP
-</button>
 
 
 <div
@@ -2560,30 +2792,21 @@ body{
   onclick="nextReveal()"
 >
 
-  <img
-    id="rev-img"
-    class="rev-img"
+  <img id="rev-img">
+
+  <div
+    class="rev-content"
   >
-
-  <div class="rev-overlay"></div>
-
-  <div class="rev-content">
 
     <div
       id="rev-stars"
       style="
-        display:flex;
-        justify-content:center;
-        gap:15px;
-        margin-bottom:15px;
+        font-size:2rem;
+        color:#ffcc00;
       "
     ></div>
 
     <h1
-      style="
-        font-size:4rem;
-        margin:0;
-      "
       id="rev-name"
     ></h1>
 
@@ -2614,13 +2837,9 @@ body{
         .style.display='none'
     "
     style="
-      margin-top:20px;
-      padding:18px 80px;
-      border-radius:40px;
+      padding:15px 60px;
       border:none;
-      font-weight:bold;
-      background:#fff;
-      font-size:1rem;
+      border-radius:30px;
     "
   >
     とじる
@@ -2631,63 +2850,59 @@ body{
 
 <script>
 
+const gData =
+  ${safeData};
+
+const pools =
+  ${safePools};
+
 let coins =
   ${Number(iroCoins)};
 
-let pools =
-  ${JSON.stringify(pools)};
+let results = [];
 
-let gData =
-  ${JSON.stringify(gData)};
+let current = 0;
 
-let res = [];
-
-let cur = 0;
-
-
-/* -------------------------------------------------------
-   ボタン
-------------------------------------------------------- */
 
 function renderButtons(index){
 
-  const container =
-    document.getElementById(
-      "btn-container"
-    );
+  const box =
+    document
+      .getElementById(
+        "btn-container"
+      );
 
-  container.innerHTML = "";
+  box.innerHTML = "";
 
 
   String(
-    gData[index].buttons || ""
+    gData[index].buttons ||
+    "1回,10回"
   )
   .split(",")
+  .map(
+    x => x.trim()
+  )
   .forEach(
-    function(b){
+    button => {
 
-      b = b.trim();
+      if(button === "1回"){
 
-
-      if(b === "1回"){
-
-        container.innerHTML +=
+        box.innerHTML +=
           '<button class="pull-btn b-1" onclick="startPull(1)">1回引く</button>';
 
       }
 
+      if(button === "10回"){
 
-      if(b === "10回"){
-
-        container.innerHTML +=
+        box.innerHTML +=
           '<button class="pull-btn b-10" onclick="startPull(10)">10回引く</button>';
 
       }
 
+      if(button === "100回"){
 
-      if(b === "100回"){
-
-        container.innerHTML +=
+        box.innerHTML +=
           '<button class="pull-btn b-100" onclick="startPull(100)">100回引く</button>';
 
       }
@@ -2698,23 +2913,51 @@ function renderButtons(index){
 }
 
 
-/* -------------------------------------------------------
-   ガチャ
-------------------------------------------------------- */
-
 function startPull(n){
 
   const cost =
     n * 300;
 
 
-  if(coins < cost){
+  if(
+    coins < cost
+  ){
 
     alert(
-      "不足"
+      "コインが不足しています"
     );
 
     return;
+
+  }
+
+
+  const allPool = {
+
+    star2:
+      pools.star2 || [],
+
+    star3:
+      pools.star3 || [],
+
+    star4:
+      pools.star4 || []
+
+  };
+
+
+  if(
+    !allPool.star2.length ||
+    !allPool.star3.length ||
+    !allPool.star4.length
+  ){
+
+    alert(
+      "キャラクターデータが不足しています"
+    );
+
+    return;
+
   }
 
 
@@ -2722,18 +2965,20 @@ function startPull(n){
 
 
   document
-    .getElementById("c")
+    .getElementById(
+      "c"
+    )
     .innerText =
       coins.toLocaleString();
 
 
-  res = [];
+  results = [];
 
-  let names = [];
+  const names = [];
 
-  let hasS4 = false;
 
-  let hasS3 = false;
+  let has4 = false;
+  let has3 = false;
 
 
   for(
@@ -2742,19 +2987,23 @@ function startPull(n){
     i++
   ){
 
-    let star = 2;
+    let rank = 2;
 
     const r =
       Math.random() * 100;
 
 
-    if(r < 3.5){
+    if(
+      r < 3.5
+    ){
 
-      star = 4;
+      rank = 4;
 
-    }else if(r < 16){
+    }else if(
+      r < 16
+    ){
 
-      star = 3;
+      rank = 3;
 
     }
 
@@ -2762,42 +3011,36 @@ function startPull(n){
     if(
       n >= 100 &&
       i === n - 1 &&
-      !hasS4
+      !has4
     ){
 
-      star = 4;
+      rank = 4;
 
     }else if(
       n >= 10 &&
       i === n - 1 &&
-      !hasS3 &&
-      star < 3
+      !has3 &&
+      rank < 3
     ){
 
-      star = 3;
+      rank = 3;
 
     }
 
 
-    if(star >= 4){
-      hasS4 = true;
+    if(rank >= 4){
+      has4 = true;
     }
 
-    if(star >= 3){
-      hasS3 = true;
+    if(rank >= 3){
+      has3 = true;
     }
 
 
     const pool =
-      pools[
-        "star" +
-        star
-      ] || [];
-
-
-    if(!pool.length){
-      continue;
-    }
+      allPool[
+        "star" + rank
+      ];
 
 
     const char =
@@ -2809,9 +3052,12 @@ function startPull(n){
       ];
 
 
-    res.push({
+    results.push({
+
       ...char,
-      rank:star
+
+      rank:rank
+
     });
 
 
@@ -2822,59 +3068,40 @@ function startPull(n){
   }
 
 
-  /*
-   * 重要
-   * 元コードではここが2回送信されていた。
-   * 1回だけ親へ送信する。
-   */
-
   window.parent.postMessage(
+
     {
-      type:"gachaPull",
 
-      value:coins,
+      type:
+        "gachaPull",
 
-      pulls:n,
+      value:
+        coins,
+
+      pulls:
+        n,
 
       chars:
         names.join(",")
 
     },
+
     "*"
+
   );
 
 
-  cur = 0;
+  current = 0;
 
-  document
-    .getElementById(
-      "skip"
-    )
-    .style.display =
-      "block";
-
-
-  show();
+  showReveal();
 
 }
 
 
-/* -------------------------------------------------------
-   表示
-------------------------------------------------------- */
-
-function show(){
-
-  if(!res.length){
-
-    skipReveal();
-
-    return;
-  }
-
+function showReveal(){
 
   const char =
-    res[cur];
+    results[current];
 
 
   document
@@ -2901,68 +3128,40 @@ function show(){
       char.name;
 
 
-  const stars =
-    document.getElementById(
+  document
+    .getElementById(
       "rev-stars"
-    );
-
-
-  stars.innerHTML = "";
-
-
-  for(
-    let i=0;
-    i<char.rank;
-    i++
-  ){
-
-    const s =
-      document.createElement(
-        "div"
+    )
+    .innerText =
+      "★".repeat(
+        char.rank
       );
-
-    s.style =
-      "font-size:2.5rem;color:#ffcc00;";
-
-    s.innerText =
-      "★";
-
-    stars.appendChild(s);
-
-  }
 
 }
 
-
-/* -------------------------------------------------------
-   次へ
-------------------------------------------------------- */
 
 function nextReveal(){
 
-  cur++;
+  current++;
 
 
   if(
-    cur < res.length
+    current <
+    results.length
   ){
 
-    show();
+    showReveal();
 
   }else{
 
-    skipReveal();
+    showSummary();
 
   }
 
 }
 
 
-/* -------------------------------------------------------
-   スキップ
-------------------------------------------------------- */
-
-function skipReveal(){
+function showSummary(){
 
   document
     .getElementById(
@@ -2972,46 +3171,47 @@ function skipReveal(){
       "none";
 
 
-  document
-    .getElementById(
-      "skip"
-    )
-    .style.display =
-      "none";
+  const box =
+    document
+      .getElementById(
+        "sum-grid"
+      );
 
 
-  const grid =
-    document.getElementById(
-      "sum-grid"
-    );
+  box.innerHTML = "";
 
 
-  grid.innerHTML = "";
+  results.forEach(
+    char => {
 
-
-  res.forEach(
-    function(char){
-
-      const d =
+      const div =
         document.createElement(
           "div"
         );
 
-      d.className =
+
+      div.className =
         "summary-card";
 
 
-      d.innerHTML =
-        '<img src="' +
-        char.img +
-        '"><br><small>' +
-        "★".repeat(
+      div.innerHTML = `
+
+        <img
+          src="${char.img}"
+        >
+
+        <br>
+
+        ${"★".repeat(
           char.rank
-        ) +
-        "</small>";
+        )}
+
+      `;
 
 
-      grid.appendChild(d);
+      box.appendChild(
+        div
+      );
 
     }
   );
@@ -3027,20 +3227,16 @@ function skipReveal(){
 }
 
 
-/* -------------------------------------------------------
-   ガチャ一覧
-------------------------------------------------------- */
-
 gData.forEach(
-  function(g,index){
+  (g,index) => {
 
-    const d =
+    const tab =
       document.createElement(
         "div"
       );
 
 
-    d.className =
+    tab.className =
       "tab" +
       (
         index === 0
@@ -3049,13 +3245,13 @@ gData.forEach(
       );
 
 
-    d.style.backgroundImage =
-      "url(" +
+    tab.style.backgroundImage =
+      "url('" +
       g.thumbnail +
-      ")";
+      "')";
 
 
-    d.onclick =
+    tab.onclick =
       function(){
 
         document
@@ -3063,17 +3259,9 @@ gData.forEach(
             "bg"
           )
           .style.backgroundImage =
-            "url(" +
+            "url('" +
             g.bg +
-            ")";
-
-
-        document
-          .getElementById(
-            "tName"
-          )
-          .innerText =
-            g.title;
+            "')";
 
 
         renderButtons(
@@ -3086,9 +3274,9 @@ gData.forEach(
             ".tab"
           )
           .forEach(
-            function(tab,i){
+            (el,i) => {
 
-              tab.classList.toggle(
+              el.classList.toggle(
                 "active",
                 i === index
               );
@@ -3103,7 +3291,9 @@ gData.forEach(
       .getElementById(
         "sb"
       )
-      .appendChild(d);
+      .appendChild(
+        tab
+      );
 
   }
 );
@@ -3111,13 +3301,34 @@ gData.forEach(
 
 renderButtons(0);
 
-</script>
+<\/script>
 
 </body>
 
 </html>
 
 `;
+
+
+    document
+      .getElementById(
+        "gameFrame"
+      )
+      .srcdoc =
+        html;
+
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      "ガチャの読み込みに失敗しました"
+    );
+
+    closeGame();
+
+  }
 
 }
 
@@ -3133,7 +3344,7 @@ window.addEventListener(
     if(
       !event.data ||
       event.data.type !==
-        "gachaPull"
+      "gachaPull"
     ){
 
       return;
@@ -3187,20 +3398,16 @@ window.addEventListener(
 
     if(
       result.result !==
-        "success"
+      "success"
     ){
 
       console.warn(
-        "ガチャ記録失敗:",
+        "ガチャ記録失敗",
         result
       );
 
     }
 
-
-    /*
-     * サーバーと再同期
-     */
 
     await fetchSync();
 
@@ -3216,13 +3423,17 @@ async function saveSettings(){
 
   const name =
     document
-      .getElementById("nIn")
+      .getElementById(
+        "nIn"
+      )
       .value
       .trim();
 
   const pass =
     document
-      .getElementById("pIn")
+      .getElementById(
+        "pIn"
+      )
       .value;
 
 
@@ -3233,6 +3444,7 @@ async function saveSettings(){
     );
 
     return;
+
   }
 
 
@@ -3267,7 +3479,7 @@ async function saveSettings(){
 
   if(
     result.result !==
-      "success"
+    "success"
   ){
 
     alert(
@@ -3276,6 +3488,7 @@ async function saveSettings(){
     );
 
     return;
+
   }
 
 
@@ -3305,6 +3518,11 @@ async function saveSettings(){
       ) || ""
 
   });
+
+
+  logWebAction(
+    "設定保存"
+  );
 
 
   alert(
@@ -3382,6 +3600,11 @@ function uploadIcon(input){
       });
 
 
+      logWebAction(
+        "アイコン変更"
+      );
+
+
       await fetchSync();
 
     };
@@ -3401,7 +3624,8 @@ function uploadIcon(input){
 function openSheet(id){
 
   logWebAction(
-    "シート:" + id
+    "シート表示",
+    id
   );
 
 
@@ -3414,7 +3638,9 @@ function openSheet(id){
 
 
   document
-    .getElementById(id)
+    .getElementById(
+      id
+    )
     .classList.add(
       "open"
     );
@@ -3425,7 +3651,9 @@ function openSheet(id){
 function closeSheet(id){
 
   document
-    .getElementById(id)
+    .getElementById(
+      id
+    )
     .classList.remove(
       "open"
     );
@@ -3482,6 +3710,7 @@ function showPauseMenu(){
   logWebAction(
     "ポーズ"
   );
+
 
   document
     .getElementById(
@@ -3542,7 +3771,7 @@ async function loadGameList(){
 
     if(
       result.result !==
-        "success"
+      "success"
     ){
 
       container.innerHTML =
@@ -3557,6 +3786,10 @@ async function loadGameList(){
       result.data || [];
 
 
+    container.innerHTML =
+      "";
+
+
     if(!games.length){
 
       container.innerHTML =
@@ -3567,12 +3800,8 @@ async function loadGameList(){
     }
 
 
-    container.innerHTML =
-      "";
-
-
     games.forEach(
-      function(game){
+      game => {
 
         const card =
           document.createElement(
@@ -3589,9 +3818,7 @@ async function loadGameList(){
 
 
         card.innerHTML =
-          "<b>" +
-          escapeHTML(game.title) +
-          "</b>";
+          `<b>${escapeHTML(game.title)}</b>`;
 
 
         card.onclick =
@@ -3635,7 +3862,9 @@ async function launchGame(
 ){
 
   logWebAction(
-    "ゲーム起動:" + title
+    "ゲーム起動",
+    title,
+    id
   );
 
 
@@ -3668,7 +3897,7 @@ async function launchGame(
 
     if(
       result.result !==
-        "success"
+      "success"
     ){
 
       alert(
@@ -3771,7 +4000,9 @@ function closeGame(){
    履歴
 ========================================================= */
 
-function updateHistoryUI(history){
+function updateHistoryUI(
+  history
+){
 
   const container =
     document.getElementById(
@@ -3805,17 +4036,15 @@ function updateHistoryUI(history){
               )}
             </span>
 
-            <span
-              style="
-                text-align:right;
-                font-weight:bold;
-              "
-            >
+            <span>
+
               ${
                 Number(item.coin) >= 0
                   ? "+"
                   : ""
-              }${Number(item.coin)}
+              }
+
+              ${Number(item.coin)}
 
             </span>
 
@@ -3824,6 +4053,145 @@ function updateHistoryUI(history){
         `
       )
       .join("");
+
+}
+
+
+/* =========================================================
+   フレンドUI
+========================================================= */
+
+function renderFriends(
+  pending
+){
+
+  const req =
+    document.getElementById(
+      "reqList"
+    );
+
+  const list =
+    document.getElementById(
+      "fList"
+    );
+
+
+  const pendingIds =
+    pending
+      ? pending
+          .split(",")
+          .filter(Boolean)
+      : [];
+
+
+  req.innerHTML =
+    pendingIds.length
+
+      ?
+
+      pendingIds
+        .map(
+          id => `
+
+            <div
+              style="
+                background:#fff;
+                color:#333;
+                padding:10px;
+                border-radius:10px;
+                margin-bottom:5px;
+              "
+            >
+
+              <span>
+                ID:
+                ${escapeHTML(id)}
+              </span>
+
+              <button
+                onclick="
+                  acceptF(
+                    '${escapeHTML(id)}'
+                  )
+                "
+              >
+                承認
+              </button>
+
+            </div>
+
+          `
+        )
+        .join("")
+
+      :
+
+      "なし";
+
+
+  list.innerHTML =
+    friendsData.length
+
+      ?
+
+      friendsData
+        .map(
+          friend => `
+
+            <div
+              style="
+                background:#fff;
+                color:#333;
+                padding:10px;
+                margin-bottom:5px;
+                border-radius:10px;
+                display:flex;
+                justify-content:space-between;
+              "
+            >
+
+              <span>
+                ${escapeHTML(friend.name)}
+                ${
+                  friend.isOfficial
+                    ? " ✔"
+                    : ""
+                }
+              </span>
+
+              <span>
+
+                <button
+                  onclick="
+                    sendFriendGift(
+                      '${escapeHTML(friend.id)}'
+                    )
+                  "
+                >
+                  🎁
+                </button>
+
+                <button
+                  onclick="
+                    removeFriend(
+                      '${escapeHTML(friend.id)}'
+                    )
+                  "
+                >
+                  ×
+                </button>
+
+              </span>
+
+            </div>
+
+          `
+        )
+        .join("")
+
+      :
+
+      "なし";
 
 }
 
@@ -3851,6 +4219,7 @@ async function sendReq(){
     );
 
     return;
+
   }
 
 
@@ -3884,7 +4253,7 @@ async function sendReq(){
 
   if(
     result.result !==
-      "success"
+    "success"
   ){
 
     alert(
@@ -3897,6 +4266,12 @@ async function sendReq(){
   }
 
 
+  logWebAction(
+    "フレンド申請",
+    target
+  );
+
+
   alert(
     "送信完了"
   );
@@ -3906,7 +4281,8 @@ async function sendReq(){
     .getElementById(
       "fIdIn"
     )
-    .value = "";
+    .value =
+      "";
 
 
   await fetchSync();
@@ -3915,7 +4291,7 @@ async function sendReq(){
 
 
 /* =========================================================
-   フレンド承認
+   承認
 ========================================================= */
 
 async function acceptF(
@@ -3939,7 +4315,7 @@ async function acceptF(
 
   if(
     result.result !==
-      "success"
+    "success"
   ){
 
     alert(
@@ -3993,7 +4369,7 @@ async function removeFriend(
 
   if(
     result.result !==
-      "success"
+    "success"
   ){
 
     alert(
@@ -4026,9 +4402,7 @@ async function sendFriendGift(
     );
 
 
-  if(
-    !amount
-  ){
+  if(!amount){
 
     return;
 
@@ -4093,7 +4467,7 @@ async function sendFriendGift(
 
   if(
     result.result !==
-      "success"
+    "success"
   ){
 
     alert(
@@ -4139,7 +4513,7 @@ async function claim(
 
   if(
     result.result !==
-      "success"
+    "success"
   ){
 
     alert(
@@ -4175,7 +4549,6 @@ function updatePresentUI(
       "pBadge"
     );
 
-
   const container =
     document.getElementById(
       "pListContainer"
@@ -4201,7 +4574,6 @@ function updatePresentUI(
   badge.innerText =
     gifts.length;
 
-
   badge.style.display =
     "flex";
 
@@ -4209,84 +4581,86 @@ function updatePresentUI(
   container.innerHTML =
     gifts
       .map(
-        function(gift){
+        gift => `
 
-          return `
+          <div
+            class="present-item"
+          >
 
-            <div
-              style="
-                background:#fff;
-                color:#333;
-                padding:15px;
-                border-radius:12px;
-                margin-bottom:10px;
-                display:flex;
-                justify-content:space-between;
-                align-items:center;
-              "
-            >
+            <div>
 
-              <div>
+              <b>
+                ${escapeHTML(
+                  gift.fromName ||
+                  "USER"
+                )}
+              </b>
 
-                <b>
-                  ${escapeHTML(
-                    gift.fromName ||
-                    "USER"
-                  )}
-                </b>
+              <br>
 
-                <br>
+              ${
+                gift.type === "coin"
 
-                ${
-                  gift.type === "coin"
-                    ? "🪙 " +
-                      escapeHTML(
-                        gift.content
-                      ) +
-                      "コイン"
-                    :
-                      "🎁 " +
-                      escapeHTML(
-                        gift.content
-                      )
-                }
-
-              </div>
-
-              <button
-                class="btn-pro"
-                style="
-                  width:auto;
-                  padding:5px 10px;
-                "
-                onclick="
-                  claim(
-                    '${escapeHTML(
-                      gift.id
-                    )}',
-                    '${escapeHTML(
-                      gift.type
-                    )}',
-                    '${escapeHTML(
+                  ? "🪙 " +
+                    escapeHTML(
                       gift.content
-                    )}',
-                    '${escapeHTML(
-                      gift.fromName ||
-                      "プレゼント"
-                    )}'
-                  )
-                "
-              >
-                受取
-              </button>
+                    ) +
+                    "コイン"
+
+                  : "🎁 " +
+                    escapeHTML(
+                      gift.content
+                    )
+
+              }
 
             </div>
 
-          `;
 
-        }
+            <button
+              class="btn-pro"
+              style="
+                width:auto;
+                padding:8px 15px;
+                margin:0;
+              "
+              onclick="
+                claim(
+                  '${escapeHTML(gift.id)}',
+                  '${escapeHTML(gift.type)}',
+                  '${escapeHTML(gift.content)}',
+                  '${escapeHTML(gift.fromName || 'プレゼント')}'
+                )
+              "
+            >
+              <span>受取</span>
+            </button>
+
+          </div>
+
+        `
       )
       .join("");
+
+}
+
+
+/* =========================================================
+   データ復元ダイアログ
+========================================================= */
+
+function openTransfer(){
+
+  logWebAction(
+    "データ復元開始"
+  );
+
+
+  document
+    .getElementById(
+      "modalTransfer"
+    )
+    .showModal();
 
 }
 
@@ -4339,9 +4713,9 @@ async function executeTransfer(){
 
     if(
       json.result ===
-        "success" &&
+      "success" &&
       String(json.pass) ===
-        String(pass)
+      String(pass)
     ){
 
       localStorage.setItem(
@@ -4359,8 +4733,19 @@ async function executeTransfer(){
         pass
       );
 
+      localStorage.setItem(
+        "gCoins",
+        json.iroCoin || 0
+      );
 
-      myId = id;
+
+      myId =
+        id;
+
+
+      logWebAction(
+        "データ復元成功"
+      );
 
 
       document
@@ -4392,7 +4777,90 @@ async function executeTransfer(){
 
 }
 
+
+/* =========================================================
+   属性用エスケープ
+========================================================= */
+
+function escapeAttribute(
+  value
+){
+
+  return String(
+    value || ""
+  )
+  .replaceAll(
+    "&",
+    "&amp;"
+  )
+  .replaceAll(
+    '"',
+    "&quot;"
+  )
+  .replaceAll(
+    "'",
+    "&#039;"
+  );
+
+}
+
+
+/* =========================================================
+   初期化
+========================================================= */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function(){
+
+    document
+      .getElementById(
+        "myIdDisplay"
+      )
+      .innerText =
+        myId;
+
+
+    const savedName =
+      localStorage.getItem(
+        "gName"
+      );
+
+
+    const savedPass =
+      localStorage.getItem(
+        "gPass"
+      );
+
+
+    if(savedName){
+
+      document
+        .getElementById(
+          "nIn"
+        )
+        .value =
+          savedName;
+
+    }
+
+
+    if(savedPass){
+
+      document
+        .getElementById(
+          "pIn"
+        )
+        .value =
+          savedPass;
+
+    }
+
+  }
+);
+
 </script>
 
 </body>
+
 </html>
