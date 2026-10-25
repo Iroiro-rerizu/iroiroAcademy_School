@@ -143,23 +143,55 @@ button{font-family:inherit}
 .side-btn2{top:calc(122px + env(safe-area-inset-top))}
 .home-area{margin:14px 0 0;font-weight:900;font-size:1.05rem;background:rgba(0,0,0,.45);border:1.5px solid var(--line);border-radius:30px;padding:8px 20px;cursor:pointer;color:var(--chalk);font-family:inherit}
 
-/* ---- エリア会話 ---- */
-.sheet.chat{overflow:hidden}
-.chat-in{display:flex;flex-direction:column;height:100%;padding:20px 18px calc(18px + env(safe-area-inset-bottom));max-width:800px;margin:0 auto}
-.chat-in h2{margin:0 0 10px;flex:none}
-.area-tabs{display:flex;gap:8px;overflow-x:auto;padding:2px 0 8px;flex:none}
-.area-chip{flex:none;border:1.5px solid var(--line);background:rgba(255,255,255,.07);color:var(--chalk);border-radius:20px;padding:8px 14px;font-weight:900;cursor:pointer;font-family:inherit}
-.area-chip.active{background:var(--dusk);color:var(--ink);border-color:transparent}
-.area-info{flex:none;font-size:.8rem;font-weight:700;color:#ffd1e5;margin:2px 0 8px;line-height:1.5}
-.chat-log{flex:1;min-height:0;overflow-y:auto;background:linear-gradient(135deg,var(--board),var(--board-2));border:5px solid #c9975b;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:9px}
-.msg{max-width:82%;align-self:flex-start}
-.msg .who{font-size:.7rem;opacity:.75;font-weight:700;margin:0 0 2px 4px}
-.msg .bub{background:rgba(255,255,255,.12);padding:8px 12px;border-radius:4px 14px 14px 14px;word-break:break-word;font-weight:700;line-height:1.5}
-.msg.me{align-self:flex-end}
-.msg.me .who{text-align:right;margin:0 4px 2px 0}
-.msg.me .bub{background:var(--sakura);color:#fff;border-radius:14px 4px 14px 14px}
-.chat-form{display:flex;gap:8px;margin-top:8px;flex:none}
-.chat-form .field{margin:0;flex:1}
+/* ---- エリア会話（プロセカ風） ---- */
+#areaLayer{background:#000;z-index:9000}
+#stage{position:absolute;inset:0;overflow:hidden;cursor:pointer;touch-action:manipulation;user-select:none}
+.sc-sky{position:absolute;left:0;right:0;top:0;height:46%}
+.sc-ground{position:absolute;left:0;right:0;top:46%;bottom:0;box-shadow:inset 0 10px 24px rgba(0,0,0,.25)}
+.sc-prop{position:absolute;transform:translate(-50%,-100%);line-height:1;pointer-events:none;filter:drop-shadow(0 4px 6px rgba(0,0,0,.3))}
+.pl{position:absolute;width:0;height:0;transition-property:left,top;transition-timing-function:linear;pointer-events:none}
+.pl .wrap{position:absolute;left:0;bottom:0;transform:translate(-50%,0) scale(var(--s,1));transform-origin:50% 100%;transition:transform var(--d,0s) linear}
+.pl .body{width:56px;height:74px;border-radius:14px;border:2.5px solid var(--chalk);overflow:hidden;background:#222;box-shadow:0 6px 10px rgba(0,0,0,.4)}
+.pl .body img{width:100%;height:100%;object-fit:cover;display:block}
+.pl.me .body{border-color:var(--mint);box-shadow:0 0 0 2px rgba(95,240,192,.5),0 6px 10px rgba(0,0,0,.4)}
+.pl .wrap::before{content:"";position:absolute;left:50%;bottom:-6px;width:60px;height:14px;transform:translateX(-50%);border-radius:50%;background:rgba(0,0,0,.35);filter:blur(2px)}
+.pl .tag{position:absolute;top:calc(100% + 5px);left:50%;transform:translateX(-50%);white-space:nowrap;background:rgba(14,24,48,.82);color:#fff;font-size:.65rem;font-weight:900;padding:2px 8px;border-radius:10px;max-width:110px;overflow:hidden;text-overflow:ellipsis}
+.pl.me .tag{background:var(--mint);color:var(--ink)}
+.pl.walk .body{animation:bob .38s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-7px)}}
+.bubble{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);display:none;width:max-content;max-width:150px;background:#fff;color:var(--ink);font-weight:900;font-size:.78rem;line-height:1.4;padding:7px 11px;border-radius:12px;word-break:break-word;box-shadow:0 4px 10px rgba(0,0,0,.35)}
+.bubble::after{content:"";position:absolute;top:100%;left:50%;margin-left:-6px;border:6px solid transparent;border-top-color:#fff}
+.bubble.show{display:block;animation:pop .22s both}
+.bubble.stamp{background:transparent;box-shadow:none;font-size:2.6rem;padding:0;line-height:1}
+.bubble.stamp::after{display:none}
+.a-top{position:absolute;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;gap:10px;padding:calc(12px + env(safe-area-inset-top)) 12px 18px;background:linear-gradient(rgba(0,0,0,.55),transparent);pointer-events:none}
+.a-top>*{pointer-events:auto}
+.a-name{font-family:var(--font-d);font-size:1.2rem;text-shadow:2px 2px 0 var(--ink)}
+.a-count{margin-left:auto;font-weight:900;font-size:.8rem;background:rgba(0,0,0,.55);border-radius:20px;padding:6px 12px}
+.a-bar{position:absolute;left:0;right:0;bottom:0;z-index:30;display:flex;gap:8px;justify-content:center;padding:26px 10px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(transparent,rgba(0,0,0,.65));pointer-events:none}
+.a-bar>*{pointer-events:auto}
+.a-btn{flex:1;max-width:92px;display:flex;flex-direction:column;align-items:center;gap:2px;border:1.5px solid var(--line);background:rgba(14,24,48,.85);color:var(--chalk);border-radius:12px;padding:8px 2px;font-weight:900;font-size:.66rem;cursor:pointer;font-family:inherit}
+.a-btn b{font-size:1.35rem;line-height:1.1}
+.a-btn.on{background:var(--dusk);color:var(--ink);border-color:transparent}
+.a-hint{position:absolute;left:50%;top:28%;transform:translateX(-50%);z-index:25;background:rgba(0,0,0,.6);padding:8px 18px;border-radius:20px;font-weight:900;font-size:.85rem;pointer-events:none;transition:opacity .6s}
+.a-toast{position:absolute;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:60;background:#e5486a;color:#fff;font-weight:900;font-size:.8rem;padding:8px 16px;border-radius:20px;display:none;max-width:90%;text-align:center}
+#aPanel{position:absolute;left:0;right:0;bottom:0;margin:0 auto;width:100%;max-width:800px;z-index:50;display:none;background:#0d1426;border-radius:20px 20px 0 0;border-top:1px solid var(--line);padding:14px 16px calc(14px + env(safe-area-inset-bottom));max-height:64%;overflow-y:auto}
+.ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-weight:900;color:var(--mint)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.chip{border:1.5px solid var(--line);background:rgba(255,255,255,.07);color:var(--chalk);border-radius:20px;padding:8px 14px;font-weight:900;cursor:pointer;font-family:inherit}
+.chip.active{background:var(--dusk);color:var(--ink);border-color:transparent}
+.say-row{display:flex;gap:8px}
+.say-row .field{margin:0;flex:1}
+.stamp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.stamp-btn{background:rgba(255,255,255,.08);border:1px solid var(--line);border-radius:12px;padding:8px 2px;color:inherit;font-family:inherit;cursor:pointer;font-weight:700;font-size:.68rem}
+.stamp-btn b{display:block;font-size:2rem;line-height:1.2}
+.area-row{display:block;width:100%;text-align:left;background:rgba(255,255,255,.07);border:1.5px solid var(--line);color:var(--chalk);border-radius:12px;padding:12px 14px;margin-bottom:8px;font-family:inherit;cursor:pointer}
+.area-row.active{border-color:var(--dusk);background:rgba(255,138,76,.18)}
+.area-row b{font-size:1rem}.area-row small{display:block;opacity:.75;font-weight:700;margin-top:2px}
+.log-row{margin-bottom:9px;font-size:.88rem;line-height:1.5;word-break:break-word}
+.log-row b{color:var(--mint)}
+.log-row.me b{color:var(--sakura)}
+.log-row .tm{opacity:.5;font-size:.7rem;margin-left:6px}
 
 /* ---- ゲーム ---- */
 #gameLayer{background:#000}
@@ -276,17 +308,28 @@ dialog::backdrop{background:rgba(5,8,20,.75)}
   </div>
 </div></div>
 
-<div id="sheetArea" class="sheet chat"><div class="chat-in">
-  <h2>エリア会話</h2>
-  <div id="areaTabs" class="area-tabs"></div>
-  <div id="areaInfo" class="area-info"></div>
-  <div id="chatLog" class="chat-log" aria-live="polite"></div>
-  <p id="chatErr" class="note" style="min-height:1.3em;margin:6px 0 0"></p>
-  <div class="chat-form">
-    <input id="chatIn" class="field" maxlength="100" placeholder="メッセージ（100文字まで）" autocomplete="off">
-    <button class="mini pink" onclick="sendChat()">送信</button>
+<!-- エリア会話 -->
+<div id="areaLayer" class="layer">
+  <div id="stage">
+    <div id="scSky" class="sc-sky"></div><div id="scGround" class="sc-ground"></div>
+    <div id="scProps"></div><div id="scPlayers"></div>
   </div>
-</div></div>
+  <div class="a-top">
+    <button class="btn-small" onclick="closeArea()">← もどる</button>
+    <div class="a-name" id="aName"></div>
+    <div class="a-count" id="aCount"></div>
+  </div>
+  <div id="aHint" class="a-hint">地面をタップして歩こう</div>
+  <div id="aToast" class="a-toast"></div>
+  <div class="a-bar">
+    <button class="a-btn" data-act="panel" data-mode="say"><b>💬</b>はなす</button>
+    <button class="a-btn" data-act="panel" data-mode="stamp"><b>😀</b>スタンプ</button>
+    <button class="a-btn" data-act="panel" data-mode="area"><b>🗺️</b>エリア</button>
+    <button class="a-btn" data-act="panel" data-mode="partner"><b>🎓</b>パートナー</button>
+    <button class="a-btn" data-act="panel" data-mode="log"><b>📜</b>ログ</button>
+  </div>
+  <div id="aPanel"></div>
+</div>
 
 <!-- スカウト -->
 <div id="gachaLayer" class="layer">
@@ -340,7 +383,7 @@ dialog::backdrop{background:rgba(5,8,20,.75)}
 /* =========================================================
    設定  ※GASを再デプロイしたら新しいURLに差し替える
 ========================================================= */
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbznrVvMjlwQTRjeklWngtjPPzbFDnb-J3pJH7Vz_-ExQpjbBS0swqC8byrQB5D2cPytUQ/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzgruodMwVup-D6i8pGPjz2-DIuIOdn4eizPiqFblNKN07xzkk2cj_lHIyXSfYaVzgarA/exec';
 const POLL_MS = 15000;
 const RANK_LABEL = {2:'クラスメイト', 3:'部活のエース', 4:'学園のスター'};
 const PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' width='100' height='130'><rect width='100' height='130' fill='#2a2f4a'/><text x='50' y='78' font-size='40' text-anchor='middle'>🎓</text></svg>");
@@ -409,7 +452,8 @@ function logout(forced) {
   localStorage.removeItem('gk_id'); localStorage.removeItem('gk_token');
   S.id = ''; S.token = ''; S.user = null;
   closeAllSheets();
-  ['gachaLayer','revealLayer','summaryLayer','gameLayer'].forEach(i => $(i).classList.remove('show'));
+  stopAreaSync();
+  ['gachaLayer','revealLayer','summaryLayer','gameLayer','areaLayer'].forEach(i => $(i).classList.remove('show'));
   $('pauseBtn').style.display = 'none';
   showScreen('titleScreen');
   if (forced === true) alert('ログイン情報が切れました。「データ引き継ぎ」からログインしてください。');
@@ -447,7 +491,10 @@ async function enterSchool() {
   const [pools, banners, areas] = await Promise.all([
     api.get({action:'getCharaPools'}), api.get({action:'getGachaSettings'}), api.get({action:'getAreas'})
   ]);
-  if (areas.result === 'success' && areas.data.length) S.areas = areas.data;
+  if (areas.result === 'success' && areas.data && areas.data.areas && areas.data.areas.length) {
+    S.areas = areas.data.areas;
+    if (areas.data.stamps && areas.data.stamps.length) S.stamps = areas.data.stamps;
+  }
   if (pools.result === 'success') S.pools = pools.data;
   if (banners.result === 'success') S.banners = banners.data;
 
@@ -548,12 +595,10 @@ function renderHistory() {
 ========================================================= */
 function openSheet(id) { $('sheetOverlay').style.display = 'block'; $(id).classList.add('open'); }
 function closeSheet(id) {
-  if (id === 'sheetArea') stopChat();
   $(id).classList.remove('open');
   if (!document.querySelector('.sheet.open')) $('sheetOverlay').style.display = 'none';
 }
 function closeAllSheets() {
-  stopChat();
   $('sheetOverlay').style.display = 'none';
   document.querySelectorAll('.sheet').forEach(s => s.classList.remove('open'));
 }
@@ -593,6 +638,14 @@ document.addEventListener('click', async e => {
     case 'game': launchGame(Number(d.id), d.title); break;
     case 'banner': S.gIdx = Number(d.i); renderGacha(); break;
     case 'area': changeArea(d.name); break;
+    case 'panel': showPanel(d.mode); break;
+    case 'panelClose': closePanel(); break;
+    case 'phrase': if (await areaSay(d.t)) closePanel(); break;
+    case 'stamp': if (await areaSay('', d.id)) closePanel(); break;
+    case 'sayGo': sayFromInput(); break;
+    case 'partner':
+      if (await act('setPartner', {name: d.name})) { refreshMySprite(); closePanel(); }
+      break;
   }
 });
 
@@ -739,8 +792,22 @@ function showSummary() {
 function closeSummary() { $('summaryLayer').classList.remove('show'); }
 
 /* =========================================================
-   エリア会話（3秒ごとに新着を取得。シートを開いている間だけ動く）
+   エリア会話（プロセカ風）
+   同じエリアのみんなが歩き回り、吹き出しとスタンプで会話する。
+   位置は2秒ごとに同期。地面をタップすると自分のキャラが歩く。
 ========================================================= */
+const HORIZON = 46, SPAN = 42;   // 地平線の位置(%)と地面の奥行き(%)
+const AREA_POLL_MS = 2000;
+const PHRASES = ['おはよう！','こんにちは！','よろしくね！','ありがとう！','おつかれさま！','いいね！','一緒に遊ぼう！','またね〜'];
+const DEFAULT_SCENE = {sky:'linear-gradient(#3b4a8a,#c88fb0)', ground:'linear-gradient(#7d7f95,#55576b)', props:[['🌳',15,70],['🌳',85,70]]};
+const SCENES = {
+  '校門':{sky:'linear-gradient(#1c2a5c,#b8567a 70%,#ffb36b)', ground:'linear-gradient(#8d8da0,#5d5f73)', props:[['🏫',50,150],['🌸',9,86],['🌸',91,86],['🌳',28,60],['🌳',73,60]]},
+  '教室':{sky:'linear-gradient(#2a5742,#1b3a2d)', ground:'linear-gradient(#b8814f,#76492a)', props:[['🕐',50,38],['📚',14,60],['🪴',87,60],['🖍️',30,28],['📐',70,28]]},
+  '校庭':{sky:'linear-gradient(#5fb8ff,#d8f2ff)', ground:'linear-gradient(#5fbf6a,#3c8f4a)', props:[['☁️',22,60],['☁️',72,74],['🌳',8,90],['🌳',92,90],['⚽',55,26]]},
+  '図書室':{sky:'linear-gradient(#4a3322,#2f2016)', ground:'linear-gradient(#94623f,#5e3b24)', props:[['📚',12,70],['📚',30,70],['🕯️',50,36],['📚',70,70],['📚',88,70]]},
+  '食堂':{sky:'linear-gradient(#ffe6b8,#ffd08a)', ground:'linear-gradient(#ebcfa8,#c8a074)', props:[['🍜',20,46],['🍙',40,40],['🍱',60,44],['🥤',80,40]]},
+  '屋上':{sky:'linear-gradient(#ff9a5a,#c2527f 55%,#3c2a6e)', ground:'linear-gradient(#80838f,#555867)', props:[['🌆',50,150],['🕊️',20,40],['🕊️',80,52]]}
+};
 S.areas = [
   {name:'校門', icon:'🏫', desc:'登校した生徒が最初に集まる場所'},
   {name:'教室', icon:'📚', desc:'授業の合間のおしゃべり'},
@@ -749,96 +816,243 @@ S.areas = [
   {name:'食堂', icon:'🍱', desc:'お昼休みの人気スポット'},
   {name:'屋上', icon:'🌇', desc:'夕焼けを眺めながら'}
 ];
+S.stamps = [
+  {id:'hi',e:'👋',l:'やあ'},{id:'thanks',e:'🙏',l:'ありがとう'},{id:'ok',e:'👍',l:'いいね'},{id:'party',e:'🎉',l:'おめでとう'},
+  {id:'lol',e:'😂',l:'わらい'},{id:'cry',e:'😭',l:'なみだ'},{id:'love',e:'💖',l:'すき'},{id:'sweat',e:'💦',l:'あせあせ'},
+  {id:'sleep',e:'😪',l:'ねむい'},{id:'fight',e:'💪',l:'がんばる'},{id:'wow',e:'✨',l:'すごい'},{id:'bye',e:'🌸',l:'またね'}
+];
 S.area = localStorage.getItem('gk_area') || '校門';
-S.chat = {ids: new Set(), since: 0, timer: null, polling: false, sending: false, members: []};
-const CHAT_POLL_MS = 3000;
+S.areaTimer = null;
+const newAm = () => ({players:new Map(), ids:new Set(), log:[], since:0, loaded:false, polling:false, sending:false,
+                      me:{x:30 + Math.random()*40, y:55 + Math.random()*35}, mode:''});
+S.am = newAm();
 
-function areaData() { return S.areas.find(a => a.name === S.area) || S.areas[0]; }
+const clampN = (v, a, b) => Math.max(a, Math.min(b, v));
+const round1 = v => Math.round(v * 10) / 10;
+const areaData = () => S.areas.find(a => a.name === S.area) || S.areas[0];
+const stampOf = text => String(text).startsWith('::stamp:') ? S.stamps.find(x => x.id === String(text).slice(8)) : null;
+function spriteImg(partner, id) {
+  const c = partner && masterList().find(m => m.name === partner);
+  return (c && c.img) || ('https://api.dicebear.com/7.x/avataaars/svg?seed=' + encodeURIComponent(id));
+}
+function toast(msg) {
+  const t = $('aToast'); t.textContent = msg; t.style.display = 'block';
+  clearTimeout(toast.t); toast.t = setTimeout(() => t.style.display = 'none', 2200);
+}
+function hideHint() { const h = $('aHint'); h.style.opacity = 0; }
 
-function resetChat() {
-  S.chat.ids = new Set(); S.chat.since = 0; S.chat.members = [];
-  $('chatLog').innerHTML = '<div class="empty" id="chatEmpty">まだ誰も話していません。最初のひとことをどうぞ！</div>';
-  $('chatErr').textContent = '';
+/* ---- シーン ---- */
+function renderScene() {
+  const sc = SCENES[S.area] || DEFAULT_SCENE;
+  $('scSky').style.background = sc.sky;
+  $('scGround').style.background = sc.ground;
+  $('scProps').innerHTML = sc.props.map(([e, x, size]) =>
+    `<div class="sc-prop" style="left:${x}%;top:${HORIZON}%;font-size:${size}px">${e}</div>`).join('');
+  $('aName').textContent = areaData().icon + ' ' + S.area;
 }
 
-function renderAreaTabs() {
-  $('areaTabs').innerHTML = S.areas.map(a =>
-    `<button class="area-chip${a.name === S.area ? ' active' : ''}" data-act="area" data-name="${esc(a.name)}">${esc(a.icon)} ${esc(a.name)}</button>`).join('');
-  renderAreaInfo();
+/* ---- キャラクター ---- */
+function place(p, x, y, animate) {
+  const dist = animate ? Math.hypot(x - p.x, (y - p.y) * .8) : 0;
+  const dur = animate ? clampN(dist / 32, .25, 2.4) : 0;
+  const el = p.el;
+  el.style.transitionDuration = dur + 's';
+  el.style.setProperty('--d', dur + 's');
+  el.style.left = x + '%';
+  el.style.top = (HORIZON + y * SPAN / 100) + '%';
+  el.style.zIndex = Math.round(y * 10) + 1;
+  el.style.setProperty('--s', (.62 + .5 * y / 100).toFixed(3));
+  p.x = x; p.y = y;
+  if (dur > 0) {
+    el.classList.add('walk'); clearTimeout(p.walkTimer);
+    p.walkTimer = setTimeout(() => el.classList.remove('walk'), dur * 1000);
+  }
 }
 
-function renderAreaInfo() {
-  const a = areaData(), m = S.chat.members;
-  $('areaInfo').textContent = a.desc + '　在室 ' + m.length + '人' + (m.length ? '：' + m.map(x => x.name).join('、') : '');
+function ensurePlayer(m) {
+  const A = S.am, isMe = m.id === S.id;
+  let p = A.players.get(m.id);
+  if (!p) {
+    const el = document.createElement('div');
+    el.className = 'pl' + (isMe ? ' me' : '');
+    el.innerHTML = '<div class="wrap"><div class="bubble"></div><div class="body"><img alt=""></div><div class="tag"></div></div>';
+    $('scPlayers').appendChild(el);
+    p = {id:m.id, el, x:m.x, y:m.y, name:'', partner:null, bubTimer:null, walkTimer:null};
+    A.players.set(m.id, p);
+    place(p, m.x, m.y, false);
+  } else if (!isMe && (m.x !== p.x || m.y !== p.y)) {
+    place(p, m.x, m.y, true);
+  }
+  const partner = m.partner || '';
+  if (p.partner !== partner) {
+    p.partner = partner;
+    const img = p.el.querySelector('img'); img.dataset.fb = ''; img.src = spriteImg(partner, m.id);
+  }
+  if (p.name !== m.name) { p.name = m.name; p.el.querySelector('.tag').textContent = m.name; }
+  return p;
+}
+function refreshMySprite() {
+  if (!S.user || !$('areaLayer').classList.contains('show')) return;
+  ensurePlayer({id:S.id, name:S.user.name, x:S.am.me.x, y:S.am.me.y, partner:S.user.partner || ''});
 }
 
+function showBubble(id, m) {
+  const p = S.am.players.get(id); if (!p) return;
+  const b = p.el.querySelector('.bubble'), st = stampOf(m.text);
+  b.className = 'bubble show' + (st ? ' stamp' : '');
+  b.textContent = st ? st.e : m.text;           // textContentでXSS対策
+  clearTimeout(p.bubTimer);
+  p.bubTimer = setTimeout(() => b.classList.remove('show'), st ? 4000 : 6500);
+}
+
+/* ---- 入退室・同期 ---- */
+function enterAreaScene() {
+  S.am = newAm();
+  $('scPlayers').innerHTML = '';
+  renderScene(); closePanel();
+  ensurePlayer({id:S.id, name:S.user.name, x:round1(S.am.me.x), y:round1(S.am.me.y), partner:S.user.partner || ''});
+  S.am.me = {x:round1(S.am.me.x), y:round1(S.am.me.y)};
+  $('aCount').textContent = '在室 1人';
+  $('aHint').style.opacity = 1;
+}
 function openArea() {
   if (!S.areas.some(a => a.name === S.area)) S.area = S.areas[0].name;
-  resetChat(); renderAreaTabs();
-  openSheet('sheetArea');
-  startChat();
+  $('areaLayer').classList.add('show');
+  enterAreaScene();
+  stopAreaSync();
+  S.areaTimer = setInterval(areaPoll, AREA_POLL_MS);
+  areaPoll();
 }
-
+function stopAreaSync() { clearInterval(S.areaTimer); S.areaTimer = null; }
+function closeArea() {
+  stopAreaSync();
+  $('areaLayer').classList.remove('show');
+  if (S.id) api.get({action:'areaLeave', id:S.id, token:S.token});
+}
 function changeArea(name) {
-  if (name === S.area) return;
+  if (name === S.area) { closePanel(); return; }
   S.area = name; localStorage.setItem('gk_area', name);
   $('homeArea').textContent = '📍 ' + name;
-  resetChat(); renderAreaTabs(); startChat();
+  enterAreaScene();
+  areaPoll();
 }
 
-function startChat() { stopChat(); pollChat(); S.chat.timer = setInterval(pollChat, CHAT_POLL_MS); }
-function stopChat() { clearInterval(S.chat.timer); S.chat.timer = null; }
-
-async function pollChat() {
-  const c = S.chat;
-  if (c.polling || document.hidden || !S.id) return;
-  c.polling = true;
+async function areaPoll() {
+  const A = S.am;
+  if (A.polling || document.hidden || !S.id) return;
+  A.polling = true;
   const area = S.area;
-  const r = await api.get({action:'getAreaChat', id:S.id, token:S.token, area, since:c.since});
-  c.polling = false;
-  if (area !== S.area || !$('sheetArea').classList.contains('open')) return; // 切替え中の古い応答は捨てる
+  const r = await api.get({action:'areaSync', id:S.id, token:S.token, area, x:A.me.x, y:A.me.y, since:A.since});
+  A.polling = false;
+  if (A !== S.am || area !== S.area || !$('areaLayer').classList.contains('show')) return; // 切替え後の古い応答は捨てる
   if (r.result !== 'success') return;
-  c.members = r.members || [];
-  renderAreaInfo();
-  appendMessages(r.messages || [], false);
+  applyMembers(r.members || []);
+  handleMessages(r.messages || [], A.loaded);
+  A.loaded = true;
 }
 
-function appendMessages(list, forceScroll) {
-  const log = $('chatLog'), c = S.chat;
-  const nearBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 80;
-  let added = false;
-  list.forEach(m => {
-    c.since = Math.max(c.since, m.t);
-    if (c.ids.has(m.id)) return;
-    c.ids.add(m.id); added = true;
-    const empty = $('chatEmpty'); if (empty) empty.remove();
-
-    const wrap = document.createElement('div');
-    wrap.className = 'msg' + (m.fromId === S.id ? ' me' : '');
-    const who = document.createElement('div'); who.className = 'who';
-    const d = new Date(m.t);
-    who.textContent = m.name + '  ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
-    const bub = document.createElement('div'); bub.className = 'bub'; bub.textContent = m.text; // textContentでXSS対策
-    wrap.append(who, bub); log.appendChild(wrap);
+function applyMembers(list) {
+  const A = S.am, seen = new Set();
+  list.forEach(m => { seen.add(m.id); if (m.id !== S.id) ensurePlayer(m); });
+  A.players.forEach((p, id) => {
+    if (id !== S.id && !seen.has(id)) { clearTimeout(p.bubTimer); p.el.remove(); A.players.delete(id); }
   });
-  while (log.children.length > 150) log.removeChild(log.firstChild);
-  if (added && (forceScroll || nearBottom)) log.scrollTop = log.scrollHeight;
+  $('aCount').textContent = '在室 ' + A.players.size + '人';
 }
 
-async function sendChat() {
-  const c = S.chat, input = $('chatIn'), text = input.value.trim();
-  if (!text || c.sending) return;
-  c.sending = true; $('chatErr').textContent = '';
-  const r = await api.post('sendAreaChat', {area: S.area, text});
-  c.sending = false;
-  if (r.result !== 'success') { $('chatErr').textContent = r.message || '送信できませんでした'; return; }
-  input.value = '';
-  appendMessages([r.message], true);
+function handleMessages(list, live) {
+  const A = S.am;
+  list.forEach(m => {
+    A.since = Math.max(A.since, m.t);
+    if (A.ids.has(m.id)) return;
+    A.ids.add(m.id); A.log.push(m);
+    if (A.log.length > 120) A.log.shift();
+    if (live) showBubble(m.fromId, m);
+  });
+  if (A.mode === 'log') renderPanel();
 }
 
-$('chatIn').addEventListener('keydown', e => {
-  if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); sendChat(); } // 日本語変換中のEnterは送信しない
+/* ---- 移動（地面をタップ） ---- */
+$('stage').addEventListener('click', e => {
+  closePanel();
+  const me = S.am.players.get(S.id); if (!me) return;
+  const r = $('stage').getBoundingClientRect();
+  const px = (e.clientX - r.left) / r.width * 100, py = (e.clientY - r.top) / r.height * 100;
+  const x = round1(clampN(px, 4, 96)), y = round1(clampN((py - HORIZON) / SPAN * 100, 0, 100));
+  S.am.me = {x, y};
+  place(me, x, y, true);
+  hideHint();
 });
+
+/* ---- 発言 ---- */
+async function areaSay(text, stamp) {
+  const A = S.am;
+  if (A.sending) return false;
+  A.sending = true;
+  const body = {area: S.area};
+  if (stamp) body.stamp = stamp; else body.text = text;
+  const r = await api.post('sendAreaChat', body);
+  A.sending = false;
+  if (r.result !== 'success') { toast(r.message || '送信できませんでした'); return false; }
+  handleMessages([r.message], true);
+  hideHint();
+  return true;
+}
+async function sayFromInput() {
+  const input = $('aSayIn'); if (!input) return;
+  const text = input.value.trim(); if (!text) return;
+  if (await areaSay(text)) { input.value = ''; closePanel(); }
+}
+document.addEventListener('keydown', e => {
+  if (e.target && e.target.id === 'aSayIn' && e.key === 'Enter' && !e.isComposing) { e.preventDefault(); sayFromInput(); }
+});
+
+/* ---- パネル ---- */
+function showPanel(mode) {
+  if (S.am.mode === mode) { closePanel(); return; }
+  S.am.mode = mode; renderPanel();
+}
+function closePanel() {
+  S.am.mode = ''; $('aPanel').style.display = 'none';
+  document.querySelectorAll('.a-btn').forEach(b => b.classList.remove('on'));
+}
+function renderPanel() {
+  const A = S.am, P = $('aPanel'), mode = A.mode;
+  if (!mode) return;
+  const head = t => `<div class="ph"><span>${t}</span><button class="mini gray" data-act="panelClose" aria-label="とじる">×</button></div>`;
+  let html = '';
+  if (mode === 'say') {
+    html = head('💬 はなす') +
+      `<div class="chips">${PHRASES.map(t => `<button class="chip" data-act="phrase" data-t="${esc(t)}">${esc(t)}</button>`).join('')}</div>
+       <div class="say-row"><input id="aSayIn" class="field" maxlength="100" placeholder="メッセージ（100文字まで）" autocomplete="off">
+       <button class="mini pink" data-act="sayGo">送信</button></div>`;
+  } else if (mode === 'stamp') {
+    html = head('😀 スタンプ') + `<div class="stamp-grid">${S.stamps.map(s =>
+      `<button class="stamp-btn" data-act="stamp" data-id="${esc(s.id)}"><b>${s.e}</b>${esc(s.l)}</button>`).join('')}</div>`;
+  } else if (mode === 'area') {
+    html = head('🗺️ エリア移動') + S.areas.map(a =>
+      `<button class="area-row${a.name === S.area ? ' active' : ''}" data-act="area" data-name="${esc(a.name)}"><b>${esc(a.icon)} ${esc(a.name)}</b><small>${esc(a.desc)}</small></button>`).join('');
+  } else if (mode === 'partner') {
+    const names = [...new Set((S.user.chars || '').split(',').map(s => s.trim()).filter(Boolean))];
+    const master = masterList();
+    html = head('🎓 パートナーを選ぶ') +
+      `<button class="chip${S.user.partner ? '' : ' active'}" style="margin-bottom:12px" data-act="partner" data-name="">デフォルトに戻す</button>` +
+      (names.length ? `<div class="member-grid">${names.map(n => {
+        const c = master.find(m => m.name === n);
+        return `<button class="member" data-act="partner" data-name="${esc(n)}" style="${S.user.partner === n ? 'border-color:var(--mint)' : ''}"><img src="${imgSrc(c && c.img)}" alt=""><small>${esc(n)}</small></button>`;
+      }).join('')}</div>` : '<div class="empty">まだ生徒がいません。スカウトで仲間を迎えよう！</div>');
+  } else if (mode === 'log') {
+    html = head('📜 ログ') + (A.log.length ? A.log.map(m => {
+      const st = stampOf(m.text), d = new Date(m.t);
+      const tm = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+      return `<div class="log-row${m.fromId === S.id ? ' me' : ''}"><b>${esc(m.name)}</b><span class="tm">${tm}</span><br>${st ? st.e + ' ' + esc(st.l) : esc(m.text)}</div>`;
+    }).join('') : '<div class="empty">まだ会話がありません</div>');
+  }
+  P.innerHTML = html; P.style.display = 'block';
+  document.querySelectorAll('.a-btn').forEach(b => b.classList.toggle('on', b.dataset.mode === mode));
+  if (mode === 'log') P.scrollTop = P.scrollHeight;
+  if (mode === 'say') setTimeout(() => { const i = $('aSayIn'); if (i) i.focus(); }, 60);
+}
 
 /* =========================================================
    課外活動（ミニゲーム）
