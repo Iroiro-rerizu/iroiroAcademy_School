@@ -140,6 +140,27 @@ button{font-family:inherit}
 .sum-card img{width:66px;height:86px;object-fit:cover;border-radius:4px;border:1px solid #fff;display:block;margin:0 auto 3px;background:#222}
 .sum-card .s4{color:#ffcc33}
 
+.side-btn2{top:calc(122px + env(safe-area-inset-top))}
+.home-area{margin:14px 0 0;font-weight:900;font-size:1.05rem;background:rgba(0,0,0,.45);border:1.5px solid var(--line);border-radius:30px;padding:8px 20px;cursor:pointer;color:var(--chalk);font-family:inherit}
+
+/* ---- エリア会話 ---- */
+.sheet.chat{overflow:hidden}
+.chat-in{display:flex;flex-direction:column;height:100%;padding:20px 18px calc(18px + env(safe-area-inset-bottom));max-width:800px;margin:0 auto}
+.chat-in h2{margin:0 0 10px;flex:none}
+.area-tabs{display:flex;gap:8px;overflow-x:auto;padding:2px 0 8px;flex:none}
+.area-chip{flex:none;border:1.5px solid var(--line);background:rgba(255,255,255,.07);color:var(--chalk);border-radius:20px;padding:8px 14px;font-weight:900;cursor:pointer;font-family:inherit}
+.area-chip.active{background:var(--dusk);color:var(--ink);border-color:transparent}
+.area-info{flex:none;font-size:.8rem;font-weight:700;color:#ffd1e5;margin:2px 0 8px;line-height:1.5}
+.chat-log{flex:1;min-height:0;overflow-y:auto;background:linear-gradient(135deg,var(--board),var(--board-2));border:5px solid #c9975b;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:9px}
+.msg{max-width:82%;align-self:flex-start}
+.msg .who{font-size:.7rem;opacity:.75;font-weight:700;margin:0 0 2px 4px}
+.msg .bub{background:rgba(255,255,255,.12);padding:8px 12px;border-radius:4px 14px 14px 14px;word-break:break-word;font-weight:700;line-height:1.5}
+.msg.me{align-self:flex-end}
+.msg.me .who{text-align:right;margin:0 4px 2px 0}
+.msg.me .bub{background:var(--sakura);color:#fff;border-radius:14px 4px 14px 14px}
+.chat-form{display:flex;gap:8px;margin-top:8px;flex:none}
+.chat-form .field{margin:0;flex:1}
+
 /* ---- ゲーム ---- */
 #gameLayer{background:#000}
 #gameFrame{width:100%;height:100%;border:0}
@@ -189,8 +210,11 @@ dialog::backdrop{background:rgba(5,8,20,.75)}
   </div>
   <button class="present-btn" onclick="openSheet('sheetPresent')" aria-label="おくりもの">🎁<span id="pBadge" class="present-badge">0</span></button>
 
+  <button class="present-btn side-btn2" onclick="openArea()" aria-label="エリア会話">💬</button>
+
   <h1 class="home-title">SCHOOL HOME</h1>
   <p class="home-sub">今日も一日がんばろう</p>
+  <button class="home-area" id="homeArea" onclick="openArea()">📍 校門</button>
 
   <nav class="nav">
     <div class="nav-card" role="button" tabindex="0" onclick="openSheet('sheetFriend')">友達</div>
@@ -252,6 +276,18 @@ dialog::backdrop{background:rgba(5,8,20,.75)}
   </div>
 </div></div>
 
+<div id="sheetArea" class="sheet chat"><div class="chat-in">
+  <h2>エリア会話</h2>
+  <div id="areaTabs" class="area-tabs"></div>
+  <div id="areaInfo" class="area-info"></div>
+  <div id="chatLog" class="chat-log" aria-live="polite"></div>
+  <p id="chatErr" class="note" style="min-height:1.3em;margin:6px 0 0"></p>
+  <div class="chat-form">
+    <input id="chatIn" class="field" maxlength="100" placeholder="メッセージ（100文字まで）" autocomplete="off">
+    <button class="mini pink" onclick="sendChat()">送信</button>
+  </div>
+</div></div>
+
 <!-- スカウト -->
 <div id="gachaLayer" class="layer">
   <div id="gBg" class="g-bg"></div>
@@ -304,7 +340,7 @@ dialog::backdrop{background:rgba(5,8,20,.75)}
 /* =========================================================
    設定  ※GASを再デプロイしたら新しいURLに差し替える
 ========================================================= */
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbyR95hFAr4Qc9KUswj5quykL2nX3QDY_uQiSQsDImM96oSY1LCNjwa48i6IVDo30mKuCQ/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwJwZtZnKaleqtNw-tEaiJaiPO_HtRhyB7BEhUWcq9OCWAWpZlDo4DseZxlYe6jyT2o-g/exec';
 const POLL_MS = 15000;
 const RANK_LABEL = {2:'クラスメイト', 3:'部活のエース', 4:'学園のスター'};
 const PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' width='100' height='130'><rect width='100' height='130' fill='#2a2f4a'/><text x='50' y='78' font-size='40' text-anchor='middle'>🎓</text></svg>");
@@ -408,9 +444,10 @@ async function executeTransfer() {
 
 async function enterSchool() {
   showScreen('loadingScreen');
-  const [pools, banners] = await Promise.all([
-    api.get({action:'getCharaPools'}), api.get({action:'getGachaSettings'})
+  const [pools, banners, areas] = await Promise.all([
+    api.get({action:'getCharaPools'}), api.get({action:'getGachaSettings'}), api.get({action:'getAreas'})
   ]);
+  if (areas.result === 'success' && areas.data.length) S.areas = areas.data;
   if (pools.result === 'success') S.pools = pools.data;
   if (banners.result === 'success') S.banners = banners.data;
 
@@ -453,6 +490,7 @@ function renderAll() {
   $('mAv').src = S.pendingAvatar || avatarOf(u);
   $('myIdDisplay').textContent = u.id;
   if (document.activeElement !== $('nIn')) $('nIn').placeholder = u.name;
+  $('homeArea').textContent = '📍 ' + S.area;
   renderPresents(); renderHistory(); renderMembers(); renderFriends();
 }
 
@@ -510,10 +548,12 @@ function renderHistory() {
 ========================================================= */
 function openSheet(id) { $('sheetOverlay').style.display = 'block'; $(id).classList.add('open'); }
 function closeSheet(id) {
+  if (id === 'sheetArea') stopChat();
   $(id).classList.remove('open');
   if (!document.querySelector('.sheet.open')) $('sheetOverlay').style.display = 'none';
 }
 function closeAllSheets() {
+  stopChat();
   $('sheetOverlay').style.display = 'none';
   document.querySelectorAll('.sheet').forEach(s => s.classList.remove('open'));
 }
@@ -552,6 +592,7 @@ document.addEventListener('click', async e => {
     }
     case 'game': launchGame(Number(d.id), d.title); break;
     case 'banner': S.gIdx = Number(d.i); renderGacha(); break;
+    case 'area': changeArea(d.name); break;
   }
 });
 
@@ -696,6 +737,108 @@ function showSummary() {
   $('summaryLayer').classList.add('show');
 }
 function closeSummary() { $('summaryLayer').classList.remove('show'); }
+
+/* =========================================================
+   エリア会話（3秒ごとに新着を取得。シートを開いている間だけ動く）
+========================================================= */
+S.areas = [
+  {name:'校門', icon:'🏫', desc:'登校した生徒が最初に集まる場所'},
+  {name:'教室', icon:'📚', desc:'授業の合間のおしゃべり'},
+  {name:'校庭', icon:'⚽', desc:'部活動の声が響く広場'},
+  {name:'図書室', icon:'📖', desc:'静かに話そう'},
+  {name:'食堂', icon:'🍱', desc:'お昼休みの人気スポット'},
+  {name:'屋上', icon:'🌇', desc:'夕焼けを眺めながら'}
+];
+S.area = localStorage.getItem('gk_area') || '校門';
+S.chat = {ids: new Set(), since: 0, timer: null, polling: false, sending: false, members: []};
+const CHAT_POLL_MS = 3000;
+
+function areaData() { return S.areas.find(a => a.name === S.area) || S.areas[0]; }
+
+function resetChat() {
+  S.chat.ids = new Set(); S.chat.since = 0; S.chat.members = [];
+  $('chatLog').innerHTML = '<div class="empty" id="chatEmpty">まだ誰も話していません。最初のひとことをどうぞ！</div>';
+  $('chatErr').textContent = '';
+}
+
+function renderAreaTabs() {
+  $('areaTabs').innerHTML = S.areas.map(a =>
+    `<button class="area-chip${a.name === S.area ? ' active' : ''}" data-act="area" data-name="${esc(a.name)}">${esc(a.icon)} ${esc(a.name)}</button>`).join('');
+  renderAreaInfo();
+}
+
+function renderAreaInfo() {
+  const a = areaData(), m = S.chat.members;
+  $('areaInfo').textContent = a.desc + '　在室 ' + m.length + '人' + (m.length ? '：' + m.map(x => x.name).join('、') : '');
+}
+
+function openArea() {
+  if (!S.areas.some(a => a.name === S.area)) S.area = S.areas[0].name;
+  resetChat(); renderAreaTabs();
+  openSheet('sheetArea');
+  startChat();
+}
+
+function changeArea(name) {
+  if (name === S.area) return;
+  S.area = name; localStorage.setItem('gk_area', name);
+  $('homeArea').textContent = '📍 ' + name;
+  resetChat(); renderAreaTabs(); startChat();
+}
+
+function startChat() { stopChat(); pollChat(); S.chat.timer = setInterval(pollChat, CHAT_POLL_MS); }
+function stopChat() { clearInterval(S.chat.timer); S.chat.timer = null; }
+
+async function pollChat() {
+  const c = S.chat;
+  if (c.polling || document.hidden || !S.id) return;
+  c.polling = true;
+  const area = S.area;
+  const r = await api.get({action:'getAreaChat', id:S.id, token:S.token, area, since:c.since});
+  c.polling = false;
+  if (area !== S.area || !$('sheetArea').classList.contains('open')) return; // 切替え中の古い応答は捨てる
+  if (r.result !== 'success') return;
+  c.members = r.members || [];
+  renderAreaInfo();
+  appendMessages(r.messages || [], false);
+}
+
+function appendMessages(list, forceScroll) {
+  const log = $('chatLog'), c = S.chat;
+  const nearBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 80;
+  let added = false;
+  list.forEach(m => {
+    c.since = Math.max(c.since, m.t);
+    if (c.ids.has(m.id)) return;
+    c.ids.add(m.id); added = true;
+    const empty = $('chatEmpty'); if (empty) empty.remove();
+
+    const wrap = document.createElement('div');
+    wrap.className = 'msg' + (m.fromId === S.id ? ' me' : '');
+    const who = document.createElement('div'); who.className = 'who';
+    const d = new Date(m.t);
+    who.textContent = m.name + '  ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+    const bub = document.createElement('div'); bub.className = 'bub'; bub.textContent = m.text; // textContentでXSS対策
+    wrap.append(who, bub); log.appendChild(wrap);
+  });
+  while (log.children.length > 150) log.removeChild(log.firstChild);
+  if (added && (forceScroll || nearBottom)) log.scrollTop = log.scrollHeight;
+}
+
+async function sendChat() {
+  const c = S.chat, input = $('chatIn'), text = input.value.trim();
+  if (!text || c.sending) return;
+  c.sending = true; $('chatErr').textContent = '';
+  const r = await api.post('sendAreaChat', {area: S.area, text});
+  c.sending = false;
+  if (r.result !== 'success') { $('chatErr').textContent = r.message || '送信できませんでした'; return; }
+  input.value = '';
+  appendMessages([r.message], true);
+}
+
+$('chatIn').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); sendChat(); } // 日本語変換中のEnterは送信しない
+});
 
 /* =========================================================
    課外活動（ミニゲーム）
