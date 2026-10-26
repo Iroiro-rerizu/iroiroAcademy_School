@@ -143,39 +143,60 @@ button{font-family:inherit}
 .side-btn2{top:calc(122px + env(safe-area-inset-top))}
 .home-area{margin:14px 0 0;font-weight:900;font-size:1.05rem;background:rgba(0,0,0,.45);border:1.5px solid var(--line);border-radius:30px;padding:8px 20px;cursor:pointer;color:var(--chalk);font-family:inherit}
 
-/* ---- エリア会話（プロセカ風） ---- */
-#areaLayer{background:#000;z-index:9000}
-#stage{position:absolute;inset:0;overflow:hidden;cursor:pointer;touch-action:manipulation;user-select:none}
+/* ---- エリア（ホーム画面：プロセカ風） ---- */
+#areaLayer{z-index:90;background:#bfe9ff}
+#stage{position:absolute;inset:0;overflow:hidden;cursor:pointer;touch-action:manipulation;user-select:none;--h:clamp(104px,17vh,172px)}
 .sc-sky{position:absolute;left:0;right:0;top:0;height:46%}
-.sc-ground{position:absolute;left:0;right:0;top:46%;bottom:0;box-shadow:inset 0 10px 24px rgba(0,0,0,.25)}
-.sc-prop{position:absolute;transform:translate(-50%,-100%);line-height:1;pointer-events:none;filter:drop-shadow(0 4px 6px rgba(0,0,0,.3))}
+.sc-ground{position:absolute;left:0;right:0;top:46%;bottom:0}
 .pl{position:absolute;width:0;height:0;transition-property:left,top;transition-timing-function:linear;pointer-events:none}
+.pl.talk{z-index:9999!important}
 .pl .wrap{position:absolute;left:0;bottom:0;transform:translate(-50%,0) scale(var(--s,1));transform-origin:50% 100%;transition:transform var(--d,0s) linear}
-.pl .body{width:56px;height:74px;border-radius:14px;border:2.5px solid var(--chalk);overflow:hidden;background:#222;box-shadow:0 6px 10px rgba(0,0,0,.4)}
-.pl .body img{width:100%;height:100%;object-fit:cover;display:block}
-.pl.me .body{border-color:var(--mint);box-shadow:0 0 0 2px rgba(95,240,192,.5),0 6px 10px rgba(0,0,0,.4)}
-.pl .wrap::before{content:"";position:absolute;left:50%;bottom:-6px;width:60px;height:14px;transform:translateX(-50%);border-radius:50%;background:rgba(0,0,0,.35);filter:blur(2px)}
-.pl .tag{position:absolute;top:calc(100% + 5px);left:50%;transform:translateX(-50%);white-space:nowrap;background:rgba(14,24,48,.82);color:#fff;font-size:.65rem;font-weight:900;padding:2px 8px;border-radius:10px;max-width:110px;overflow:hidden;text-overflow:ellipsis}
-.pl.me .tag{background:var(--mint);color:var(--ink)}
-.pl.walk .body{animation:bob .38s ease-in-out infinite}
-@keyframes bob{50%{transform:translateY(-7px)}}
-.bubble{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);display:none;width:max-content;max-width:150px;background:#fff;color:var(--ink);font-weight:900;font-size:.78rem;line-height:1.4;padding:7px 11px;border-radius:12px;word-break:break-word;box-shadow:0 4px 10px rgba(0,0,0,.35)}
-.bubble::after{content:"";position:absolute;top:100%;left:50%;margin-left:-6px;border:6px solid transparent;border-top-color:#fff}
+.pl .wrap::before{content:"";position:absolute;left:50%;bottom:-5px;width:78%;height:12px;transform:translateX(-50%);border-radius:50%;background:rgba(40,40,80,.28);filter:blur(2px)}
+.chibi{position:relative;width:calc(var(--h)*.78);height:var(--h)}
+.chibi svg{width:100%;height:100%;display:block;overflow:visible}
+.cb-face{position:absolute;left:50%;top:3%;width:74%;aspect-ratio:1;transform:translateX(-50%);border-radius:50%;border:3px solid #fff;object-fit:cover;object-position:50% 18%;background:#ddd;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.pl.walk .chibi{animation:bob .38s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-8px)}}
+.pl .tag{position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);white-space:nowrap;background:rgba(40,48,80,.72);color:#fff;font-size:.62rem;font-weight:900;padding:2px 9px;border-radius:10px;max-width:120px;overflow:hidden;text-overflow:ellipsis}
+.pl.me .tag{background:rgba(255,95,162,.9)}
+.newtag{position:absolute;right:-14px;bottom:-4px;font-weight:900;font-style:italic;font-size:.8rem;color:#ff6a3d;-webkit-text-stroke:3px #fff;paint-order:stroke fill;transform:rotate(-8deg);pointer-events:none;display:none}
+.newtag.show{display:block;animation:pop .3s both}
+.bubble{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);display:none;width:max-content;max-width:190px;background:#f4f4f8;color:#3b4058;font-weight:700;font-size:.92rem;line-height:1.45;padding:10px 16px;border-radius:18px;word-break:break-word;box-shadow:0 3px 8px rgba(30,40,80,.28)}
+.bubble::after{content:"";position:absolute;top:100%;left:50%;margin-left:-7px;border:7px solid transparent;border-top-color:#f4f4f8}
 .bubble.show{display:block;animation:pop .22s both}
-.bubble.stamp{background:transparent;box-shadow:none;font-size:2.6rem;padding:0;line-height:1}
+.bubble.stamp{background:transparent;box-shadow:none;font-size:2.8rem;padding:0;line-height:1}
 .bubble.stamp::after{display:none}
-.a-top{position:absolute;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;gap:10px;padding:calc(12px + env(safe-area-inset-top)) 12px 18px;background:linear-gradient(rgba(0,0,0,.55),transparent);pointer-events:none}
-.a-top>*{pointer-events:auto}
-.a-name{font-family:var(--font-d);font-size:1.2rem;text-shadow:2px 2px 0 var(--ink)}
-.a-count{margin-left:auto;font-weight:900;font-size:.8rem;background:rgba(0,0,0,.55);border-radius:20px;padding:6px 12px}
-.a-bar{position:absolute;left:0;right:0;bottom:0;z-index:30;display:flex;gap:8px;justify-content:center;padding:26px 10px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(transparent,rgba(0,0,0,.65));pointer-events:none}
-.a-bar>*{pointer-events:auto}
-.a-btn{flex:1;max-width:92px;display:flex;flex-direction:column;align-items:center;gap:2px;border:1.5px solid var(--line);background:rgba(14,24,48,.85);color:var(--chalk);border-radius:12px;padding:8px 2px;font-weight:900;font-size:.66rem;cursor:pointer;font-family:inherit}
-.a-btn b{font-size:1.35rem;line-height:1.1}
-.a-btn.on{background:var(--dusk);color:var(--ink);border-color:transparent}
-.a-hint{position:absolute;left:50%;top:28%;transform:translateX(-50%);z-index:25;background:rgba(0,0,0,.6);padding:8px 18px;border-radius:20px;font-weight:900;font-size:.85rem;pointer-events:none;transition:opacity .6s}
-.a-toast{position:absolute;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:60;background:#e5486a;color:#fff;font-weight:900;font-size:.8rem;padding:8px 16px;border-radius:20px;display:none;max-width:90%;text-align:center}
-#aPanel{position:absolute;left:0;right:0;bottom:0;margin:0 auto;width:100%;max-width:800px;z-index:50;display:none;background:#0d1426;border-radius:20px 20px 0 0;border-top:1px solid var(--line);padding:14px 16px calc(14px + env(safe-area-inset-bottom));max-height:64%;overflow-y:auto}
+
+.h-left{position:absolute;z-index:30;top:calc(10px + env(safe-area-inset-top));left:10px;display:flex;align-items:center;gap:6px}
+.globe{width:44px;height:44px;border-radius:50%;border:0;background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.3);font-size:1.4rem;cursor:pointer;flex:none;padding:0}
+.loc-pill{display:flex;flex-direction:column;justify-content:center;height:44px;background:rgba(40,48,80,.8);border-radius:22px;padding:0 18px 0 14px;box-shadow:0 3px 8px rgba(0,0,0,.25)}
+.loc-pill b{font-size:.88rem;white-space:nowrap}
+.loc-pill small{font-size:.62rem;opacity:.85}
+.h-me{position:absolute;z-index:30;top:calc(62px + env(safe-area-inset-top));left:10px;display:flex;align-items:center;gap:8px;background:rgba(40,48,80,.72);border-radius:22px;padding:4px 14px 4px 4px;cursor:pointer;max-width:55%}
+.h-me img{width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid #fff;background:#222;flex:none}
+.h-me b{font-size:.78rem;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.h-me small{font-size:.62rem;opacity:.85;display:block}
+.h-right{position:absolute;z-index:30;top:calc(10px + env(safe-area-inset-top));right:10px;display:flex;align-items:center;gap:6px}
+.coin-pill2{background:rgba(40,48,80,.8);border-radius:22px;padding:0 12px;height:38px;display:flex;align-items:center;gap:4px;font-weight:900;font-size:.85rem;box-shadow:0 3px 8px rgba(0,0,0,.25)}
+.round{width:38px;height:38px;border-radius:50%;border:0;background:rgba(40,48,80,.8);color:#fff;font-size:1.05rem;cursor:pointer;padding:0}
+.round.menu{background:#fff;color:#2b3350;width:42px;height:42px;font-size:1.3rem;font-weight:900;box-shadow:0 3px 8px rgba(0,0,0,.3)}
+.h-side{position:absolute;z-index:30;top:calc(64px + env(safe-area-inset-top));right:10px;display:flex;flex-direction:column;gap:10px}
+.side{position:relative;width:44px;height:44px;border-radius:12px;border:0;background:rgba(255,255,255,.92);font-size:1.3rem;cursor:pointer;box-shadow:0 3px 8px rgba(0,0,0,.25);padding:0}
+.badge{position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;padding:0 4px;border-radius:10px;background:#e5486a;color:#fff;font-size:.65rem;font-weight:900;display:none;justify-content:center;align-items:center;border:1.5px solid #fff}
+.h-act{position:absolute;z-index:30;left:10px;bottom:calc(84px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px}
+.act{width:60px;padding:6px 0;border-radius:14px;border:0;background:rgba(255,255,255,.93);color:#2b3350;font-weight:900;font-size:.58rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;font-family:inherit;box-shadow:0 3px 8px rgba(0,0,0,.28)}
+.act b{font-size:1.4rem;line-height:1.1}
+.act.on{background:var(--dusk)}
+.a-nav{position:absolute;left:0;right:0;bottom:0;z-index:30;display:flex;height:calc(70px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);background:linear-gradient(180deg,rgba(64,70,102,.88),rgba(40,46,74,.95));backdrop-filter:blur(3px)}
+.a-nav button{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;border:0;background:transparent;color:#fff;cursor:pointer;font-family:inherit;padding:0 4px;min-width:0}
+.a-nav button+button{border-left:1px solid rgba(255,255,255,.12)}
+.a-nav i{font-style:normal;font-size:1.6rem}
+.a-nav span{text-align:left;line-height:1.15;min-width:0}
+.a-nav b{display:block;font-size:.76rem;font-weight:900;white-space:nowrap}
+.a-nav small{display:block;font-size:.52rem;opacity:.7;letter-spacing:.08em}
+.a-hint{position:absolute;left:50%;top:30%;transform:translateX(-50%);z-index:25;background:rgba(40,48,80,.7);padding:8px 18px;border-radius:20px;font-weight:900;font-size:.85rem;pointer-events:none;transition:opacity .6s;white-space:nowrap}
+.a-toast{position:absolute;left:50%;bottom:calc(150px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:60;background:#e5486a;color:#fff;font-weight:900;font-size:.8rem;padding:8px 16px;border-radius:20px;display:none;max-width:90%;text-align:center}
+#aPanel{position:absolute;left:0;right:0;bottom:0;margin:0 auto;width:100%;max-width:800px;z-index:50;display:none;background:#0d1426;color:var(--chalk);border-radius:20px 20px 0 0;border-top:1px solid var(--line);padding:14px 16px calc(14px + env(safe-area-inset-bottom));max-height:64%;overflow-y:auto}
 .ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-weight:900;color:var(--mint)}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
 .chip{border:1.5px solid var(--line);background:rgba(255,255,255,.07);color:var(--chalk);border-radius:20px;padding:8px 14px;font-weight:900;cursor:pointer;font-family:inherit}
@@ -185,13 +206,14 @@ button{font-family:inherit}
 .stamp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .stamp-btn{background:rgba(255,255,255,.08);border:1px solid var(--line);border-radius:12px;padding:8px 2px;color:inherit;font-family:inherit;cursor:pointer;font-weight:700;font-size:.68rem}
 .stamp-btn b{display:block;font-size:2rem;line-height:1.2}
-.area-row{display:block;width:100%;text-align:left;background:rgba(255,255,255,.07);border:1.5px solid var(--line);color:var(--chalk);border-radius:12px;padding:12px 14px;margin-bottom:8px;font-family:inherit;cursor:pointer}
+.area-row{display:block;width:100%;text-align:left;background:rgba(255,255,255,.07);border:1.5px solid var(--line);color:var(--chalk);border-radius:12px;padding:12px 14px;margin-bottom:8px;font-family:inherit;cursor:pointer;font-size:1rem}
 .area-row.active{border-color:var(--dusk);background:rgba(255,138,76,.18)}
 .area-row b{font-size:1rem}.area-row small{display:block;opacity:.75;font-weight:700;margin-top:2px}
 .log-row{margin-bottom:9px;font-size:.88rem;line-height:1.5;word-break:break-word}
 .log-row b{color:var(--mint)}
 .log-row.me b{color:var(--sakura)}
 .log-row .tm{opacity:.5;font-size:.7rem;margin-left:6px}
+@media (max-width:420px){.a-nav i{font-size:1.35rem}.a-nav b{font-size:.7rem}}
 
 /* ---- ゲーム ---- */
 #gameLayer{background:#000}
@@ -233,35 +255,11 @@ dialog::backdrop{background:rgba(5,8,20,.75)}
 
 <div id="loadingScreen" class="screen hidden"><p style="font-weight:900;letter-spacing:.3em;font-size:1.4rem;text-shadow:0 2px 8px #000">登校中…</p></div>
 
-<!-- ホーム -->
-<div id="gameScreen" class="screen hidden">
-  <div class="hud">
-    <button class="av-mini" onclick="openSheet('sheetConfig')" aria-label="学生証"><img id="hAv" alt=""></button>
-    <div class="hud-name"><span id="hName">---</span><span id="hVerified"></span></div>
-    <div class="coin-pill">🪙 <span id="hCoin">---</span></div>
-  </div>
-  <button class="present-btn" onclick="openSheet('sheetPresent')" aria-label="おくりもの">🎁<span id="pBadge" class="present-badge">0</span></button>
-
-  <button class="present-btn side-btn2" onclick="openArea()" aria-label="エリア会話">💬</button>
-
-  <h1 class="home-title">SCHOOL HOME</h1>
-  <p class="home-sub">今日も一日がんばろう</p>
-  <button class="home-area" id="homeArea" onclick="openArea()">📍 校門</button>
-
-  <nav class="nav">
-    <div class="nav-card" role="button" tabindex="0" onclick="openSheet('sheetFriend')">友達</div>
-    <div class="nav-card" role="button" tabindex="0" onclick="openGacha()">スカウト</div>
-    <div class="nav-card main" role="button" tabindex="0" onclick="openQuest()">課外活動</div>
-    <div class="nav-card" role="button" tabindex="0" onclick="openSheet('sheetMember')">生徒名簿</div>
-    <div class="nav-card" role="button" tabindex="0" onclick="openSheet('sheetConfig')">学生証</div>
-  </nav>
-</div>
-
 <!-- 課外活動 -->
-<div id="questScreen" class="screen hidden">
+<div id="questScreen" class="screen hidden" style="background:rgba(8,12,30,.9);backdrop-filter:blur(4px)">
   <h2 class="head">課外活動</h2>
   <div id="gameListContainer" class="quest-list"></div>
-  <button class="btn gray" onclick="showScreen('gameScreen')"><span>もどる</span></button>
+  <button class="btn gray" onclick="goHome()"><span>もどる</span></button>
 </div>
 
 <!-- シート -->
@@ -308,26 +306,45 @@ dialog::backdrop{background:rgba(5,8,20,.75)}
   </div>
 </div></div>
 
-<!-- エリア会話 -->
+<!-- ホーム＝エリア（プロセカ風） -->
 <div id="areaLayer" class="layer">
   <div id="stage">
     <div id="scSky" class="sc-sky"></div><div id="scGround" class="sc-ground"></div>
-    <div id="scProps"></div><div id="scPlayers"></div>
+    <div id="scPlayers"></div>
   </div>
-  <div class="a-top">
-    <button class="btn-small" onclick="closeArea()">← もどる</button>
-    <div class="a-name" id="aName"></div>
-    <div class="a-count" id="aCount"></div>
+
+  <div class="h-left">
+    <button class="globe" data-act="panel" data-mode="area" aria-label="エリア移動">🌐</button>
+    <div class="loc-pill"><b>📍 <span id="aLoc">-校門-</span></b><small id="aCount">在室 1人</small></div>
   </div>
+  <div class="h-me" onclick="openSheet('sheetConfig')">
+    <img id="hAv" alt="">
+    <div style="min-width:0"><b><span id="hName">---</span><span id="hVerified"></span></b><small id="hLv">Lv.1</small></div>
+  </div>
+  <div class="h-right">
+    <div class="coin-pill2">🪙 <span id="hCoin">---</span></div>
+    <button class="round" onclick="openSheet('sheetConfig')" aria-label="学生証">⚙️</button>
+    <button class="round menu" data-act="panel" data-mode="menu" aria-label="メニュー">☰</button>
+  </div>
+  <div class="h-side">
+    <button class="side" onclick="openSheet('sheetPresent')" aria-label="おくりもの">🎁<span id="pBadge" class="badge">0</span></button>
+    <button class="side" data-act="panel" data-mode="log" aria-label="ログ">📋<span id="logBadge" class="badge">0</span></button>
+  </div>
+  <div class="h-act">
+    <button class="act" data-act="panel" data-mode="say"><b>💬</b>はなす</button>
+    <button class="act" data-act="panel" data-mode="stamp"><b>😀</b>スタンプ</button>
+    <button class="act" data-act="panel" data-mode="partner"><b>🎓</b>パートナー</button>
+  </div>
+
   <div id="aHint" class="a-hint">地面をタップして歩こう</div>
   <div id="aToast" class="a-toast"></div>
-  <div class="a-bar">
-    <button class="a-btn" data-act="panel" data-mode="say"><b>💬</b>はなす</button>
-    <button class="a-btn" data-act="panel" data-mode="stamp"><b>😀</b>スタンプ</button>
-    <button class="a-btn" data-act="panel" data-mode="area"><b>🗺️</b>エリア</button>
-    <button class="a-btn" data-act="panel" data-mode="partner"><b>🎓</b>パートナー</button>
-    <button class="a-btn" data-act="panel" data-mode="log"><b>📜</b>ログ</button>
-  </div>
+
+  <nav class="a-nav">
+    <button onclick="openGacha()"><i>🎰</i><span><b>スカウト</b><small>SCOUT</small></span></button>
+    <button onclick="openSheet('sheetMember')"><i>🎧</i><span><b>生徒名簿</b><small>MEMBER</small></span></button>
+    <button onclick="openSheet('sheetFriend')"><i>👫</i><span><b>友達</b><small>FRIEND</small></span></button>
+    <button onclick="openQuest()"><i>🎵</i><span><b>課外活動</b><small>ACTIVITY</small></span></button>
+  </nav>
   <div id="aPanel"></div>
 </div>
 
@@ -383,7 +400,7 @@ dialog::backdrop{background:rgba(5,8,20,.75)}
 /* =========================================================
    設定  ※GASを再デプロイしたら新しいURLに差し替える
 ========================================================= */
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbzgruodMwVup-D6i8pGPjz2-DIuIOdn4eizPiqFblNKN07xzkk2cj_lHIyXSfYaVzgarA/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwVGsDO-PM99wPnhVHbiW4rOKucIO0L2224Dri5T7K7jhOPsMxXGBH2C_HH9CjzXhjBbw/exec';
 const POLL_MS = 15000;
 const RANK_LABEL = {2:'クラスメイト', 3:'部活のエース', 4:'学園のスター'};
 const PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' width='100' height='130'><rect width='100' height='130' fill='#2a2f4a'/><text x='50' y='78' font-size='40' text-anchor='middle'>🎓</text></svg>");
@@ -440,6 +457,7 @@ const api = {
 /* =========================================================
    画面遷移 / セッション
 ========================================================= */
+function goHome() { showScreen(''); }
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.toggle('hidden', s.id !== id));
 }
@@ -502,7 +520,7 @@ async function enterSchool() {
     if (S.id) { alert('同期に失敗しました。通信状況を確認してください。'); showScreen('titleScreen'); }
     return;
   }
-  showScreen('gameScreen');
+  goHome(); openArea();
   clearInterval(S.timer);
   S.timer = setInterval(() => { if (!document.hidden && !S.busy) refreshUser(); }, POLL_MS);
 }
@@ -530,6 +548,7 @@ function avatarOf(u) { return u.avatar || ('https://api.dicebear.com/7.x/avataaa
 function renderAll() {
   const u = S.user; if (!u) return;
   $('hName').textContent = u.name;
+  $('hLv').textContent = 'Lv.' + u.level;
   $('hVerified').innerHTML = u.isOfficial ? '<span class="badge-verify">✔</span>' : '';
   $('hCoin').textContent = u.coin.toLocaleString();
   $('gCoin').textContent = u.coin.toLocaleString();
@@ -537,7 +556,6 @@ function renderAll() {
   $('mAv').src = S.pendingAvatar || avatarOf(u);
   $('myIdDisplay').textContent = u.id;
   if (document.activeElement !== $('nIn')) $('nIn').placeholder = u.name;
-  $('homeArea').textContent = '📍 ' + S.area;
   renderPresents(); renderHistory(); renderMembers(); renderFriends();
 }
 
@@ -646,6 +664,7 @@ document.addEventListener('click', async e => {
     case 'partner':
       if (await act('setPartner', {name: d.name})) { refreshMySprite(); closePanel(); }
       break;
+    case 'logout': logout(); break;
   }
 });
 
@@ -792,22 +811,127 @@ function showSummary() {
 function closeSummary() { $('summaryLayer').classList.remove('show'); }
 
 /* =========================================================
-   エリア会話（プロセカ風）
-   同じエリアのみんなが歩き回り、吹き出しとスタンプで会話する。
+   エリア＝ホーム画面（プロセカ風）
+   同じエリアの生徒たちがSDキャラで歩き回り、吹き出しとスタンプで会話する。
    位置は2秒ごとに同期。地面をタップすると自分のキャラが歩く。
 ========================================================= */
 const HORIZON = 46, SPAN = 42;   // 地平線の位置(%)と地面の奥行き(%)
 const AREA_POLL_MS = 2000;
 const PHRASES = ['おはよう！','こんにちは！','よろしくね！','ありがとう！','おつかれさま！','いいね！','一緒に遊ぼう！','またね〜'];
-const DEFAULT_SCENE = {sky:'linear-gradient(#3b4a8a,#c88fb0)', ground:'linear-gradient(#7d7f95,#55576b)', props:[['🌳',15,70],['🌳',85,70]]};
-const SCENES = {
-  '校門':{sky:'linear-gradient(#1c2a5c,#b8567a 70%,#ffb36b)', ground:'linear-gradient(#8d8da0,#5d5f73)', props:[['🏫',50,150],['🌸',9,86],['🌸',91,86],['🌳',28,60],['🌳',73,60]]},
-  '教室':{sky:'linear-gradient(#2a5742,#1b3a2d)', ground:'linear-gradient(#b8814f,#76492a)', props:[['🕐',50,38],['📚',14,60],['🪴',87,60],['🖍️',30,28],['📐',70,28]]},
-  '校庭':{sky:'linear-gradient(#5fb8ff,#d8f2ff)', ground:'linear-gradient(#5fbf6a,#3c8f4a)', props:[['☁️',22,60],['☁️',72,74],['🌳',8,90],['🌳',92,90],['⚽',55,26]]},
-  '図書室':{sky:'linear-gradient(#4a3322,#2f2016)', ground:'linear-gradient(#94623f,#5e3b24)', props:[['📚',12,70],['📚',30,70],['🕯️',50,36],['📚',70,70],['📚',88,70]]},
-  '食堂':{sky:'linear-gradient(#ffe6b8,#ffd08a)', ground:'linear-gradient(#ebcfa8,#c8a074)', props:[['🍜',20,46],['🍙',40,40],['🍱',60,44],['🥤',80,40]]},
-  '屋上':{sky:'linear-gradient(#ff9a5a,#c2527f 55%,#3c2a6e)', ground:'linear-gradient(#80838f,#555867)', props:[['🌆',50,150],['🕊️',20,40],['🕊️',80,52]]}
+
+/* ---- 背景（SVGで描画。パステルカラーの遊園地風） ---- */
+const cloud = (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s})" fill="#fff" opacity=".93"><ellipse rx="46" ry="18"/><ellipse cx="-28" cy="-8" rx="28" ry="16"/><ellipse cx="22" cy="-14" rx="30" ry="20"/></g>`;
+function bokeh(n, cols) {
+  let o = '';
+  for (let i = 0; i < n; i++) o += `<circle cx="${(i * 173 + 41) % 1000}" cy="${(i * 97 + 23) % 300}" r="${5 + (i * 7) % 11}" fill="${cols[i % cols.length]}" opacity=".75"/>`;
+  return o;
+}
+function wheel(cx, cy, r) {
+  let o = `<g stroke="#fff" stroke-width="5" fill="none"><circle cx="${cx}" cy="${cy}" r="${r}"/><circle cx="${cx}" cy="${cy}" r="${r * .6}" stroke-width="3"/>`;
+  for (let i = 0; i < 12; i++) { const a = i * Math.PI / 6; o += `<line x1="${cx}" y1="${cy}" x2="${cx + r * Math.cos(a)}" y2="${cy + r * Math.sin(a)}" stroke-width="3"/>`; }
+  o += `<path d="M${cx} ${cy} L${cx - r * .45} ${cy + r * 1.15} M${cx} ${cy} L${cx + r * .45} ${cy + r * 1.15}" stroke-width="7"/></g>`;
+  const cols = ['#ff7ab0', '#ffc83d', '#5fd3ff', '#8be07a'];
+  for (let i = 0; i < 12; i++) { const a = i * Math.PI / 6; o += `<circle cx="${cx + r * Math.cos(a)}" cy="${cy + r * Math.sin(a)}" r="${r * .085}" fill="${cols[i % 4]}" stroke="#fff" stroke-width="3"/>`; }
+  return o;
+}
+function windows(x, y, cols, rows, w, h, gap, fill) {
+  let o = '';
+  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) o += `<rect x="${x + c * (w + gap)}" y="${y + r * (h + gap)}" width="${w}" height="${h}" rx="4" fill="${fill}"/>`;
+  return o;
+}
+const grad = (id, stops) => `<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">${stops.map(([o, c]) => `<stop offset="${o}" stop-color="${c}"/>`).join('')}</linearGradient>`;
+const skySVG = inner => `<svg viewBox="0 0 1000 480" preserveAspectRatio="xMidYMax slice" style="width:100%;height:100%;display:block">${inner}</svg>`;
+
+const SKY = {
+  '校門': () => skySVG(`<defs>${grad('sk', [[0, '#3fb4ff'], [.7, '#bfe9ff'], [1, '#ffe3f1']])}</defs><rect width="1000" height="480" fill="url(#sk)"/>
+    ${bokeh(28, ['#ff7ab0', '#ffd34d', '#7ee0ff', '#a9f27a', '#c9a0ff'])}${cloud(150, 130, 1.4)}${cloud(860, 100, 1.2)}${cloud(740, 220, .9)}
+    <rect x="30" y="300" width="250" height="180" rx="10" fill="#ffe3b8"/>${windows(55, 325, 4, 2, 38, 44, 14, '#9fdcff')}
+    <rect x="730" y="290" width="240" height="190" rx="10" fill="#ffd0e0"/>${windows(752, 335, 4, 2, 38, 44, 14, '#9fdcff')}
+    <rect x="800" y="200" width="80" height="110" fill="#fff0f5"/><circle cx="840" cy="240" r="26" fill="#fff" stroke="#ff7ab0" stroke-width="5"/><path d="M840 240V224M840 240l12 6" stroke="#ff7ab0" stroke-width="4" stroke-linecap="round"/><path d="M795 200l45-36 45 36z" fill="#ff7ab0"/>
+    ${wheel(500, 345, 125)}
+    <g fill="#7ed56a"><circle cx="150" cy="470" r="50"/><circle cx="880" cy="470" r="46"/><circle cx="330" cy="478" r="36"/><circle cx="690" cy="478" r="38"/></g>`),
+  '教室': () => skySVG(`<defs>${grad('sk', [[0, '#fff6dc'], [1, '#ffe7b8']])}</defs><rect width="1000" height="480" fill="url(#sk)"/>
+    <rect y="430" width="1000" height="50" fill="#f3cf9a"/>
+    <g transform="translate(0 100)"><g>${[0, 1, 2].map(i => `<rect x="${60 + i * 300}" y="70" width="220" height="190" rx="10" fill="#9fdcff" stroke="#fff" stroke-width="10"/><path d="M${170 + i * 300} 70v190M60 165h0" stroke="#fff" stroke-width="8"/>`).join('')}</g>
+    ${cloud(150, 130, .8)}${cloud(750, 120, .7)}
+    <rect x="330" y="120" width="340" height="210" rx="8" fill="#2f6b52" stroke="#c9975b" stroke-width="14"/>
+    <text x="500" y="215" text-anchor="middle" font-size="46" font-weight="900" fill="#fff" opacity=".92" font-family="sans-serif">ようこそ！</text>
+    <path d="M360 290h80M600 290h60" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".7"/>
+    <circle cx="500" cy="62" r="34" fill="#fff" stroke="#c9975b" stroke-width="7"/><path d="M500 62V42M500 62l14 8" stroke="#555" stroke-width="4" stroke-linecap="round"/></g>
+    <path d="M0 18Q250 70 500 18T1000 18" stroke="#ff7ab0" stroke-width="3" fill="none"/>${Array.from({length: 14}, (_, i) => `<path d="M${i * 72 + 16} ${22 + Math.sin(i) * 12}l22 0-11 30z" fill="${['#ff7ab0', '#ffd34d', '#7ee0ff', '#a9f27a'][i % 4]}"/>`).join('')}`),
+  '校庭': () => skySVG(`<defs>${grad('sk', [[0, '#4fb0ff'], [1, '#d8f2ff']])}</defs><rect width="1000" height="480" fill="url(#sk)"/>
+    ${['#ff6b6b', '#ffb84d', '#ffe66d', '#7ed56a', '#5fb8ff'].map((c, i) => `<path d="M${130 + i * 18} 480A${370 - i * 18} ${370 - i * 18} 0 0 1 ${870 - i * 18} 480" stroke="${c}" stroke-width="18" fill="none" opacity=".85"/>`).join('')}
+    ${cloud(160, 110, 1.4)}${cloud(850, 140, 1.2)}${bokeh(14, ['#fff', '#ffd34d'])}
+    <g transform="translate(0 130)"><ellipse cx="790" cy="150" rx="46" ry="54" fill="#ff7ab0"/><path d="M744 150h92" stroke="#fff" stroke-width="8"/><rect x="772" y="206" width="36" height="22" rx="4" fill="#c9975b"/><path d="M752 196l24 12M828 196l-24 12" stroke="#666" stroke-width="3"/></g>
+    <path d="M0 440Q220 360 450 430T1000 400V480H0z" fill="#8fe07a"/><path d="M0 470Q300 420 600 460T1000 450V480H0z" fill="#6ccf6a"/>
+    <g fill="#4fae5a"><circle cx="90" cy="410" r="44"/><circle cx="910" cy="410" r="48"/></g><g fill="#a0663a"><rect x="84" y="430" width="12" height="36"/><rect x="904" y="430" width="12" height="38"/></g>`),
+  '図書室': () => skySVG(`<defs>${grad('sk', [[0, '#ffefd2'], [1, '#ffd9a8']])}</defs><rect width="1000" height="480" fill="url(#sk)"/>
+    ${[0, 1].map(side => [0, 1, 2].map(r => `<rect x="${side ? 700 : 30}" y="${130 + r * 115}" width="270" height="105" rx="6" fill="#b57a4b"/>` + Array.from({length: 12}, (_, i) => `<rect x="${(side ? 710 : 40) + i * 21}" y="${140 + r * 115 + (i % 3) * 5}" width="17" height="${85 - (i % 3) * 5}" rx="2" fill="${['#ff7ab0', '#5fb8ff', '#ffd34d', '#8be07a', '#c9a0ff', '#ff9a5a'][i % 6]}"/>`).join('')).join('')).join('')}
+    <circle cx="500" cy="300" r="115" fill="#9fdcff" stroke="#c9975b" stroke-width="14"/><path d="M500 185v230M385 300h230" stroke="#c9975b" stroke-width="8"/>${cloud(470, 285, .7)}
+    <g>${[330, 670].map(x => `<path d="M${x} 0v50" stroke="#555" stroke-width="3"/><path d="M${x - 34} 100a34 34 0 0 1 68 0z" fill="#ffd34d"/><path d="M${x} 50v14" stroke="#555" stroke-width="3"/>`).join('')}</g>`),
+  '食堂': () => skySVG(`<defs>${grad('sk', [[0, '#ffe3ee'], [1, '#ffd0e0']])}</defs><rect width="1000" height="480" fill="url(#sk)"/>
+    ${Array.from({length: 10}, (_, i) => `<rect x="${i * 100}" y="0" width="100" height="110" fill="${i % 2 ? '#fff' : '#ff7ab0'}"/><path d="M${i * 100} 110q50 36 100 0z" fill="${i % 2 ? '#fff' : '#ff7ab0'}"/>`).join('')}
+    <g transform="translate(0 70)"><rect x="300" y="170" width="400" height="160" rx="10" fill="#2f6b52" stroke="#c9975b" stroke-width="12"/><text x="500" y="262" text-anchor="middle" font-size="44" font-weight="900" fill="#fff" font-family="sans-serif">本日の日替わり</text><text x="500" y="308" text-anchor="middle" font-size="30" fill="#ffd34d" font-family="sans-serif">★ カレーライス ★</text></g>
+    <rect x="0" y="400" width="1000" height="80" fill="#ffc2d6"/>${[120, 260, 740, 880].map((x, i) => `<circle cx="${x}" cy="392" r="30" fill="${['#ffd34d', '#ff7ab0', '#a9f27a', '#7ee0ff'][i]}" stroke="#fff" stroke-width="6"/><circle cx="${x}" cy="392" r="10" fill="#fff"/>`).join('')}
+    ${[160, 840].map(x => `<path d="M${x} 120v50" stroke="#555" stroke-width="3"/><ellipse cx="${x}" cy="196" rx="24" ry="30" fill="#ff6a3d"/>`).join('')}`),
+  '屋上': () => skySVG(`<defs>${grad('sk', [[0, '#2a2a6e'], [.55, '#c2527f'], [1, '#ffb36b']])}</defs><rect width="1000" height="480" fill="url(#sk)"/>
+    ${Array.from({length: 34}, (_, i) => `<circle cx="${(i * 211) % 1000}" cy="${(i * 53) % 220}" r="${1 + (i % 3)}" fill="#fff" opacity=".8"/>`).join('')}
+    <circle cx="780" cy="240" r="46" fill="#fff6c8"/><circle cx="800" cy="100" r="42" fill="#c2527f" opacity=".0"/>
+    ${Array.from({length: 14}, (_, i) => { const h = 90 + (i * 53) % 150, x = i * 74; return `<rect x="${x}" y="${440 - h}" width="64" height="${h + 40}" fill="#2b2250"/>${windows(x + 8, 450 - h, 3, Math.floor(h / 30), 14, 14, 8, '#ffd98a')}`; }).join('')}
+    <g stroke="#e8e8f4" stroke-width="4" fill="none"><path d="M0 410H1000M0 440H1000"/>${Array.from({length: 26}, (_, i) => `<path d="M${i * 40 + 10} 400V480"/>`).join('')}</g>`)
 };
+const DEFAULT_SKY = SKY['校門'];
+
+function groundSVG(pal) {
+  const [c1, c2, a1, a2, a3] = pal;
+  return `<svg viewBox="0 0 1000 540" preserveAspectRatio="xMidYMin slice" style="width:100%;height:100%;display:block"><defs>${grad('gg', [[0, c1], [1, c2]])}</defs>
+  <rect width="1000" height="540" fill="url(#gg)"/>
+  <path d="M-20 110Q250 30 520 110T1020 80V170Q760 140 520 190T-20 200z" fill="${a1}" opacity=".75"/>
+  <path d="M-20 260Q260 180 540 270T1020 240V320Q760 290 540 340T-20 350z" fill="${a2}" opacity=".7"/>
+  <path d="M-20 400Q220 340 480 420T1020 390V470Q700 440 480 500T-20 500z" fill="${a3}" opacity=".75"/>
+  <ellipse cx="500" cy="478" rx="250" ry="64" fill="#aab0c8"/><ellipse cx="500" cy="462" rx="250" ry="62" fill="#eef0f7"/><ellipse cx="500" cy="462" rx="224" ry="52" fill="#dfe3ee"/>
+  <g><ellipse cx="500" cy="440" rx="170" ry="42" fill="#5fb85a"/><ellipse cx="430" cy="428" rx="76" ry="30" fill="#79cc68"/><ellipse cx="574" cy="428" rx="80" ry="30" fill="#79cc68"/><ellipse cx="500" cy="416" rx="70" ry="26" fill="#8ad87a"/>
+  <circle cx="440" cy="414" r="11" fill="#ffd34d"/><circle cx="520" cy="404" r="12" fill="#ff7ab0"/><circle cx="580" cy="422" r="11" fill="#ff9a5a"/><circle cx="480" cy="436" r="9" fill="#fff"/><circle cx="548" cy="440" r="9" fill="#fff"/></g></svg>`;
+}
+const GROUNDS = {
+  '校門': ['#8fe3c8', '#6ed0e0', '#ffb870', '#ff9fc4', '#fff1a8'],
+  '教室': ['#e6b98a', '#c98f5d', '#f2d3a6', '#d9a06e', '#fff0d0'],
+  '校庭': ['#7fdc7a', '#4fbf68', '#a8f08a', '#3fae5a', '#ffe66d'],
+  '図書室': ['#c98b5a', '#9a6240', '#e3a974', '#b57a4b', '#f4d6a8'],
+  '食堂': ['#ffd9e6', '#ffc2d6', '#fff0b3', '#ffe0f0', '#ffb3c9'],
+  '屋上': ['#8a8da8', '#666a88', '#a6a9c4', '#7a7e9c', '#ffcf9a']
+};
+
+/* ---- SDキャラ（SVGで描画。パートナー設定中は顔だけ生徒画像） ---- */
+const HAIR = ['#4a3426', '#2b2b4f', '#8a5a32', '#d6b05a', '#e0719b', '#4a8fd0', '#4fae88', '#8c63d8', '#c94b4b', '#2f2f2f'];
+const EYES = ['#5a3a2a', '#2d6cb5', '#2f9a6a', '#8a4ad0', '#c0506a'];
+const UNI = ['#26356b', '#2d5a46', '#6b2d4a', '#3a3f55', '#7a3b2a'];
+function hashN(s) { let h = 0; for (const ch of String(s)) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return h; }
+function chibiSVG(id, withHead) {
+  const h = hashN(id), hair = HAIR[h % HAIR.length], eye = EYES[(h >> 3) % EYES.length], uni = UNI[(h >> 5) % UNI.length];
+  const style = (h >> 7) % 3, skirt = ((h >> 9) % 2) === 0, skin = '#fde3cf';
+  const legs = skirt
+    ? `<rect x="38" y="104" width="9" height="17" rx="4" fill="${skin}"/><rect x="53" y="104" width="9" height="17" rx="4" fill="${skin}"/><path d="M28 100Q50 110 72 100L77 116Q50 123 23 116z" fill="#8a3a5a"/>`
+    : `<rect x="36" y="100" width="12" height="21" rx="5" fill="#3a3f55"/><rect x="52" y="100" width="12" height="21" rx="5" fill="#3a3f55"/>`;
+  const body = `${legs}<ellipse cx="42" cy="123" rx="9" ry="4.5" fill="#5a3a2a"/><ellipse cx="58" cy="123" rx="9" ry="4.5" fill="#5a3a2a"/>
+    <path d="M30 78Q50 70 70 78L74 108Q50 114 26 108z" fill="${uni}"/><path d="M44 76L50 92 56 76z" fill="#fff"/><path d="M46 90L50 86 54 90 50 98z" fill="#e5486a"/>
+    <rect x="19" y="80" width="12" height="26" rx="6" fill="${uni}" transform="rotate(8 25 80)"/><rect x="69" y="80" width="12" height="26" rx="6" fill="${uni}" transform="rotate(-8 75 80)"/>
+    <circle cx="23" cy="108" r="5.5" fill="${skin}"/><circle cx="77" cy="108" r="5.5" fill="${skin}"/>`;
+  let head = '';
+  if (withHead) {
+    const back = style === 1 ? `<ellipse cx="9" cy="60" rx="9" ry="20" fill="${hair}"/><ellipse cx="91" cy="60" rx="9" ry="20" fill="${hair}"/>`
+      : style === 2 ? `<path d="M12 40Q4 92 22 100L36 66z" fill="${hair}"/><path d="M88 40Q96 92 78 100L64 66z" fill="${hair}"/>` : '';
+    const acc = style === 1 ? `<circle cx="14" cy="44" r="6" fill="#ff7ab0"/><circle cx="86" cy="44" r="6" fill="#ff7ab0"/>` : '';
+    head = `${back}<circle cx="50" cy="40" r="38" fill="${hair}"/><ellipse cx="50" cy="46" rx="31" ry="29" fill="${skin}"/>
+      <path d="M13 42Q16 4 50 5Q84 4 87 42Q78 22 62 26Q50 16 38 26Q22 22 13 42z" fill="${hair}"/>
+      <ellipse cx="38" cy="49" rx="5" ry="7" fill="${eye}"/><ellipse cx="62" cy="49" rx="5" ry="7" fill="${eye}"/><circle cx="36" cy="46" r="2.2" fill="#fff"/><circle cx="60" cy="46" r="2.2" fill="#fff"/>
+      <ellipse cx="29" cy="59" rx="5" ry="3" fill="#ffb3b3" opacity=".65"/><ellipse cx="71" cy="59" rx="5" ry="3" fill="#ffb3b3" opacity=".65"/>
+      <path d="M45 62Q50 67 55 62" stroke="#c0556a" fill="none" stroke-width="2" stroke-linecap="round"/>${acc}`;
+  }
+  return `<svg viewBox="0 0 100 130" xmlns="http://www.w3.org/2000/svg">${body}${head}</svg>`;
+}
+
+/* ---- 状態 ---- */
 S.areas = [
   {name:'校門', icon:'🏫', desc:'登校した生徒が最初に集まる場所'},
   {name:'教室', icon:'📚', desc:'授業の合間のおしゃべり'},
@@ -823,7 +947,7 @@ S.stamps = [
 ];
 S.area = localStorage.getItem('gk_area') || '校門';
 S.areaTimer = null;
-const newAm = () => ({players:new Map(), ids:new Set(), log:[], since:0, loaded:false, polling:false, sending:false,
+const newAm = () => ({players:new Map(), ids:new Set(), log:[], since:0, loaded:false, polling:false, sending:false, unread:0,
                       me:{x:30 + Math.random()*40, y:55 + Math.random()*35}, mode:''});
 S.am = newAm();
 
@@ -831,24 +955,21 @@ const clampN = (v, a, b) => Math.max(a, Math.min(b, v));
 const round1 = v => Math.round(v * 10) / 10;
 const areaData = () => S.areas.find(a => a.name === S.area) || S.areas[0];
 const stampOf = text => String(text).startsWith('::stamp:') ? S.stamps.find(x => x.id === String(text).slice(8)) : null;
-function spriteImg(partner, id) {
-  const c = partner && masterList().find(m => m.name === partner);
-  return (c && c.img) || ('https://api.dicebear.com/7.x/avataaars/svg?seed=' + encodeURIComponent(id));
-}
 function toast(msg) {
   const t = $('aToast'); t.textContent = msg; t.style.display = 'block';
   clearTimeout(toast.t); toast.t = setTimeout(() => t.style.display = 'none', 2200);
 }
-function hideHint() { const h = $('aHint'); h.style.opacity = 0; }
+function hideHint() { $('aHint').style.opacity = 0; }
+function updateLogBadge() {
+  const b = $('logBadge'), n = S.am.unread;
+  b.style.display = n > 0 ? 'flex' : 'none'; b.textContent = n > 99 ? '99+' : n;
+}
 
 /* ---- シーン ---- */
 function renderScene() {
-  const sc = SCENES[S.area] || DEFAULT_SCENE;
-  $('scSky').style.background = sc.sky;
-  $('scGround').style.background = sc.ground;
-  $('scProps').innerHTML = sc.props.map(([e, x, size]) =>
-    `<div class="sc-prop" style="left:${x}%;top:${HORIZON}%;font-size:${size}px">${e}</div>`).join('');
-  $('aName').textContent = areaData().icon + ' ' + S.area;
+  $('scSky').innerHTML = (SKY[S.area] || DEFAULT_SKY)();
+  $('scGround').innerHTML = groundSVG(GROUNDS[S.area] || GROUNDS['校門']);
+  $('aLoc').textContent = '-' + S.area + '-';
 }
 
 /* ---- キャラクター ---- */
@@ -860,7 +981,7 @@ function place(p, x, y, animate) {
   el.style.setProperty('--d', dur + 's');
   el.style.left = x + '%';
   el.style.top = (HORIZON + y * SPAN / 100) + '%';
-  el.style.zIndex = Math.round(y * 10) + 1;
+  if (!el.classList.contains('talk')) el.style.zIndex = Math.round(y * 10) + 1;
   el.style.setProperty('--s', (.62 + .5 * y / 100).toFixed(3));
   p.x = x; p.y = y;
   if (dur > 0) {
@@ -868,26 +989,31 @@ function place(p, x, y, animate) {
     p.walkTimer = setTimeout(() => el.classList.remove('walk'), dur * 1000);
   }
 }
-
+function setLook(p, partner) {
+  const c = partner && masterList().find(m => m.name === partner);
+  const face = c && c.img ? c.img : '';
+  p.el.querySelector('.chibi').innerHTML = chibiSVG(p.id, !face) + (face ? `<img class="cb-face" alt="" src="${esc(face)}">` : '');
+}
 function ensurePlayer(m) {
   const A = S.am, isMe = m.id === S.id;
   let p = A.players.get(m.id);
   if (!p) {
     const el = document.createElement('div');
     el.className = 'pl' + (isMe ? ' me' : '');
-    el.innerHTML = '<div class="wrap"><div class="bubble"></div><div class="body"><img alt=""></div><div class="tag"></div></div>';
+    el.innerHTML = '<div class="wrap"><div class="bubble"></div><div class="chibi"></div><div class="newtag">NEW!</div><div class="tag"></div></div>';
     $('scPlayers').appendChild(el);
     p = {id:m.id, el, x:m.x, y:m.y, name:'', partner:null, bubTimer:null, walkTimer:null};
     A.players.set(m.id, p);
     place(p, m.x, m.y, false);
+    if (!isMe && A.loaded) {                       // 途中参加の人に「NEW!」を出す
+      const nt = el.querySelector('.newtag'); nt.classList.add('show');
+      setTimeout(() => nt.classList.remove('show'), 9000);
+    }
   } else if (!isMe && (m.x !== p.x || m.y !== p.y)) {
     place(p, m.x, m.y, true);
   }
   const partner = m.partner || '';
-  if (p.partner !== partner) {
-    p.partner = partner;
-    const img = p.el.querySelector('img'); img.dataset.fb = ''; img.src = spriteImg(partner, m.id);
-  }
+  if (p.partner !== partner) { p.partner = partner; setLook(p, partner); }
   if (p.name !== m.name) { p.name = m.name; p.el.querySelector('.tag').textContent = m.name; }
   return p;
 }
@@ -901,17 +1027,20 @@ function showBubble(id, m) {
   const b = p.el.querySelector('.bubble'), st = stampOf(m.text);
   b.className = 'bubble show' + (st ? ' stamp' : '');
   b.textContent = st ? st.e : m.text;           // textContentでXSS対策
+  p.el.classList.add('talk'); p.el.style.zIndex = 9999;
   clearTimeout(p.bubTimer);
-  p.bubTimer = setTimeout(() => b.classList.remove('show'), st ? 4000 : 6500);
+  p.bubTimer = setTimeout(() => {
+    b.classList.remove('show'); p.el.classList.remove('talk'); p.el.style.zIndex = Math.round(p.y * 10) + 1;
+  }, st ? 4000 : 6500);
 }
 
 /* ---- 入退室・同期 ---- */
 function enterAreaScene() {
   S.am = newAm();
   $('scPlayers').innerHTML = '';
-  renderScene(); closePanel();
-  ensurePlayer({id:S.id, name:S.user.name, x:round1(S.am.me.x), y:round1(S.am.me.y), partner:S.user.partner || ''});
+  renderScene(); closePanel(); updateLogBadge();
   S.am.me = {x:round1(S.am.me.x), y:round1(S.am.me.y)};
+  ensurePlayer({id:S.id, name:S.user.name, x:S.am.me.x, y:S.am.me.y, partner:S.user.partner || ''});
   $('aCount').textContent = '在室 1人';
   $('aHint').style.opacity = 1;
 }
@@ -924,15 +1053,9 @@ function openArea() {
   areaPoll();
 }
 function stopAreaSync() { clearInterval(S.areaTimer); S.areaTimer = null; }
-function closeArea() {
-  stopAreaSync();
-  $('areaLayer').classList.remove('show');
-  if (S.id) api.get({action:'areaLeave', id:S.id, token:S.token});
-}
 function changeArea(name) {
   if (name === S.area) { closePanel(); return; }
   S.area = name; localStorage.setItem('gk_area', name);
-  $('homeArea').textContent = '📍 ' + name;
   enterAreaScene();
   areaPoll();
 }
@@ -967,7 +1090,10 @@ function handleMessages(list, live) {
     if (A.ids.has(m.id)) return;
     A.ids.add(m.id); A.log.push(m);
     if (A.log.length > 120) A.log.shift();
-    if (live) showBubble(m.fromId, m);
+    if (live) {
+      showBubble(m.fromId, m);
+      if (m.fromId !== S.id && A.mode !== 'log') { A.unread++; updateLogBadge(); }
+    }
   });
   if (A.mode === 'log') renderPanel();
 }
@@ -1010,11 +1136,13 @@ document.addEventListener('keydown', e => {
 /* ---- パネル ---- */
 function showPanel(mode) {
   if (S.am.mode === mode) { closePanel(); return; }
-  S.am.mode = mode; renderPanel();
+  S.am.mode = mode;
+  if (mode === 'log') { S.am.unread = 0; updateLogBadge(); }
+  renderPanel();
 }
 function closePanel() {
   S.am.mode = ''; $('aPanel').style.display = 'none';
-  document.querySelectorAll('.a-btn').forEach(b => b.classList.remove('on'));
+  document.querySelectorAll('.act').forEach(b => b.classList.remove('on'));
 }
 function renderPanel() {
   const A = S.am, P = $('aPanel'), mode = A.mode;
@@ -1030,8 +1158,13 @@ function renderPanel() {
     html = head('😀 スタンプ') + `<div class="stamp-grid">${S.stamps.map(s =>
       `<button class="stamp-btn" data-act="stamp" data-id="${esc(s.id)}"><b>${s.e}</b>${esc(s.l)}</button>`).join('')}</div>`;
   } else if (mode === 'area') {
-    html = head('🗺️ エリア移動') + S.areas.map(a =>
+    html = head('🌐 エリア移動') + S.areas.map(a =>
       `<button class="area-row${a.name === S.area ? ' active' : ''}" data-act="area" data-name="${esc(a.name)}"><b>${esc(a.icon)} ${esc(a.name)}</b><small>${esc(a.desc)}</small></button>`).join('');
+  } else if (mode === 'menu') {
+    html = head('☰ メニュー') +
+      `<button class="area-row" onclick="closePanel();openSheet('sheetConfig')"><b>🪪 学生証</b></button>
+       <button class="area-row" onclick="closePanel();openSheet('sheetPresent')"><b>🎁 おくりもの・コイン履歴</b></button>
+       <button class="area-row" data-act="logout"><b>🚪 ログアウト</b></button>`;
   } else if (mode === 'partner') {
     const names = [...new Set((S.user.chars || '').split(',').map(s => s.trim()).filter(Boolean))];
     const master = masterList();
@@ -1042,14 +1175,14 @@ function renderPanel() {
         return `<button class="member" data-act="partner" data-name="${esc(n)}" style="${S.user.partner === n ? 'border-color:var(--mint)' : ''}"><img src="${imgSrc(c && c.img)}" alt=""><small>${esc(n)}</small></button>`;
       }).join('')}</div>` : '<div class="empty">まだ生徒がいません。スカウトで仲間を迎えよう！</div>');
   } else if (mode === 'log') {
-    html = head('📜 ログ') + (A.log.length ? A.log.map(m => {
+    html = head('📋 ログ') + (A.log.length ? A.log.map(m => {
       const st = stampOf(m.text), d = new Date(m.t);
       const tm = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
       return `<div class="log-row${m.fromId === S.id ? ' me' : ''}"><b>${esc(m.name)}</b><span class="tm">${tm}</span><br>${st ? st.e + ' ' + esc(st.l) : esc(m.text)}</div>`;
     }).join('') : '<div class="empty">まだ会話がありません</div>');
   }
   P.innerHTML = html; P.style.display = 'block';
-  document.querySelectorAll('.a-btn').forEach(b => b.classList.toggle('on', b.dataset.mode === mode));
+  document.querySelectorAll('.act').forEach(b => b.classList.toggle('on', b.dataset.mode === mode));
   if (mode === 'log') P.scrollTop = P.scrollHeight;
   if (mode === 'say') setTimeout(() => { const i = $('aSayIn'); if (i) i.focus(); }, 60);
 }
